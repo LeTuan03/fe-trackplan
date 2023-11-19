@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Head from 'next/head';
 import { subDays, subHours } from 'date-fns';
 import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
@@ -11,8 +11,6 @@ import { CustomersTable } from 'src/sections/customer/customers-table';
 import { CustomersSearch } from 'src/sections/customer/customers-search';
 import { applyPagination } from 'src/utils/apply-pagination';
 import CustomersDialog from 'src/sections/customer/customers-dialog';
-import { getAll } from 'src/services/customerServices';
-import { STATUS } from 'src/appConst';
 
 const now = new Date();
 
@@ -185,7 +183,6 @@ const Page = () => {
   const customersSelection = useSelection(customersIds);
   const [open, setOpen] = useState(false);
   const [customer, setCustomer] = useState("");
-  const [listUser, setListUser] = useState([]);
   const handlePageChange = useCallback(
     (event, value) => {
       setPage(value);
@@ -209,26 +206,11 @@ const Page = () => {
     setOpen(false);
     setCustomer(null)
   };
-  const pageUpdate = async () => {
-    try {
-      const data = await getAll();
-      console.log(data)
-      if (data?.status === STATUS.SUCCESS) {
-        setListUser(data?.data)
-      }
-    } catch (err) {
-      console.log(err)
-    }
-  };
-  pageUpdate();
-  useEffect(() => {
-    pageUpdate()
-  }, [])
   return (
     <>
       <Head>
         <title>
-          Track Plan | User management
+          Track Plan | Project management
         </title>
       </Head>
       <Box
@@ -296,10 +278,10 @@ const Page = () => {
               items={customer}
             />
             <CustomersTable
+              isPlant={true}
               handleClickOpen={handleClickOpen}
               count={data.length}
-              // items={customers}
-              items={listUser}
+              items={customers}
               onDeselectAll={customersSelection.handleDeselectAll}
               onDeselectOne={customersSelection.handleDeselectOne}
               onPageChange={handlePageChange}

@@ -19,6 +19,7 @@ import { getInitials } from 'src/utils/get-initials';
 import { SvgIcon } from '@mui/material';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
+import EyeIcon from '@heroicons/react/24/solid/EyeIcon';
 
 export const CustomersTable = (props) => {
   const {
@@ -33,7 +34,8 @@ export const CustomersTable = (props) => {
     page = 0,
     rowsPerPage = 0,
     selected = [],
-    handleClickOpen
+    handleClickOpen,
+    isPlant
   } = props;
 
   const selectedSome = (selected.length > 0) && (selected.length < items.length);
@@ -62,20 +64,20 @@ export const CustomersTable = (props) => {
                   Phone
                 </TableCell>
                 <TableCell>
-                  Signed Up
+                  {isPlant ? "Created at" : "Signed Up"}
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {items.map((customer) => {
-                const isSelected = selected.includes(customer.id);
-                const createdAt = format(customer.createdAt, 'dd/MM/yyyy');
+                // const isSelected = selected.includes(customer.id);
+                // const createdAt = format(customer.createdAt, 'dd/MM/yyyy');
 
                 return (
                   <TableRow
                     hover
                     key={customer.id}
-                    selected={isSelected}
+                  // selected={isSelected}
                   >
                     <TableCell>
                       <div
@@ -84,7 +86,8 @@ export const CustomersTable = (props) => {
                           handleClickOpen(customer)
                         }} >
                         <SvgIcon fontSize="small">
-                          <UsersIcon />
+                          {/* <UsersIcon /> */}
+                          <EyeIcon />
                         </SvgIcon>
                       </div>
                     </TableCell>
@@ -106,13 +109,13 @@ export const CustomersTable = (props) => {
                       {customer.email}
                     </TableCell>
                     <TableCell>
-                      {customer.address.city}, {customer.address.state}, {customer.address.country}
+                      {/* {customer.address.city}, {customer.address.state}, {customer.address.country} */}
                     </TableCell>
                     <TableCell>
                       {customer.phone}
                     </TableCell>
                     <TableCell>
-                      {createdAt}
+                      {/* {createdAt} */}
                     </TableCell>
                   </TableRow>
                 );
