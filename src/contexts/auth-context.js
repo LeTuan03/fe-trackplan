@@ -85,7 +85,8 @@ export const AuthProvider = (props) => {
         id: '5e86809283e28b96d2d38537',
         avatar: '/assets/avatars/avatar-anika-visser.png',
         name: 'Anika Visser',
-        email: 'admin@admin'
+        email: 'admin@admin',
+        role: 1
       };
 
       dispatch({
@@ -118,7 +119,8 @@ export const AuthProvider = (props) => {
       id: '5e86809283e28b96d2d38537',
       avatar: '/assets/avatars/avatar-anika-visser.png',
       name: 'Anika Visser',
-      email: 'admin@admin'
+      email: 'admin@admin',
+      role: 1
     };
 
     dispatch({
@@ -144,7 +146,7 @@ export const AuthProvider = (props) => {
       name: 'Anika Visser',
       email: 'admin@admin',
       //Depending on the role, navigation
-      role: 2
+      role: 1
     };
 
     dispatch({

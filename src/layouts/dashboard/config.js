@@ -42,15 +42,15 @@ export const items = () => {
           </SvgIcon>
         ),
       },
-    {
-      title: 'Companies',
-      path: '/companies',
-      icon: (
-        <SvgIcon fontSize="small">
-          <ShoppingBagIcon />
-        </SvgIcon>
-      ),
-    },
+    // {
+    //   title: 'Companies',
+    //   path: '/companies',
+    //   icon: (
+    //     <SvgIcon fontSize="small">
+    //       <ShoppingBagIcon />
+    //     </SvgIcon>
+    //   ),
+    // },
     {
       title: 'Account',
       path: '/account',
@@ -87,14 +87,14 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    {
-      title: 'Error',
-      path: '/404',
-      icon: (
-        <SvgIcon fontSize="small">
-          <XCircleIcon />
-        </SvgIcon>
-      ),
-    },
+    // {
+    //   title: 'Error',
+    //   path: '/404',
+    //   icon: (
+    //     <SvgIcon fontSize="small">
+    //       <XCircleIcon />
+    //     </SvgIcon>
+    //   ),
+    // },
   ];
 };

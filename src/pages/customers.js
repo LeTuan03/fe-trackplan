@@ -210,15 +210,15 @@ const Page = () => {
     setCustomer(null)
   };
   const pageUpdate = async () => {
-    try {
-      const data = await getAll();
-      console.log(data)
-      if (data?.status === STATUS.SUCCESS) {
-        setListUser(data?.data)
-      }
-    } catch (err) {
-      console.log(err)
-    }
+    // try {
+    //   const data = await getAll();
+    //   console.log(data)
+    //   if (data?.status === STATUS.SUCCESS) {
+    //     setListUser(data?.data)
+    //   }
+    // } catch (err) {
+    //   console.log(err)
+    // }
   };
   pageUpdate();
   useEffect(() => {

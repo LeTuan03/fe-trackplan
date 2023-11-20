@@ -48,24 +48,45 @@ export const CustomersTable = (props) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
-                  Action
-                </TableCell>
-                <TableCell>
-                  Name
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  Location
-                </TableCell>
-                <TableCell>
-                  Phone
-                </TableCell>
-                <TableCell>
-                  {isPlant ? "Created at" : "Signed Up"}
-                </TableCell>
+                {isPlant ? <>
+                  <TableCell padding="checkbox">
+                    Action
+                  </TableCell>
+                  <TableCell>
+                    Name of project
+                  </TableCell>
+                  <TableCell>
+                    Created by
+                  </TableCell>
+                  <TableCell>
+                    Created at
+                  </TableCell>
+                  <TableCell>
+                    Status
+                  </TableCell>
+                  <TableCell>
+                    Note
+                  </TableCell>
+                </> :
+                  <>
+                    <TableCell padding="checkbox">
+                      Action
+                    </TableCell>
+                    <TableCell>
+                      Name
+                    </TableCell>
+                    <TableCell>
+                      Email
+                    </TableCell>
+                    <TableCell>
+                      Location
+                    </TableCell>
+                    <TableCell>
+                      Phone
+                    </TableCell>
+                    <TableCell>
+                      Signed Up
+                    </TableCell></>}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -77,46 +98,87 @@ export const CustomersTable = (props) => {
                   <TableRow
                     hover
                     key={customer.id}
-                  // selected={isSelected}
                   >
-                    <TableCell>
-                      <div
-                        style={{ display: "flex", justifyContent: "center", cursor: "pointer" }}
-                        onClick={() => {
-                          handleClickOpen(customer)
-                        }} >
-                        <SvgIcon fontSize="small">
-                          {/* <UsersIcon /> */}
-                          <EyeIcon />
-                        </SvgIcon>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Stack
-                        alignItems="center"
-                        direction="row"
-                        spacing={2}
-                      >
-                        <Avatar src={customer.avatar}>
-                          {getInitials(customer.name)}
-                        </Avatar>
-                        <Typography variant="subtitle2">
-                          {customer.name}
-                        </Typography>
-                      </Stack>
-                    </TableCell>
-                    <TableCell>
-                      {customer.email}
-                    </TableCell>
-                    <TableCell>
-                      {/* {customer.address.city}, {customer.address.state}, {customer.address.country} */}
-                    </TableCell>
-                    <TableCell>
-                      {customer.phone}
-                    </TableCell>
-                    <TableCell>
-                      {/* {createdAt} */}
-                    </TableCell>
+                    {isPlant ?
+                      <>
+                        <TableCell>
+                          <div
+                            style={{ display: "flex", justifyContent: "center", cursor: "pointer" }}
+                            onClick={() => {
+                              handleClickOpen(customer)
+                            }} >
+                            <SvgIcon fontSize="small">
+                              <EyeIcon />
+                            </SvgIcon>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Stack
+                            alignItems="center"
+                            direction="row"
+                            spacing={2}
+                          >
+                            <Avatar src={customer.avatar}>
+                              {getInitials(customer.name)}
+                            </Avatar>
+                            <Typography variant="subtitle2">
+                              {customer.name}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+                        <TableCell>
+                          {customer.email}
+                        </TableCell>
+                        <TableCell>
+                          {format(new Date(), 'dd/MM/yyyy')}
+                        </TableCell>
+                        <TableCell>
+                          Status
+                        </TableCell>
+                        <TableCell>
+                          Note
+                        </TableCell>
+                      </> :
+                      <>
+                        <TableCell>
+                          <div
+                            style={{ display: "flex", justifyContent: "center", cursor: "pointer" }}
+                            onClick={() => {
+                              handleClickOpen(customer)
+                            }} >
+                            <SvgIcon fontSize="small">
+                              <EyeIcon />
+                            </SvgIcon>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Stack
+                            alignItems="center"
+                            direction="row"
+                            spacing={2}
+                          >
+                            <Avatar src={customer.avatar}>
+                              {getInitials(customer.name)}
+                            </Avatar>
+                            <Typography variant="subtitle2">
+                              {customer.name}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+                        <TableCell>
+                          {customer.email}
+                        </TableCell>
+                        <TableCell>
+                          {/* {customer.address.city}, {customer.address.state}, {customer.address.country} */}
+                        </TableCell>
+                        <TableCell>
+                          {customer.phone}
+                        </TableCell>
+                        <TableCell>
+                          {/* {createdAt} */}
+                        </TableCell>
+                      </>
+                    }
                   </TableRow>
                 );
               })}

@@ -229,7 +229,7 @@ const Page = () => {
             >
               <Stack spacing={1}>
                 <Typography variant="h4">
-                  List Users
+                  Project List
                 </Typography>
                 <Stack
                   alignItems="center"
@@ -273,6 +273,8 @@ const Page = () => {
             </Stack>
             <CustomersSearch />
             <CustomersDialog
+              title="Add/Edit project"
+              isPlan={true}
               open={open}
               handleClose={handleClose}
               items={customer}
