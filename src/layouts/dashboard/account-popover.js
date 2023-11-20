@@ -5,6 +5,8 @@ import { Box, Divider, MenuItem, MenuList, Popover, Typography } from '@mui/mate
 import { useAuth } from 'src/hooks/use-auth';
 
 export const AccountPopover = (props) => {
+
+  const { user, isAuthenticated } = useAuth();
   const { anchorEl, onClose, open } = props;
   const router = useRouter();
   const auth = useAuth();
@@ -42,7 +44,7 @@ export const AccountPopover = (props) => {
           color="text.secondary"
           variant="body2"
         >
-          Anika Visser
+          {user?.username}
         </Typography>
       </Box>
       <Divider />

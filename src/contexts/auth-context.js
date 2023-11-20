@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { authenticationServices } from 'src/services/authServices';
+import { STATUS } from 'src/appConst';
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -80,24 +82,27 @@ export const AuthProvider = (props) => {
       console.error(err);
     }
 
-    if (isAuthenticated) {
-      const user = {
-        id: '5e86809283e28b96d2d38537',
-        avatar: '/assets/avatars/avatar-anika-visser.png',
-        name: 'Anika Visser',
-        email: 'admin@admin',
-        role: 1
-      };
+    // if (isAuthenticated) {
+    //   const user = {
+    //     id: '5e86809283e28b96d2d38537',
+    //     avatar: '/assets/avatars/avatar-anika-visser.png',
+    //     name: 'Anika Visser',
+    //     email: 'admin@admin',
+    //     role: 1
+    //   };
 
-      dispatch({
-        type: HANDLERS.INITIALIZE,
-        payload: user
-      });
-    } else {
-      dispatch({
-        type: HANDLERS.INITIALIZE
-      });
-    }
+    //   dispatch({
+    //     type: HANDLERS.INITIALIZE,
+    //     payload: user
+    //   });
+    // } else {
+    //   dispatch({
+    //     type: HANDLERS.INITIALIZE
+    //   });
+    // }
+    dispatch({
+      type: HANDLERS.INITIALIZE
+    });
   };
 
   useEffect(
@@ -129,30 +134,34 @@ export const AuthProvider = (props) => {
     });
   };
 
-  const signIn = async (email, password) => {
-    if (email !== 'admin@admin' || password !== '123456') {
+  const signIn = async (username, password) => {
+    try {
+      const data = await authenticationServices({ username, password, role: "1" });
+      console.log(data)
+      if (data?.status === STATUS.SUCCESS) {
+        dispatch({
+          type: HANDLERS.SIGN_IN,
+          payload: data?.data
+        });
+      }
+    } catch (error) {
       throw new Error('Please check your email and password');
     }
 
-    try {
-      window.sessionStorage.setItem('authenticated', 'true');
-    } catch (err) {
-      console.error(err);
-    }
 
-    const user = {
-      id: '5e86809283e28b96d2d38537',
-      avatar: '/assets/avatars/avatar-anika-visser.png',
-      name: 'Anika Visser',
-      email: 'admin@admin',
-      //Depending on the role, navigation
-      role: 1
-    };
+    // const user = {
+    //   id: '5e86809283e28b96d2d38537',
+    //   avatar: '/assets/avatars/avatar-anika-visser.png',
+    //   name: 'Anika Visser',
+    //   email: 'admin@admin',
+    //   //Depending on the role, navigation
+    //   role: 1
+    // };
 
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user
-    });
+    // dispatch({
+    //   type: HANDLERS.SIGN_IN,
+    //   payload: user
+    // });
   };
 
   const signUp = async (email, name, password) => {

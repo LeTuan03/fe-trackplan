@@ -10,6 +10,7 @@ import {
   TextField,
   Unstable_Grid2 as Grid
 } from '@mui/material';
+import { useAuth } from 'src/hooks/use-auth';
 
 const states = [
   {
@@ -39,6 +40,8 @@ export const AccountProfileDetails = () => {
     state: 'los-angeles',
     country: 'USA'
   });
+
+  const { user, isAuthenticated } = useAuth();
 
   const handleChange = useCallback(
     (event) => {
@@ -85,7 +88,7 @@ export const AccountProfileDetails = () => {
                   name="firstName"
                   onChange={handleChange}
                   required
-                  value={values.firstName}
+                  value={user.username}
                 />
               </Grid>
               <Grid
