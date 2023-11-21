@@ -174,23 +174,6 @@ const Page = () => {
               >
                 Continue
               </Button>
-              {/* <Button
-                fullWidth
-                size="large"
-                sx={{ mt: 3 }}
-                onClick={handleSkip}
-              >
-                Skip authentication
-              </Button> */}
-              {/* <Alert
-                color="primary"
-                severity="info"
-                sx={{ mt: 3 }}
-              >
-                <div>
-                  You can use <b>demo@devias.io</b> and password <b>Password123!</b>
-                </div>
-              </Alert> */}
             </form>
           </div>
         </Box>

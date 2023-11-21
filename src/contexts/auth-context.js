@@ -113,32 +113,32 @@ export const AuthProvider = (props) => {
     []
   );
 
-  const skip = () => {
-    try {
-      window.sessionStorage.setItem('authenticated', 'true');
-    } catch (err) {
-      console.error(err);
-    }
+  // const skip = () => {
+  //   try {
+  //     window.sessionStorage.setItem('authenticated', 'true');
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
 
-    const user = {
-      id: '5e86809283e28b96d2d38537',
-      avatar: '/assets/avatars/avatar-anika-visser.png',
-      name: 'Anika Visser',
-      email: 'admin@admin',
-      role: 1
-    };
+  //   const user = {
+  //     id: '5e86809283e28b96d2d38537',
+  //     avatar: '/assets/avatars/avatar-anika-visser.png',
+  //     name: 'Anika Visser',
+  //     email: 'admin@admin',
+  //     role: 1
+  //   };
 
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user
-    });
-  };
+  //   dispatch({
+  //     type: HANDLERS.SIGN_IN,
+  //     payload: user
+  //   });
+  // };
 
   const signIn = async (username, password) => {
     try {
-      const data = await authenticationServices({ username, password, role: "1" });
-      console.log(data)
+      const data = await authenticationServices({ username, password });
       if (data?.status === STATUS.SUCCESS) {
+        sessionStorage.setItem("currentUser", JSON.stringify(data?.data))
         dispatch({
           type: HANDLERS.SIGN_IN,
           payload: data?.data
@@ -178,7 +178,7 @@ export const AuthProvider = (props) => {
     <AuthContext.Provider
       value={{
         ...state,
-        skip,
+        // skip,
         signIn,
         signUp,
         signOut

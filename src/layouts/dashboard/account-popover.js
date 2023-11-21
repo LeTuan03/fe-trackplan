@@ -15,6 +15,7 @@ export const AccountPopover = (props) => {
     () => {
       onClose?.();
       auth.signOut();
+      sessionStorage.removeItem("currentUser")
       router.push('/auth/login');
     },
     [onClose, auth, router]

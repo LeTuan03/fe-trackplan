@@ -9,10 +9,10 @@ import UserPlusIcon from '@heroicons/react/24/solid/UserPlusIcon';
 import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
 import XCircleIcon from '@heroicons/react/24/solid/XCircleIcon';
 import Square3Stack3DIcon from '@heroicons/react/24/solid/Square3Stack3DIcon';
-import { useAuth } from 'src/hooks/use-auth';
+import { getCurrentUser } from 'src/appFunctions';
 
 export const items = () => {
-  const { user, isAuthenticated } = useAuth();
+  let currentUser = getCurrentUser();
   return [
     {
       title: 'Overview',
@@ -23,7 +23,7 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    user?.role === 1
+    currentUser?.role === "1"
       ? {
         title: 'Plans',
         path: '/plans',
