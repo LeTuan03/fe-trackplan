@@ -11,8 +11,9 @@ import { CustomersTable } from 'src/sections/customer/customers-table';
 import { CustomersSearch } from 'src/sections/customer/customers-search';
 import { applyPagination } from 'src/utils/apply-pagination';
 import CustomersDialog from 'src/sections/customer/customers-dialog';
-import { getAll } from 'src/services/customerServices';
+import { getAll, getProjectByAccountId } from 'src/services/customerServices';
 import { STATUS } from 'src/appConst';
+import { getCurrentUser } from 'src/appFunctions';
 
 const now = new Date();
 
@@ -192,7 +193,6 @@ const Page = () => {
     },
     []
   );
-
   const handleRowsPerPageChange = useCallback(
     (event) => {
       setRowsPerPage(event.target.value);
@@ -210,17 +210,15 @@ const Page = () => {
     setCustomer(null)
   };
   const pageUpdate = async () => {
-    // try {
-    //   const data = await getAll();
-    //   console.log(data)
-    //   if (data?.status === STATUS.SUCCESS) {
-    //     setListUser(data?.data)
-    //   }
-    // } catch (err) {
-    //   console.log(err)
-    // }
+    try {
+      const data = await getProjectByAccountId({ id: getCurrentUser()?.id });
+      if (data?.status === STATUS.SUCCESS) {
+        setListUser(data?.data)
+      }
+    } catch (err) {
+      console.log(err)
+    }
   };
-  pageUpdate();
   useEffect(() => {
     pageUpdate()
   }, [])
