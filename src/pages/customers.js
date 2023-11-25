@@ -211,7 +211,7 @@ const Page = () => {
   };
   const pageUpdate = async () => {
     try {
-      const data = await getProjectByAccountId({ id: getCurrentUser()?.id });
+      const data = await getAll();
       if (data?.status === STATUS.SUCCESS) {
         setListUser(data?.data)
       }

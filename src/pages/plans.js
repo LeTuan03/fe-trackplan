@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import { subDays, subHours } from 'date-fns';
 import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
@@ -11,6 +11,9 @@ import { CustomersTable } from 'src/sections/customer/customers-table';
 import { CustomersSearch } from 'src/sections/customer/customers-search';
 import { applyPagination } from 'src/utils/apply-pagination';
 import CustomersDialog from 'src/sections/customer/customers-dialog';
+import { getProjectByAccountId } from 'src/services/customerServices';
+import { getCurrentUser } from 'src/appFunctions';
+import { STATUS } from 'src/appConst';
 
 const now = new Date();
 
@@ -183,6 +186,7 @@ const Page = () => {
   const customersSelection = useSelection(customersIds);
   const [open, setOpen] = useState(false);
   const [customer, setCustomer] = useState("");
+  const [listUser, setListUser] = useState([]);
   const handlePageChange = useCallback(
     (event, value) => {
       setPage(value);
@@ -206,6 +210,19 @@ const Page = () => {
     setOpen(false);
     setCustomer(null)
   };
+  const pageUpdate = async () => {
+    try {
+      const data = await getProjectByAccountId({ id: getCurrentUser()?.id });
+      if (data?.status === STATUS.SUCCESS) {
+        setListUser(data?.data)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  };
+  useEffect(() => {
+    pageUpdate()
+  }, [])
   return (
     <>
       <Head>
@@ -271,7 +288,7 @@ const Page = () => {
                 </Button>
               </div>
             </Stack>
-            <CustomersSearch />
+            <CustomersSearch isPlant={true} />
             <CustomersDialog
               title="Add/Edit project"
               isPlan={true}
@@ -283,7 +300,8 @@ const Page = () => {
               isPlant={true}
               handleClickOpen={handleClickOpen}
               count={data.length}
-              items={customers}
+              // items={customers}
+              items={listUser}
               onDeselectAll={customersSelection.handleDeselectAll}
               onDeselectOne={customersSelection.handleDeselectOne}
               onPageChange={handlePageChange}

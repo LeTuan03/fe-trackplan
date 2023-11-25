@@ -82,24 +82,6 @@ export const AuthProvider = (props) => {
       console.error(err);
     }
 
-    // if (isAuthenticated) {
-    //   const user = {
-    //     id: '5e86809283e28b96d2d38537',
-    //     avatar: '/assets/avatars/avatar-anika-visser.png',
-    //     name: 'Anika Visser',
-    //     email: 'admin@admin',
-    //     role: 1
-    //   };
-
-    //   dispatch({
-    //     type: HANDLERS.INITIALIZE,
-    //     payload: user
-    //   });
-    // } else {
-    //   dispatch({
-    //     type: HANDLERS.INITIALIZE
-    //   });
-    // }
     dispatch({
       type: HANDLERS.INITIALIZE
     });
@@ -112,28 +94,6 @@ export const AuthProvider = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-
-  // const skip = () => {
-  //   try {
-  //     window.sessionStorage.setItem('authenticated', 'true');
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-
-  //   const user = {
-  //     id: '5e86809283e28b96d2d38537',
-  //     avatar: '/assets/avatars/avatar-anika-visser.png',
-  //     name: 'Anika Visser',
-  //     email: 'admin@admin',
-  //     role: 1
-  //   };
-
-  //   dispatch({
-  //     type: HANDLERS.SIGN_IN,
-  //     payload: user
-  //   });
-  // };
-
   const signIn = async (username, password) => {
     try {
       const data = await authenticationServices({ username, password });
@@ -147,21 +107,6 @@ export const AuthProvider = (props) => {
     } catch (error) {
       throw new Error('Please check your email and password');
     }
-
-
-    // const user = {
-    //   id: '5e86809283e28b96d2d38537',
-    //   avatar: '/assets/avatars/avatar-anika-visser.png',
-    //   name: 'Anika Visser',
-    //   email: 'admin@admin',
-    //   //Depending on the role, navigation
-    //   role: 1
-    // };
-
-    // dispatch({
-    //   type: HANDLERS.SIGN_IN,
-    //   payload: user
-    // });
   };
 
   const signUp = async (email, name, password) => {

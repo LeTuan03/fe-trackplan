@@ -20,7 +20,14 @@ import { SvgIcon } from '@mui/material';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
 import EyeIcon from '@heroicons/react/24/solid/EyeIcon';
-
+import { ROLE_OBJECT, STATUS_OBJECT } from 'src/appConst';
+import { getCurrentUser } from 'src/appFunctions';
+import { SeverityPill } from 'src/components/severity-pill';
+const statusMap = {
+  pending: 'warning',
+  delivered: 'success',
+  refunded: 'error'
+};
 export const CustomersTable = (props) => {
   const {
     count = 0,
@@ -40,7 +47,33 @@ export const CustomersTable = (props) => {
 
   const selectedSome = (selected.length > 0) && (selected.length < items.length);
   const selectedAll = (items.length > 0) && (selected.length === items.length);
-
+  const renderStatus = (status) => {
+    switch (status) {
+      case STATUS_OBJECT.NEW.name:
+        return statusMap.delivered
+        break;
+      case STATUS_OBJECT.INPROGRESS.name:
+        return statusMap.pending
+        break;
+      case STATUS_OBJECT.END.name:
+        return statusMap.refunded
+        break;
+      default:
+        break;
+    }
+  }
+  const renderRole = (status) => {
+    switch (status) {
+      case ROLE_OBJECT.ADMIN.indexOrder:
+        return statusMap.delivered
+        break;
+      case ROLE_OBJECT.SUPPER_ADMIN.indexOrder:
+        return statusMap.refunded
+        break;
+      default:
+        break;
+    }
+  }
   return (
     <Card>
       <Scrollbar>
@@ -49,7 +82,11 @@ export const CustomersTable = (props) => {
             <TableHead>
               <TableRow>
                 {isPlant ? <>
-                  <TableCell padding="checkbox">
+                  <TableCell align='center' >
+                    No
+                  </TableCell>
+                  <TableCell padding="checkbox"
+                    align='center' >
                     Action
                   </TableCell>
                   <TableCell>
@@ -58,18 +95,24 @@ export const CustomersTable = (props) => {
                   <TableCell>
                     Created by
                   </TableCell>
-                  <TableCell>
+                  <TableCell align='center' >
                     Created at
                   </TableCell>
-                  <TableCell>
+                  <TableCell align='center' >
                     Status
+                  </TableCell>
+                  <TableCell align='center' >
+                    Updated At
                   </TableCell>
                   <TableCell>
                     Note
                   </TableCell>
                 </> :
                   <>
-                    <TableCell padding="checkbox">
+                    <TableCell align='center' >
+                      No
+                    </TableCell>
+                    <TableCell padding="checkbox" align='center'>
                       Action
                     </TableCell>
                     <TableCell>
@@ -79,18 +122,18 @@ export const CustomersTable = (props) => {
                       Email
                     </TableCell>
                     <TableCell>
-                      Location
-                    </TableCell>
-                    <TableCell>
                       Phone
                     </TableCell>
-                    <TableCell>
-                      Signed Up
+                    <TableCell align='center'>
+                      Created At
+                    </TableCell>
+                    <TableCell align='center'>
+                      Role
                     </TableCell></>}
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((customer) => {
+              {items.map((customer, index) => {
                 // const isSelected = selected.includes(customer.id);
                 // const createdAt = format(customer.createdAt, 'dd/MM/yyyy');
 
@@ -101,7 +144,10 @@ export const CustomersTable = (props) => {
                   >
                     {isPlant ?
                       <>
-                        <TableCell>
+                        <TableCell align='center' >
+                          {index + 1}
+                        </TableCell>
+                        <TableCell align='center' >
                           <div
                             style={{ display: "flex", justifyContent: "center", cursor: "pointer" }}
                             onClick={() => {
@@ -127,19 +173,27 @@ export const CustomersTable = (props) => {
                           </Stack>
                         </TableCell>
                         <TableCell>
-                          {customer.email}
+                          {getCurrentUser()?.username}
+                        </TableCell>
+                        <TableCell align='center' >
+                          {customer?.createdAt ? format(new Date(customer?.createdAt), 'dd/MM/yyyy') : ""}
+                        </TableCell>
+                        <TableCell align='center' >
+                          <SeverityPill color={[renderStatus(customer?.status)]}>
+                            {customer?.status}
+                          </SeverityPill>
+                        </TableCell>
+                        <TableCell align='center' >
+                          {customer?.updatedAt ? format(new Date(customer?.updatedAt), 'dd/MM/yyyy') : ""}
                         </TableCell>
                         <TableCell>
-                          {format(new Date(), 'dd/MM/yyyy')}
-                        </TableCell>
-                        <TableCell>
-                          Status
-                        </TableCell>
-                        <TableCell>
-                          Note
+                          {customer?.note}
                         </TableCell>
                       </> :
                       <>
+                        <TableCell align='center' >
+                          {index + 1}
+                        </TableCell>
                         <TableCell>
                           <div
                             style={{ display: "flex", justifyContent: "center", cursor: "pointer" }}
@@ -158,24 +212,27 @@ export const CustomersTable = (props) => {
                             spacing={2}
                           >
                             <Avatar src={customer.avatar}>
-                              {getInitials(customer.name)}
+                              {getInitials(customer.username
+                              )}
                             </Avatar>
                             <Typography variant="subtitle2">
-                              {customer.name}
+                              {customer.username}
                             </Typography>
                           </Stack>
                         </TableCell>
                         <TableCell>
                           {customer.email}
-                        </TableCell>
-                        <TableCell>
-                          {/* {customer.address.city}, {customer.address.state}, {customer.address.country} */}
                         </TableCell>
                         <TableCell>
                           {customer.phone}
                         </TableCell>
                         <TableCell>
-                          {/* {createdAt} */}
+                          {customer?.createdAt ? format(new Date(customer?.createdAt), 'dd/MM/yyyy') : ""}
+                        </TableCell>
+                        <TableCell style={{ maxWidth: 80 }} align='center'>
+                          <SeverityPill color={[renderRole(customer?.role)]}>
+                            {customer?.role === ROLE_OBJECT.ADMIN.indexOrder ? "ADMIN" : "SUPPER ADMIN"}
+                          </SeverityPill>
                         </TableCell>
                       </>
                     }
