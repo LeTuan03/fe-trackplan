@@ -19,61 +19,25 @@ import { getInitials } from 'src/utils/get-initials';
 import { SvgIcon } from '@mui/material';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
+import PencilIcon from '@heroicons/react/24/solid/PencilIcon';
 import EyeIcon from '@heroicons/react/24/solid/EyeIcon';
-import { ROLE_OBJECT, STATUS_OBJECT } from 'src/appConst';
-import { getCurrentUser } from 'src/appFunctions';
+import { COLOR, ROLE_OBJECT, STATUS_OBJECT } from 'src/appConst';
+import { getCurrentUser, renderRole, renderStatus } from 'src/appFunctions';
 import { SeverityPill } from 'src/components/severity-pill';
-const statusMap = {
-  pending: 'warning',
-  delivered: 'success',
-  refunded: 'error'
-};
 export const CustomersTable = (props) => {
   const {
     count = 0,
     items = [],
-    onDeselectAll,
-    onDeselectOne,
     onPageChange = () => { },
     onRowsPerPageChange,
-    onSelectAll,
-    onSelectOne,
     page = 0,
     rowsPerPage = 0,
-    selected = [],
+    isPlant,
     handleClickOpen,
-    isPlant
+    handleEdit
   } = props;
 
-  const selectedSome = (selected.length > 0) && (selected.length < items.length);
-  const selectedAll = (items.length > 0) && (selected.length === items.length);
-  const renderStatus = (status) => {
-    switch (status) {
-      case STATUS_OBJECT.NEW.name:
-        return statusMap.delivered
-        break;
-      case STATUS_OBJECT.INPROGRESS.name:
-        return statusMap.pending
-        break;
-      case STATUS_OBJECT.END.name:
-        return statusMap.refunded
-        break;
-      default:
-        break;
-    }
-  }
-  const renderRole = (status) => {
-    switch (status) {
-      case ROLE_OBJECT.ADMIN.indexOrder:
-        return statusMap.delivered
-        break;
-      case ROLE_OBJECT.SUPPER_ADMIN.indexOrder:
-        return statusMap.refunded
-        break;
-      default:
-        break;
-    }
-  }
+
   return (
     <Card>
       <Scrollbar>
@@ -112,7 +76,8 @@ export const CustomersTable = (props) => {
                     <TableCell align='center' >
                       No
                     </TableCell>
-                    <TableCell padding="checkbox" align='center'>
+                    <TableCell padding="checkbox"
+                      align='center'>
                       Action
                     </TableCell>
                     <TableCell>
@@ -134,9 +99,6 @@ export const CustomersTable = (props) => {
             </TableHead>
             <TableBody>
               {items.map((customer, index) => {
-                // const isSelected = selected.includes(customer.id);
-                // const createdAt = format(customer.createdAt, 'dd/MM/yyyy');
-
                 return (
                   <TableRow
                     hover
@@ -149,11 +111,18 @@ export const CustomersTable = (props) => {
                         </TableCell>
                         <TableCell align='center' >
                           <div
-                            style={{ display: "flex", justifyContent: "center", cursor: "pointer" }}
-                            onClick={() => {
-                              handleClickOpen(customer)
-                            }} >
-                            <SvgIcon fontSize="small">
+                            style={{ display: "flex", justifyContent: "center", cursor: "pointer", gap: 10 }}
+                          >
+                            <SvgIcon fontSize="small"
+                              onClick={() => handleEdit(customer)}
+                            >
+                              <PencilIcon style={{ color: COLOR.PRIMARY }} />
+                            </SvgIcon>
+                            <SvgIcon fontSize="small"
+                              onClick={() => {
+                                handleClickOpen(customer)
+                              }}
+                            >
                               <EyeIcon />
                             </SvgIcon>
                           </div>
@@ -229,7 +198,8 @@ export const CustomersTable = (props) => {
                         <TableCell>
                           {customer?.createdAt ? format(new Date(customer?.createdAt), 'dd/MM/yyyy') : ""}
                         </TableCell>
-                        <TableCell style={{ maxWidth: 80 }} align='center'>
+                        <TableCell style={{ maxWidth: 80 }}
+                          align='center'>
                           <SeverityPill color={[renderRole(customer?.role)]}>
                             {customer?.role === ROLE_OBJECT.ADMIN.indexOrder ? "ADMIN" : "SUPPER ADMIN"}
                           </SeverityPill>

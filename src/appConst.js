@@ -23,3 +23,13 @@ export const LIST_STATUS = [
   }
 ]
 export const LIST_STATUS_PROJECT = ["New", "Inprogress", "End"]
+
+export const COLOR = {
+  PRIMARY: "#6366f1"
+}
+
+export const statusMap = {
+  pending: 'warning',
+  delivered: 'success',
+  refunded: 'error'
+};

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -6,31 +6,52 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-import { Autocomplete, Avatar, Box, Card, Grid, Stack, SvgIcon, Table, TableBody, TableCell, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material';
+import { Autocomplete, Avatar, Box, Card, Grid, Stack, SvgIcon, Table, TableBody, TableCell, TableHead, TablePagination, TableRow, TextField, Typography, createFilterOptions } from '@mui/material';
 import { Scrollbar } from 'src/components/scrollbar';
 import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
 import { getCurrentUser } from 'src/appFunctions';
 import { format } from 'date-fns';
 import { LIST_STATUS, LIST_STATUS_PROJECT, STATUS_OBJECT } from 'src/appConst';
-export default function CustomersDialog({ open, items, handleClose, title, isPlan }) {
-
-  const [status, setStatus] = React.useState(LIST_STATUS.find(i => i.label === items?.status)?.code)
+export default function CustomersDialog({ open, items, handleClose, title, isPlan, isView }) {
+  const filterAutocomplete = createFilterOptions();
   const itemsDemo = [{
 
   }]
-  const [name, setName] = React.useState("")
-  const [note, setNote] = React.useState("")
-  const [username, setUsername] = React.useState("")
-  const [planNumber, setPlanNumber] = React.useState(0)
-  const [completeNumber, setCompleteNumber] = React.useState(0)
-  const handleFormSubmit = async (event) => {
+  const [formData, setFormData] = useState({});
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    if (name === "createdAt") {
+    } else {
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    }
   };
-  React.useEffect(() => {
-    setCompleteNumber(items?.projects?.filter(item => item?.status === STATUS_OBJECT.END.name)?.length);
-  }, [items])
+
+  const handleFormSubmit = async (event) => {
+    console.log(formData)
+  };
+
+  useEffect(() => {
+    if (isPlan) {
+      setFormData({
+        status: items?.status,
+        name: items?.name,
+        note: items?.note,
+        createdAt: items?.createdAt,
+        createdBy: items?.createdBy || getCurrentUser()?.username
+      });
+    } else {
+      setFormData({
+        username: items?.username,
+        planNumber: items?.projects?.length || 0,
+        completeNumber: items?.projects?.filter(item => item?.status === STATUS_OBJECT.END.name)?.length || 0,
+      });
+    }
+  }, [isPlan, items]);
+
+
   return (
-    <React.Fragment>
+    <Fragment>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -43,7 +64,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
         <ValidatorForm
           onSubmit={handleFormSubmit}>
           <DialogTitle id="alert-dialog-title">
-            {title ? title : "Add/Edit accounts"}
+            {isView ? "Information" : title ? title : "Add/Edit accounts"}
           </DialogTitle>
           <DialogContent>
             {isPlan ?
@@ -56,13 +77,16 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   xs={12}
                 >
                   <TextValidator
+                    disabled={isView}
                     className='w-100'
+                    onChange={handleChange}
+                    name="name"
                     label={
                       <span>
                         <span>Project name</span>
                       </span>
                     }
-                    value={items?.name}
+                    value={formData?.name}
                   />
                 </Grid>
                 <Grid item
@@ -71,7 +95,9 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   xs={12}
                 >
                   <TextValidator
+                    disabled={isView}
                     className='w-100'
+                    onChange={handleChange}
                     label={
                       <span>
                         <span>Created by</span>
@@ -86,13 +112,15 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   xs={12}
                 >
                   <TextValidator
+                    disabled={isView}
                     className='w-100'
+                    name="createdAt"
                     label={
                       <span>
                         <span>Created at</span>
                       </span>
                     }
-                    value={items?.createdAt ? format(new Date(items?.createdAt), 'dd/MM/yyyy') : ""}
+                    value={formData?.createdAt ? format(new Date(formData?.createdAt), 'dd/MM/yyyy') : ""}
                   />
                 </Grid>
                 <Grid item
@@ -100,18 +128,36 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   sm={12}
                   xs={12}
                 >
-                  <Autocomplete
-                    id="combo-box-demo"
-                    getOptionLabel={(option) => option.label}
-                    options={LIST_STATUS_PROJECT}
-                    renderInput={(params) =>
-                      <TextField {...params}
-                        label="Status"
-                        value={{
-                          code: 2, label: "Inprogress"
-                        }}
+                  {/* <Autocomplete
+                    fullWidth
+                    options={LIST_STATUS}
+                    value={status}
+                    onChange={(e, value) => handleChangeStatus(value)}
+                    getOptionLabel={(option) => option?.label}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={'Status'}
                       />
+                    )}
+                    filterOptions={(options, params) => {
+                      params.inputValue = params.inputValue.trim()
+                      let filtered = filterAutocomplete(options, params)
+                      return filtered
+                    }}
+                    noOptionsText={"No option"}
+                  /> */}
+                  <TextValidator
+                    disabled={isView}
+                    className='w-100'
+                    onChange={handleChange}
+                    name="status"
+                    label={
+                      <span>
+                        <span>Status</span>
+                      </span>
                     }
+                    value={formData?.status}
                   />
                 </Grid>
                 <Grid item
@@ -120,17 +166,21 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   xs={12}
                 >
                   <TextValidator
+                    disabled={isView}
                     className='w-100'
+                    onChange={handleChange}
+                    name="note"
                     label={
                       <span>
                         <span>Note</span>
                       </span>
                     }
-                    value={items?.note}
+                    value={formData?.note}
                   />
                 </Grid>
 
               </Grid> :
+              // account 
               <Grid container
                 spacing={1}
               >
@@ -140,13 +190,14 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   xs={12}
                 >
                   <TextValidator
+                    disabled={isView}
                     className='w-100'
                     label={
                       <span>
                         <span>Username</span>
                       </span>
                     }
-                    value={items?.username}
+                    value={formData?.username}
                   />
                 </Grid>
                 <Grid item
@@ -155,6 +206,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   xs={12}
                 >
                   <TextValidator
+                    disabled={isView}
                     className='w-100'
                     name='planNumber'
                     label={
@@ -162,7 +214,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                         <span>Number of plan</span>
                       </span>
                     }
-                    value={items?.projects?.length}
+                    value={formData?.planNumber}
                   />
                 </Grid>
                 <Grid item
@@ -171,6 +223,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   xs={12}
                 >
                   <TextValidator
+                    disabled={isView}
                     className='w-100'
                     name='completeNumber'
                     label={
@@ -178,7 +231,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                         <span>Number of completed projects</span>
                       </span>
                     }
-                    value={completeNumber}
+                    value={formData?.completeNumber}
                   />
                 </Grid>
 
@@ -207,8 +260,6 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                         </TableHead>
                         <TableBody>
                           {itemsDemo.map((customer) => {
-                            // const isSelected = selected.includes(customer.id);
-                            // const createdAt = format(customer.createdAt, 'dd/MM/yyyy');
 
                             return (
                               <TableRow
@@ -254,16 +305,16 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
               onClick={handleClose}
               color="error"
             >Cancle</Button>
-            <Button
+            {isView === false && <Button
               type='submit'
               autoFocus
               variant="contained"
             >
               Save
-            </Button>
+            </Button>}
           </DialogActions>
         </ValidatorForm>
       </Dialog>
-    </React.Fragment>
+    </Fragment>
   );
 }
