@@ -1,5 +1,6 @@
 export const STATUS = {
   SUCCESS: 200,
+  NOCONTENT: 204,
   ERROR: 400
 }
 export const STATUS_OBJECT = {

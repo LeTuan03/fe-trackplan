@@ -296,7 +296,6 @@ const Page = () => {
             <CustomersTable
               handleClickOpen={handleClickOpen}
               count={data.length}
-              // items={customers}
               items={listUser}
               onDeselectAll={customersSelection.handleDeselectAll}
               onDeselectOne={customersSelection.handleDeselectOne}

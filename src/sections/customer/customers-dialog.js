@@ -12,7 +12,8 @@ import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
 import { getCurrentUser } from 'src/appFunctions';
 import { format } from 'date-fns';
 import { LIST_STATUS, LIST_STATUS_PROJECT, STATUS_OBJECT } from 'src/appConst';
-export default function CustomersDialog({ open, items, handleClose, title, isPlan, isView }) {
+import { addProject, editProject } from 'src/services/customerServices';
+export default function CustomersDialog({ open, items, handleClose, title, isPlan, isView, pageUpdate }) {
   const filterAutocomplete = createFilterOptions();
   const itemsDemo = [{
 
@@ -28,20 +29,36 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
   };
 
   const handleFormSubmit = async (event) => {
-    console.log(formData)
-  };
+    event.preventDefault()
+    if (isPlan) {
+      try {
+        if (formData?.id) {
+          const data = await editProject(formData)
+        } else {
+          const data = await addProject(formData)
+        }
+        await pageUpdate();
+        handleClose();
+      } catch (error) {
 
+      }
+    }
+  };
+  const handleChangeStatus = (data) => {
+
+  }
   useEffect(() => {
     if (isPlan) {
       setFormData({
+        id: items?.id,
         status: items?.status,
         name: items?.name,
         note: items?.note,
-        createdAt: items?.createdAt,
-        createdBy: items?.createdBy || getCurrentUser()?.username
+        accountId: getCurrentUser()?.id
       });
     } else {
       setFormData({
+        id: items?.id,
         username: items?.username,
         planNumber: items?.projects?.length || 0,
         completeNumber: items?.projects?.filter(item => item?.status === STATUS_OBJECT.END.name)?.length || 0,

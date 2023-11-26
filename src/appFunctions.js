@@ -23,6 +23,7 @@ export const renderStatus = (status) => {
       return statusMap.refunded
       break;
     default:
+      return statusMap.refunded
       break;
   }
 }
@@ -35,6 +36,7 @@ export const renderRole = (status) => {
       return statusMap.refunded
       break;
     default:
+      return statusMap.refunded
       break;
   }
 }

@@ -114,7 +114,7 @@ const Page = () => {
                 </Link>
               </Typography>
             </Stack>
-            <Tabs
+            {/* <Tabs
               onChange={handleMethodChange}
               sx={{ mb: 3 }}
               value={method}
@@ -123,7 +123,7 @@ const Page = () => {
                 label="Email"
                 value="username"
               />
-            </Tabs>
+            </Tabs> */}
 
             <form
               noValidate
@@ -153,9 +153,9 @@ const Page = () => {
                   value={formik.values.password}
                 />
               </Stack>
-              <FormHelperText sx={{ mt: 1 }}>
+              {/* <FormHelperText sx={{ mt: 1 }}>
                 Optionally you can skip.
-              </FormHelperText>
+              </FormHelperText> */}
               {formik.errors.submit && (
                 <Typography
                   color="error"

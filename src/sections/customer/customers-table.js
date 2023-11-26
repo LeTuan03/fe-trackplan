@@ -21,6 +21,7 @@ import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
 import PencilIcon from '@heroicons/react/24/solid/PencilIcon';
 import EyeIcon from '@heroicons/react/24/solid/EyeIcon';
+import XMarkIcon from '@heroicons/react/24/solid/XMarkIcon';
 import { COLOR, ROLE_OBJECT, STATUS_OBJECT } from 'src/appConst';
 import { getCurrentUser, renderRole, renderStatus } from 'src/appFunctions';
 import { SeverityPill } from 'src/components/severity-pill';
@@ -34,7 +35,9 @@ export const CustomersTable = (props) => {
     rowsPerPage = 0,
     isPlant,
     handleClickOpen,
-    handleEdit
+    handleEdit,
+    handleClickOpenDelete,
+
   } = props;
 
 
@@ -118,6 +121,14 @@ export const CustomersTable = (props) => {
                             >
                               <PencilIcon style={{ color: COLOR.PRIMARY }} />
                             </SvgIcon>
+                            {customer?.status !== STATUS_OBJECT.INPROGRESS.name && <SvgIcon fontSize="small"
+                              onClick={() => {
+                                handleClickOpenDelete(customer)
+                              }}
+                            >
+                              <XMarkIcon />
+                            </SvgIcon>}
+
                             <SvgIcon fontSize="small"
                               onClick={() => {
                                 handleClickOpen(customer)

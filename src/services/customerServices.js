@@ -10,10 +10,26 @@ export const getProjectByAccountId = async (searchObject) => {
   let url = API_PATH + "/getProjectsByAccountId/" + searchObject.id
   return axios.get(url)
 }
+export const addAccount = async (searchObject) => {
+  let url = API_PATH + "/addAccount"
+  return axios.post(url, searchObject)
+}
 
 
 // project 
 export const getProjectById = async (id) => {
   let url = API_PATH + "/getProjectById/" + id
   return axios.get(url)
+}
+export const addProject = async (searchObject) => {
+  let url = API_PATH + "/addProject"
+  return axios.post(url, searchObject)
+}
+export const editProject = async (searchObject) => {
+  let url = API_PATH + "/updateProjectById/" + searchObject?.id
+  return axios.put(url, searchObject)
+}
+export const deleteProject = async (searchObject) => {
+  let url = API_PATH + "/deleteProjectById/" + searchObject?.id
+  return axios.delete(url)
 }
