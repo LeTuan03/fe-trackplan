@@ -7,3 +7,6 @@
 .mt-20 {
   margin-top: 20px;
 }
+.mh-200 input {
+  min-height: 200px;
+}

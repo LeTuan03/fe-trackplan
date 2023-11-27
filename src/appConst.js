@@ -2,7 +2,8 @@ export const STATUS = {
   SUCCESS: 200,
   NOCONTENT: 204,
   ERROR: 400,
-  UNAUTHORIZED: 401
+  UNAUTHORIZED: 401,
+  BAD_GATEWAY: 502
 }
 export const STATUS_OBJECT = {
   NEW: { code: 1, name: "New" },

@@ -1,18 +1,13 @@
-import { useCallback, useState } from 'react';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {
-  Alert,
   Box,
   Button,
-  FormHelperText,
   Link,
   Stack,
-  Tab,
-  Tabs,
   TextField,
   Typography
 } from '@mui/material';
@@ -22,7 +17,6 @@ import { Layout as AuthLayout } from 'src/layouts/auth/layout';
 const Page = () => {
   const router = useRouter();
   const auth = useAuth();
-  const [method, setMethod] = useState('email');
   const formik = useFormik({
     initialValues: {
       username: 'ducanh',
@@ -50,21 +44,6 @@ const Page = () => {
       }
     }
   });
-
-  const handleMethodChange = useCallback(
-    (event, value) => {
-      setMethod(value);
-    },
-    []
-  );
-
-  // const handleSkip = useCallback(
-  //   () => {
-  //     auth.skip();
-  //     router.push('/');
-  //   },
-  //   [auth, router]
-  // );
 
   return (
     <>
@@ -114,16 +93,6 @@ const Page = () => {
                 </Link>
               </Typography>
             </Stack>
-            {/* <Tabs
-              onChange={handleMethodChange}
-              sx={{ mb: 3 }}
-              value={method}
-            >
-              <Tab
-                label="Email"
-                value="username"
-              />
-            </Tabs> */}
 
             <form
               noValidate
@@ -131,9 +100,7 @@ const Page = () => {
             >
               <Stack spacing={3}>
                 <TextField
-                  // error={!!(formik.touched.email && formik.errors.email)}
                   fullWidth
-                  // helperText={formik.touched.email && formik.errors.email}
                   label="Username"
                   name="username"
                   onBlur={formik.handleBlur}
@@ -153,9 +120,6 @@ const Page = () => {
                   value={formik.values.password}
                 />
               </Stack>
-              {/* <FormHelperText sx={{ mt: 1 }}>
-                Optionally you can skip.
-              </FormHelperText> */}
               {formik.errors.submit && (
                 <Typography
                   color="error"

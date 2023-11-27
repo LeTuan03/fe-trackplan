@@ -12,50 +12,28 @@ import {
 } from '@mui/material';
 import { useAuth } from 'src/hooks/use-auth';
 
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  },
-  {
-    value: 'los-angeles',
-    label: 'Los Angeles'
-  }
-];
 
 export const AccountProfileDetails = () => {
+  const { user, isAuthenticated } = useAuth();
   const [values, setValues] = useState({
-    firstName: 'Anika',
-    lastName: 'Visser',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'los-angeles',
-    country: 'USA'
+    username: user?.username,
+    password: user?.password,
+    email: user?.email,
+    phone: user?.phone,
   });
 
-  const { user, isAuthenticated } = useAuth();
-
-  const handleChange = useCallback(
-    (event) => {
-      setValues((prevState) => ({
-        ...prevState,
-        [event.target.name]: event.target.value
-      }));
-    },
-    []
-  );
+  const handleChange = (event) => {
+    console.log(event.target.name, event.target.value)
+    setValues((prevState) => ({
+      ...prevState,
+      [event.target.name]: event.target.value
+    }));
+  }
 
   const handleSubmit = useCallback(
     (event) => {
       event.preventDefault();
+      console.log(values)
     },
     []
   );
@@ -63,12 +41,10 @@ export const AccountProfileDetails = () => {
   return (
     <form
       autoComplete="off"
-      noValidate
       onSubmit={handleSubmit}
     >
       <Card>
         <CardHeader
-          subheader="The information can be edited"
           title="Profile"
         />
         <CardContent sx={{ pt: 0 }}>
@@ -79,100 +55,64 @@ export const AccountProfileDetails = () => {
             >
               <Grid
                 xs={12}
-                md={6}
+                md={12}
               >
                 <TextField
                   fullWidth
-                  helperText="Please specify the first name"
-                  label="First name"
-                  name="firstName"
+                  label="Username"
+                  name="username"
                   onChange={handleChange}
-                  required
-                  value={user.username}
+                  value={values?.username}
                 />
               </Grid>
               <Grid
                 xs={12}
-                md={6}
+                md={12}
               >
                 <TextField
                   fullWidth
-                  label="Last name"
-                  name="lastName"
+                  label="Password"
+                  name="password"
+                  type='password'
                   onChange={handleChange}
-                  required
-                  value={values.lastName}
+                  value={values?.password}
                 />
               </Grid>
               <Grid
                 xs={12}
-                md={6}
+                md={12}
               >
                 <TextField
                   fullWidth
                   label="Email Address"
                   name="email"
+                  type='email'
                   onChange={handleChange}
-                  required
-                  value={values.email}
+                  value={values?.email}
                 />
               </Grid>
               <Grid
                 xs={12}
-                md={6}
+                md={12}
               >
                 <TextField
                   fullWidth
                   label="Phone Number"
                   name="phone"
+                  type='number'
                   onChange={handleChange}
-                  type="number"
-                  value={values.phone}
+                  value={values?.phone}
                 />
-              </Grid>
-              <Grid
-                xs={12}
-                md={6}
-              >
-                <TextField
-                  fullWidth
-                  label="Country"
-                  name="country"
-                  onChange={handleChange}
-                  required
-                  value={values.country}
-                />
-              </Grid>
-              <Grid
-                xs={12}
-                md={6}
-              >
-                <TextField
-                  fullWidth
-                  label="Select State"
-                  name="state"
-                  onChange={handleChange}
-                  required
-                  select
-                  SelectProps={{ native: true }}
-                  value={values.state}
-                >
-                  {states.map((option) => (
-                    <option
-                      key={option.value}
-                      value={option.value}
-                    >
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
               </Grid>
             </Grid>
           </Box>
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button variant="contained">
+          <Button
+            variant="contained"
+            type='submit'
+          >
             Save details
           </Button>
         </CardActions>

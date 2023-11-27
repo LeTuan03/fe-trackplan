@@ -275,7 +275,7 @@ const Page = () => {
                 </Stack>
               </Stack>
               <div>
-                <Button
+                {/* <Button
                   startIcon={(
                     <SvgIcon fontSize="small">
                       <PlusIcon />
@@ -284,7 +284,7 @@ const Page = () => {
                   variant="contained"
                 >
                   Add
-                </Button>
+                </Button> */}
               </div>
             </Stack>
             <CustomersSearch />
@@ -292,6 +292,7 @@ const Page = () => {
               open={open}
               handleClose={handleClose}
               items={customer}
+              isView={true}
             />
             <CustomersTable
               handleClickOpen={handleClickOpen}

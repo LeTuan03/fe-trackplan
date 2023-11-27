@@ -5,11 +5,14 @@ import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIc
 import ArrowUpOnSquareIcon from '@heroicons/react/24/solid/ArrowUpOnSquareIcon';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { CustomersTable } from 'src/sections/customer/customers-table';
 import { CustomersSearch } from 'src/sections/customer/customers-search';
 import CustomersDialog from 'src/sections/customer/customers-dialog';
-import { deleteProject, getProjectByAccountId, getProjectById } from 'src/services/customerServices';
+import { deleteProject, getProjectByAccountId, getProjectById, searchProject } from 'src/services/customerServices';
 import { getCurrentUser } from 'src/appFunctions';
 import { STATUS } from 'src/appConst';
 import CustomersDialogDelete from 'src/sections/customer/customers-dialog-delete';
@@ -85,7 +88,19 @@ const Page = () => {
       if (data?.status === STATUS.SUCCESS) {
         pageUpdate()
         handleClose()
+        toast.success("Deleted project successfully", {
+          autoClose: 1000
+        })
       }
+    } catch (error) {
+      toast.error("Delete failed project", {
+        autoClose: 1000
+      })
+    }
+  }
+  const handleSearch = async (keyWord) => {
+    try {
+      const data = await searchProject(keyWord);
     } catch (error) {
 
     }
@@ -171,7 +186,7 @@ const Page = () => {
                 </Button>
               </div>
             </Stack>
-            <CustomersSearch isPlant={true} />
+            <CustomersSearch isPlant={true} handleSearch={handleSearch} />
             <CustomersDialog
               title="Add/Edit project"
               isPlan={true}
@@ -202,6 +217,7 @@ const Page = () => {
           </Stack>
         </Container>
       </Box>
+      <ToastContainer />
     </>
   );
 };

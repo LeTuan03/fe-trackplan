@@ -33,3 +33,7 @@ export const deleteProject = async (searchObject) => {
   let url = API_PATH + "/deleteProjectById/" + searchObject?.id
   return axios.delete(url)
 }
+export const searchProject = async (searchObject) => {
+  let url = API_PATH + "/search/" + searchObject?.id
+  return axios.get(url)
+}

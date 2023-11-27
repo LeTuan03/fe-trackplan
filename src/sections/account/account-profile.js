@@ -33,7 +33,7 @@ export const AccountProfile = () => {
           }}
         >
           <Avatar
-            src={user.avatar}
+            src={user?.avatar}
             sx={{
               height: 80,
               mb: 2,
@@ -44,19 +44,19 @@ export const AccountProfile = () => {
             gutterBottom
             variant="h5"
           >
-            {user.username}
+            {user?.username}
           </Typography>
           <Typography
             color="text.secondary"
             variant="body2"
           >
-            {user.city} {user.country}
+            {user?.city} {user?.country}
           </Typography>
           <Typography
             color="text.secondary"
             variant="body2"
           >
-            {user.timezone}
+            {user?.timezone}
           </Typography>
         </Box>
       </CardContent>
