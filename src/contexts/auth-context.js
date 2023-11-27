@@ -7,7 +7,7 @@ import { addAccount } from 'src/services/customerServices';
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
   SIGN_IN: 'SIGN_IN',
-  SIGN_OUT: 'SIGN_OUT'
+  SIGN_OUT: 'SIGN_OUT',
 };
 
 const initialState = {
@@ -98,47 +98,52 @@ export const AuthProvider = (props) => {
   const signIn = async (username, password) => {
     try {
       const data = await authenticationServices({ username, password });
-      console.log(data)
       if (data?.status === STATUS.SUCCESS) {
         sessionStorage.setItem("currentUser", JSON.stringify(data?.data))
+        window.sessionStorage.setItem('authenticated', 'true');
         dispatch({
           type: HANDLERS.SIGN_IN,
           payload: data?.data
         });
       }
     } catch (error) {
-      console.log(error)
-      throw new Error('Please check your email and password');
+      if (error?.response?.status === STATUS.UNAUTHORIZED) {
+        throw new Error(error?.response?.data?.message);
+      } else if (error?.response?.status === STATUS.ERROR) {
+        throw new Error(error?.response?.data?.message);
+      } else {
+        throw new Error('Please check your email and password');
+      }
     }
   };
 
   const signUp = async (email, username, password) => {
     try {
       const data = await addAccount({ username, password, email, role: 1 });
-      // if (data?.status === STATUS.SUCCESS) {
-      // sessionStorage.setItem("currentUser", JSON.stringify(data?.data))
-      //   dispatch({
-      //     type: HANDLERS.SIGN_IN,
-      //     payload: data?.data
-      //   });
-      // }
     } catch (error) {
-      console.log(error)
-      throw new Error('Please check your email and password');
+      if (error?.response?.status === STATUS.ERROR) {
+        throw new Error(error?.response?.data?.message);
+      } else {
+        throw new Error('Please check your email and password');
+      }
     }
   };
 
   const signOut = () => {
-    dispatch({
-      type: HANDLERS.SIGN_OUT
-    });
+    try {
+      window.sessionStorage.removeItem('authenticated');
+      dispatch({
+        type: HANDLERS.SIGN_OUT
+      });
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
         ...state,
-        // skip,
         signIn,
         signUp,
         signOut

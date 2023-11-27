@@ -37,6 +37,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
         } else {
           const data = await addProject(formData)
         }
+        setFormData({})
         await pageUpdate();
         handleClose();
       } catch (error) {

@@ -14,7 +14,6 @@ import { getCurrentUser } from 'src/appFunctions';
 import { STATUS } from 'src/appConst';
 import CustomersDialogDelete from 'src/sections/customer/customers-dialog-delete';
 
-
 const Page = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -33,9 +32,18 @@ const Page = () => {
   const handleRowsPerPageChange = useCallback(
     (event) => {
       setRowsPerPage(event.target.value);
+      setPage(0);
     },
     []
   );
+
+  const getPaginatedData = () => {
+    const startIndex = page * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return listUser?.slice(startIndex, endIndex);
+  };
+
+  const paginatedData = getPaginatedData();
 
   const handleClickOpen = async (item) => {
     try {
@@ -65,8 +73,8 @@ const Page = () => {
     setOpenDelete(true)
   }
   const handleClose = () => {
-    setOpen(false);
     setCustomer(null)
+    setOpen(false);
     setOpenDelete(false)
     setIsView(false)
   };
@@ -85,7 +93,6 @@ const Page = () => {
   const pageUpdate = async () => {
     try {
       const data = await getProjectByAccountId({ id: getCurrentUser()?.id });
-      console.log(data)
       if (data?.status === STATUS.SUCCESS) {
         setListUser(data?.data)
       } else {
@@ -186,7 +193,7 @@ const Page = () => {
               handleClickOpenDelete={handleClickOpenDelete}
               handleEdit={handleEdit}
               count={listUser.length}
-              items={listUser}
+              items={paginatedData}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}
