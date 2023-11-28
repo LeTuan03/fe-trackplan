@@ -11,7 +11,7 @@ import { CustomersTable } from 'src/sections/customer/customers-table';
 import { CustomersSearch } from 'src/sections/customer/customers-search';
 import { applyPagination } from 'src/utils/apply-pagination';
 import CustomersDialog from 'src/sections/customer/customers-dialog';
-import { getAll, getProjectByAccountId } from 'src/services/customerServices';
+import { getAll, getProjectByAccountId, searchAccount } from 'src/services/customerServices';
 import { STATUS } from 'src/appConst';
 import { getCurrentUser } from 'src/appFunctions';
 
@@ -200,6 +200,21 @@ const Page = () => {
     []
   );
 
+  const handleSearch = async (keyWord) => {
+    try {
+      if (keyWord !== "") {
+        const data = await searchAccount({ query: keyWord });
+        if (data?.status === STATUS.SUCCESS) {
+          setListUser(data?.data)
+        }
+      } else {
+        pageUpdate()
+      }
+    } catch (error) {
+
+    }
+  }
+
   const handleClickOpen = (item) => {
     setOpen(true);
     setCustomer(item)
@@ -209,6 +224,9 @@ const Page = () => {
     setOpen(false);
     setCustomer(null)
   };
+
+
+
   const pageUpdate = async () => {
     try {
       const data = await getAll();
@@ -287,7 +305,7 @@ const Page = () => {
                 </Button> */}
               </div>
             </Stack>
-            <CustomersSearch />
+            <CustomersSearch handleSearch={handleSearch} />
             <CustomersDialog
               open={open}
               handleClose={handleClose}

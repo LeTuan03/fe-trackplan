@@ -9,6 +9,10 @@ export const CustomersSearch = ({ isPlant, handleSearch }) => (
           handleSearch(event.target.value)
         }
       }}
+      onChange={(event) => {
+        if (!event.target.value)
+          handleSearch(event.target.value)
+      }}
       defaultValue=""
       fullWidth
       placeholder={isPlant ? "Search by project name" : "Search account"}

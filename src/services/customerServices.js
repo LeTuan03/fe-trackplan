@@ -14,6 +14,11 @@ export const addAccount = async (searchObject) => {
   let url = API_PATH + "/addAccount"
   return axios.post(url, searchObject)
 }
+export const searchAccount = async (searchObject) => {
+  let config = { params: searchObject };
+  let url = API_PATH + "/searchAcc"
+  return axios.get(url, config)
+}
 
 
 // project 
@@ -34,6 +39,6 @@ export const deleteProject = async (searchObject) => {
   return axios.delete(url)
 }
 export const searchProject = async (searchObject) => {
-  let url = API_PATH + "/search/" + searchObject?.id
-  return axios.get(url)
+  let url = API_PATH + "/search"
+  return axios.post(url, searchObject)
 }

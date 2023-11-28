@@ -100,7 +100,14 @@ const Page = () => {
   }
   const handleSearch = async (keyWord) => {
     try {
-      const data = await searchProject(keyWord);
+      if (keyWord !== "") {
+        const data = await searchProject({ accountId: getCurrentUser()?.id, name: keyWord });
+        if (data?.status === STATUS.SUCCESS) {
+          setListUser(data?.data)
+        }
+      } else {
+        pageUpdate()
+      }
     } catch (error) {
 
     }
