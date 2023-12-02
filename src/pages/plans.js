@@ -193,7 +193,8 @@ const Page = () => {
                 </Button>
               </div>
             </Stack>
-            <CustomersSearch isPlant={true} handleSearch={handleSearch} />
+            <CustomersSearch isPlant={true}
+              handleSearch={handleSearch} />
             <CustomersDialog
               title="Add/Edit project"
               isPlan={true}

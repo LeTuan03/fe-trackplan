@@ -117,9 +117,9 @@ export const AuthProvider = (props) => {
     }
   };
 
-  const signUp = async (email, username, password) => {
+  const signUp = async (email, username, password, role) => {
     try {
-      const data = await addAccount({ username, password, email, role: 1 });
+      const data = await addAccount({ username, password, email, role });
     } catch (error) {
       if (error?.response?.status === STATUS.ERROR) {
         throw new Error(error?.response?.data?.message);

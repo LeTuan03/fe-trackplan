@@ -1,169 +1,234 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
-import ArrowUpOnSquareIcon from '@heroicons/react/24/solid/ArrowUpOnSquareIcon';
+import { subDays, subHours } from 'date-fns';
 import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
+import ArrowUpOnSquareIcon from '@heroicons/react/24/solid/ArrowUpOnSquareIcon';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import {
-  Box,
-  Button,
-  Container,
-  Pagination,
-  Stack,
-  SvgIcon,
-  Typography,
-  Unstable_Grid2 as Grid
-} from '@mui/material';
+import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { CompanyCard } from 'src/sections/companies/company-card';
-import { GroupsSearch } from 'src/sections/companies/companies-search';
+import { CustomersTable } from 'src/sections/customer/customers-table';
+import { CustomersSearch } from 'src/sections/customer/customers-search';
+import CustomersDialog from 'src/sections/customer/customers-dialog';
+import { deleteProject, getById, getByMemberId, getProjectByAccountId, getProjectById, searchProject } from 'src/services/customerServices';
+import { getCurrentUser } from 'src/appFunctions';
+import { STATUS } from 'src/appConst';
+import CustomersDialogDelete from 'src/sections/customer/customers-dialog-delete';
 
-const companies = [
-  {
-    id: '2569ce0d517a7f06d3ea1f24',
-    createdAt: '27/03/2019',
-    description: 'Dropbox is a file hosting service that offers cloud storage, file synchronization, a personal cloud.',
-    logo: '/assets/logos/logo-dropbox.png',
-    title: 'Dropbox',
-    downloads: '594'
-  },
-  {
-    id: 'ed2b900870ceba72d203ec15',
-    createdAt: '31/03/2019',
-    description: 'Medium is an online publishing platform developed by Evan Williams, and launched in August 2012.',
-    logo: '/assets/logos/logo-medium.png',
-    title: 'Medium Corporation',
-    downloads: '625'
-  },
-  {
-    id: 'a033e38768c82fca90df3db7',
-    createdAt: '03/04/2019',
-    description: 'Slack is a cloud-based set of team collaboration tools and services, founded by Stewart Butterfield.',
-    logo: '/assets/logos/logo-slack.png',
-    title: 'Slack',
-    downloads: '857'
-  },
-  {
-    id: '1efecb2bf6a51def9869ab0f',
-    createdAt: '04/04/2019',
-    description: 'Lyft is an on-demand transportation company based in San Francisco, California.',
-    logo: '/assets/logos/logo-lyft.png',
-    title: 'Lyft',
-    downloads: '406'
-  },
-  {
-    id: '1ed68149f65fbc6089b5fd07',
-    createdAt: '04/04/2019',
-    description: 'GitHub is a web-based hosting service for version control of code using Git.',
-    logo: '/assets/logos/logo-github.png',
-    title: 'GitHub',
-    downloads: '835'
-  },
-  {
-    id: '5dab321376eff6177407e887',
-    createdAt: '04/04/2019',
-    description: 'Squarespace provides software as a service for website building and hosting. Headquartered in NYC.',
-    logo: '/assets/logos/logo-squarespace.png',
-    title: 'Squarespace',
-    downloads: '835'
+const Page = () => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [customer, setCustomer] = useState("");
+  const [listUser, setListUser] = useState([]);
+  const [isView, setIsView] = useState(false);
+  const handlePageChange = useCallback(
+    (event, value) => {
+      setPage(value);
+    },
+    []
+  );
+
+  const handleRowsPerPageChange = useCallback(
+    (event) => {
+      setRowsPerPage(event.target.value);
+      setPage(0);
+    },
+    []
+  );
+
+  const getPaginatedData = () => {
+    const startIndex = page * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return listUser?.slice(startIndex, endIndex);
+  };
+
+  const paginatedData = getPaginatedData();
+
+  const handleClickOpen = async (item) => {
+    try {
+      const data = await getById(item?.id);
+      if (data?.status === STATUS.SUCCESS) {
+        setCustomer(data?.data)
+        setOpen(true);
+        setIsView(true);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  };
+  const handleEdit = async (item) => {
+    try {
+      const data = await getById(item?.id);
+      if (data?.status === STATUS.SUCCESS) {
+        setCustomer(data?.data);
+        setOpen(true);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  };
+  const handleClickOpenDelete = (data) => {
+    setCustomer(data)
+    setOpenDelete(true)
   }
-];
+  const handleClose = () => {
+    setCustomer(null)
+    setOpen(false);
+    setOpenDelete(false)
+    setIsView(false)
+  };
 
-const Page = () => (
-  <>
-    <Head>
-      <title>
-        Groups | Track Plan
-      </title>
-    </Head>
-    <Box
-      component="main"
-      sx={{
-        flexGrow: 1,
-        py: 8
-      }}
-    >
-      <Container maxWidth="xl">
-        <Stack spacing={3}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            spacing={4}
-          >
-            <Stack spacing={1}>
-              <Typography variant="h4">
-                Groups
-              </Typography>
-              <Stack
-                alignItems="center"
-                direction="row"
-                spacing={1}
-              >
-                <Button
-                  color="inherit"
-                  startIcon={(
-                    <SvgIcon fontSize="small">
-                      <ArrowUpOnSquareIcon />
-                    </SvgIcon>
-                  )}
+  const handleDelete = async () => {
+    try {
+      const data = await deleteProject(customer)
+      if (data?.status === STATUS.SUCCESS) {
+        pageUpdate()
+        handleClose()
+        toast.success("Deleted project successfully", {
+          autoClose: 1000
+        })
+      }
+    } catch (error) {
+      toast.error("Delete failed project", {
+        autoClose: 1000
+      })
+    }
+  }
+  const handleSearch = async (keyWord) => {
+    try {
+      if (keyWord !== "") {
+        const data = await searchProject({ accountId: getCurrentUser()?.id, name: keyWord });
+        if (data?.status === STATUS.SUCCESS) {
+          setListUser(data?.data)
+        }
+      } else {
+        pageUpdate()
+      }
+    } catch (error) {
+
+    }
+  }
+  const pageUpdate = async () => {
+    try {
+      const data = await getByMemberId();
+      if (data?.status === STATUS.SUCCESS) {
+        setListUser(data?.data)
+      } else {
+        setListUser([])
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  };
+  useEffect(() => {
+    pageUpdate()
+  }, [])
+  return (
+    <>
+      <Head>
+        <title>
+          Track Plan | Project management
+        </title>
+      </Head>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          pt: 1
+        }}
+      >
+        <Container maxWidth="xl">
+          <Stack spacing={3}>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              spacing={4}
+            >
+              <Stack spacing={1}>
+                <Typography variant="h4">
+                  Project List
+                </Typography>
+                <Stack
+                  alignItems="center"
+                  direction="row"
+                  spacing={1}
                 >
-                  Import
-                </Button>
-                <Button
-                  color="inherit"
-                  startIcon={(
-                    <SvgIcon fontSize="small">
-                      <ArrowDownOnSquareIcon />
-                    </SvgIcon>
-                  )}
-                >
-                  Export
-                </Button>
+                  <Button
+                    color="inherit"
+                    startIcon={(
+                      <SvgIcon fontSize="small">
+                        <ArrowUpOnSquareIcon />
+                      </SvgIcon>
+                    )}
+                  >
+                    Import
+                  </Button>
+                  <Button
+                    color="inherit"
+                    startIcon={(
+                      <SvgIcon fontSize="small">
+                        <ArrowDownOnSquareIcon />
+                      </SvgIcon>
+                    )}
+                  >
+                    Export
+                  </Button>
+                </Stack>
               </Stack>
+              {/* <div>
+                <Button
+                  startIcon={(
+                    <SvgIcon fontSize="small">
+                      <PlusIcon />
+                    </SvgIcon>
+                  )}
+                  variant="contained"
+                  onClick={() => setOpen(true)}
+                >
+                  Add
+                </Button>
+              </div> */}
             </Stack>
-            <div>
-              <Button
-                startIcon={(
-                  <SvgIcon fontSize="small">
-                    <PlusIcon />
-                  </SvgIcon>
-                )}
-                variant="contained"
-              >
-                Add
-              </Button>
-            </div>
-          </Stack>
-          <GroupsSearch />
-          <Grid
-            container
-            spacing={3}
-          >
-            {companies.map((company) => (
-              <Grid
-                xs={12}
-                md={6}
-                lg={4}
-                key={company.id}
-              >
-                <CompanyCard company={company} />
-              </Grid>
-            ))}
-          </Grid>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center'
-            }}
-          >
-            <Pagination
-              count={3}
-              size="small"
+            <CustomersSearch isPlant={true}
+              handleSearch={handleSearch} />
+            <CustomersDialog
+              title="Add/Edit project"
+              isGroup={true}
+              open={open}
+              handleClose={handleClose}
+              items={customer}
+              isView={isView}
+              pageUpdate={pageUpdate}
             />
-          </Box>
-        </Stack>
-      </Container>
-    </Box>
-  </>
-);
+            <CustomersDialogDelete
+              open={openDelete}
+              handleClose={handleClose}
+              handleYes={handleDelete}
+              data={customer}
+            />
+            <CustomersTable
+              isGroup={true}
+              handleClickOpen={handleClickOpen}
+              handleClickOpenDelete={handleClickOpenDelete}
+              handleEdit={handleEdit}
+              count={listUser.length}
+              items={paginatedData}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
+              page={page}
+              rowsPerPage={rowsPerPage}
+            />
+          </Stack>
+        </Container>
+      </Box>
+      <ToastContainer />
+    </>
+  );
+};
 
 Page.getLayout = (page) => (
   <DashboardLayout>

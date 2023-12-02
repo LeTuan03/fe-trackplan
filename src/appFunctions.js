@@ -40,3 +40,11 @@ export const renderRole = (status) => {
       break;
   }
 }
+
+export const convertTxt = (txt, length) => {
+  if (txt.length < length) {
+    return txt;
+  }
+  let newTxt = txt.slice(0, length)
+  return <p style={{ wordBreak: "break-all" }}>{newTxt + "..."}</p>
+}

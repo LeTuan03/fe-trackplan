@@ -311,8 +311,10 @@ const Page = () => {
               handleClose={handleClose}
               items={customer}
               isView={true}
+              isAdmin={true}
             />
             <CustomersTable
+              isAdmin={true}
               handleClickOpen={handleClickOpen}
               count={data.length}
               items={listUser}

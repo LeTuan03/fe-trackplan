@@ -1,20 +1,25 @@
 import Head from 'next/head';
 import NextLink from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Box, Button, Link, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Link, Stack, TextField, Typography, Autocomplete, createFilterOptions } from '@mui/material';
 import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
+import { ROLE } from 'src/appConst';
+import { useState } from 'react';
 
-const Page = () => {
+const RegisterPage = () => {
   const router = useRouter();
   const auth = useAuth();
+  const [role, setRole] = useState(ROLE[0])
+  const filterAutocomplete = createFilterOptions();
   const formik = useFormik({
     initialValues: {
       email: '',
       username: '',
       password: '',
+      role: null,
       submit: null
     },
     validationSchema: Yup.object({
@@ -29,19 +34,29 @@ const Page = () => {
       password: Yup
         .string()
         .max(255)
-        .required('Password is required')
+        .required('Password is required'),
+      role: Yup
+        .string()
+        .max(255)
+        .required('Role is required')
     }),
     onSubmit: async (values, helpers) => {
       try {
-        await auth.signUp(values.email, values.username, values.password);
+        await auth.signUp(values.email, values.username, values.password, values.role);
         router.push('/');
       } catch (err) {
+        console.log(err)
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
       }
     }
   });
+
+  const handleChangeRole = (value) => {
+    setRole(value);
+    formik.setFieldValue('role', value.code);
+  }
 
   return (
     <>
@@ -91,10 +106,28 @@ const Page = () => {
               </Typography>
             </Stack>
             <form
-              noValidate
               onSubmit={formik.handleSubmit}
             >
               <Stack spacing={3}>
+                <Autocomplete
+                  fullWidth
+                  options={ROLE}
+                  value={role}
+                  onChange={(e, value) => handleChangeRole(value)}
+                  getOptionLabel={(option) => option?.name}
+                  renderInput={(params) => (
+                    <TextField {...params}
+                      name='role'
+                      label={'Role'}
+                    />
+                  )}
+                  filterOptions={(options, params) => {
+                    params.inputValue = params.inputValue.trim();
+                    let filtered = filterAutocomplete(options, params);
+                    return filtered;
+                  }}
+                  noOptionsText={"No option"}
+                />
                 <TextField
                   error={!!(formik.touched.username && formik.errors.username)}
                   fullWidth
@@ -144,7 +177,7 @@ const Page = () => {
                 type="submit"
                 variant="contained"
               >
-                Continue
+                Register
               </Button>
             </form>
           </div>
@@ -154,10 +187,10 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => (
+RegisterPage.getLayout = (page) => (
   <AuthLayout>
     {page}
   </AuthLayout>
 );
 
-export default Page;
+export default RegisterPage;

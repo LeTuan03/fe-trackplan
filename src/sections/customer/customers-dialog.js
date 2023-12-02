@@ -5,21 +5,27 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-import { Autocomplete, Box, Card, Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography, createFilterOptions } from '@mui/material';
+import {
+  Autocomplete, Box, Card, Grid, Stack, SvgIcon, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography, createFilterOptions,
+
+} from '@mui/material';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 
 
 import { Scrollbar } from 'src/components/scrollbar';
 import { getCurrentUser } from 'src/appFunctions';
-import { LIST_STATUS, STATUS, STATUS_OBJECT } from 'src/appConst';
-import { addProject, editProject } from 'src/services/customerServices';
+import { LIST_STATUS, STATUS, STATUS_OBJECT, COLOR, LIST_PERCENT_COMPLETE } from 'src/appConst';
+import { addProject, deleteTask, editProject, getMember, updateAdds, updateTask } from 'src/services/customerServices';
+import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
+import PencilIcon from '@heroicons/react/24/solid/PencilIcon';
+import XMarkIcon from '@heroicons/react/24/solid/XMarkIcon';
 
-export default function CustomersDialog({ open, items, handleClose, title, isPlan, isView, pageUpdate }) {
+export default function CustomersDialog({ open, items, handleClose, title, isPlan, isView, pageUpdate, isAdmin, isGroup }) {
   const filterAutocomplete = createFilterOptions();
-  const itemsDemo = [{
+  const [listTask, setListTask] = useState([])
+  const [listMember, setListMember] = useState([])
 
-  }]
   const [formData, setFormData] = useState({});
 
   const handleChange = (event) => {
@@ -29,13 +35,30 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
       setFormData((prevData) => ({ ...prevData, startDate: new Date(value) }));
     } else if (name === "endDate") {
       setFormData((prevData) => ({ ...prevData, endDate: new Date(value) }));
-    } else {
+    } else if (name === "dueDate") {
+      setFormData((prevData) => ({ ...prevData, dueDate: new Date(value) }));
+    }
+    else {
       setFormData((prevData) => ({ ...prevData, [name]: value }));
     }
   };
 
+  const convertListTask = () => {
+    let convert = [...listTask].map(i => {
+      return {
+        ...i,
+        userId: i?.member?.userId || i?.member?.id,
+        userName: i?.member?.username,
+        projectName: formData?.name
+      }
+    })
+    return convert
+  }
   const convertDataSubmit = (data) => {
-    return { ...data, status: data?.status?.label || LIST_STATUS[0].label }
+    return { ...data, status: data?.status?.label || LIST_STATUS[0].label, tasks: convertListTask() }
+  }
+  const convertDataGroupSubmit = (data) => {
+    return { ...data, percentComplete: data?.percent?.label }
   }
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -43,6 +66,15 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
       try {
         if (formData?.id) {
           const data = await editProject(convertDataSubmit(formData))
+          if (listTask.length > 0) {
+            const dataTask = await updateAdds(convertListTask())
+            if (dataTask?.status === STATUS.ERROR) {
+              toast.error("Update task error", {
+                autoClose: 1000
+              })
+              return;
+            }
+          }
           if (data?.status === STATUS.SUCCESS) {
             toast.success("Project updated successfully", {
               autoClose: 1000
@@ -89,12 +121,138 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
 
       }
     }
+    if (isGroup) {
+      try {
+        if (formData?.id) {
+          const data = await updateTask(convertDataGroupSubmit(formData))
+
+          if (data?.status === STATUS.SUCCESS) {
+            toast.success("Project updated successfully", {
+              autoClose: 1000
+            })
+          } else if (data?.status === STATUS.NOCONTENT) {
+            toast.warn("Project name cannot be null", {
+              autoClose: 1000
+            })
+            return;
+          }
+        } else {
+          if (data?.status === STATUS.SUCCESS) {
+            toast.warning("Something wrong", {
+              autoClose: 1000
+            })
+          }
+        }
+        setFormData({})
+        await pageUpdate();
+        handleClose();
+      } catch (error) {
+        if (error?.response?.status === STATUS.BAD_GATEWAY) {
+          toast.error(error?.response?.data?.message, {
+            autoClose: 1000
+          })
+          return;
+        }
+
+        if (formData?.id) {
+          toast.error("Error updating task", {
+            autoClose: 1000
+          })
+        } else {
+          toast.error("Error creating task", {
+            autoClose: 1000
+          })
+        }
+
+      }
+    }
   };
+
   const handleChangeStatus = (data) => {
     setFormData((prevData) => ({ ...prevData, status: data }));
   }
+  const handleChangePercent = (data) => {
+    setFormData((prevData) => ({ ...prevData, percent: data }));
+  }
+  const handleAddTask = () => {
+    setListTask(pre => [...pre, { projectId: items?.id }])
+  }
+
+
+  const handleChangeTask = (event, taskName, index) => {
+    const updatedListTask = [...listTask];
+    updatedListTask[index].taskName = event.target.value;
+    setListTask(updatedListTask);
+  }
+
+  const handleChangePercentComplete = (event, percentComplete, index) => {
+    const updatedListTask = [...listTask];
+    updatedListTask[index].percentComplete = event.target.value;
+    setListTask(updatedListTask);
+  }
+
+  const handleDeleteTask = async (index, item) => {
+    if (item?.id) {
+      try {
+        await deleteTask(item.id)
+
+      } catch (error) {
+        console.log(error)
+        toast.error("Error when delete task")
+      }
+    }
+
+    const updatedListTask = [...listTask];
+    updatedListTask.splice(index, 1);
+    setListTask(updatedListTask);
+  };
+
+  const handleChangeMember = (value, index) => {
+    const updatedListTask = [...listTask];
+    updatedListTask[index].member = value;
+    setListTask(updatedListTask);
+  }
+
+  const getListMember = async () => {
+    try {
+      const data = await getMember();
+      if (data?.status === STATUS.SUCCESS && data?.data?.length > 0) {
+        setListMember(data?.data)
+      }
+    } catch (error) {
+
+    }
+  }
+  const getSelectedPercentValue = (label) => {
+    switch (label) {
+      case LIST_PERCENT_COMPLETE[0].label:
+        return LIST_PERCENT_COMPLETE[0];
+      case LIST_PERCENT_COMPLETE[1].label:
+        return LIST_PERCENT_COMPLETE[1];
+      case LIST_PERCENT_COMPLETE[2].label:
+        return LIST_PERCENT_COMPLETE[2];
+      case LIST_PERCENT_COMPLETE[3].label:
+        return LIST_PERCENT_COMPLETE[3];
+      case LIST_PERCENT_COMPLETE[4].label:
+        return LIST_PERCENT_COMPLETE[4];
+      case LIST_PERCENT_COMPLETE[5].label:
+        return LIST_PERCENT_COMPLETE[5];
+      case LIST_PERCENT_COMPLETE[6].label:
+        return LIST_PERCENT_COMPLETE[6];
+      case LIST_PERCENT_COMPLETE[7].label:
+        return LIST_PERCENT_COMPLETE[7];
+      case LIST_PERCENT_COMPLETE[8].label:
+        return LIST_PERCENT_COMPLETE[8];
+      case LIST_PERCENT_COMPLETE[9].label:
+        return LIST_PERCENT_COMPLETE[9];
+      default:
+        return;
+    }
+  };
 
   useEffect(() => {
+    getListMember()
+    setListTask(items?.tasks?.map(i => ({ ...i, member: { username: i?.userName, userId: i?.userId } })))
     if (isPlan) {
       setFormData({
         id: items?.id,
@@ -106,8 +264,28 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
         startDate: items?.startDate ? new Date(items?.startDate) : new Date(),
         endDate: items?.endDate ? new Date(items?.endDate) : new Date(),
         createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
+        createdBy: items?.createdBy || getCurrentUser()?.username,
+        tasks: items?.tasks
       });
-    } else {
+    }
+    if (isGroup) {
+      setFormData({
+        id: items?.id,
+        projectName: items?.projectName,
+        taskName: items?.taskName,
+        percentComplete: items?.percentComplete,
+        percent: getSelectedPercentValue(items?.percentComplete),
+        projectId: items?.projectId,
+        userId: items?.userId,
+        userName: items?.userName,
+        note: items?.note,
+        startDate: items?.startDate && new Date(items?.startDate),
+        updatedAt: items?.updatedAt && new Date(items?.updatedAt),
+        dueDate: items?.dueDate && new Date(items?.dueDate),
+        createdAt: items?.createdAt,
+      });
+    }
+    if (isAdmin) {
       setFormData({
         id: items?.id,
         username: items?.username,
@@ -118,7 +296,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
         createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
       });
     }
-  }, [isPlan, items, items?.status]);
+  }, [isPlan, isAdmin, isGroup, items, items?.status]);
 
 
   return (
@@ -137,8 +315,8 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
           <DialogTitle id="alert-dialog-title">
             {isView ? "Information" : title ? title : "Add/Edit accounts"}
           </DialogTitle>
-          <DialogContent>
-            {isPlan ?
+          <DialogContent style={{ maxHeight: 600, overflowY: "scroll" }}>
+            {isPlan &&
               <Grid container
                 spacing={1}
               >
@@ -170,13 +348,12 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   <TextValidator
                     disabled={isView}
                     className='w-100'
-                    onChange={handleChange}
                     label={
                       <span>
                         <span>Created by</span>
                       </span>
                     }
-                    value={getCurrentUser()?.username}
+                    value={formData?.createdBy}
                   />
                 </Grid>
                 <Grid item
@@ -304,9 +481,110 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                     value={formData?.description}
                   />
                 </Grid>
+                {items?.id && <>
+                  {!isView && <Grid item
+                    md={12}
+                    sm={12}
+                    xs={12}
+                  >
+                    <Button
+                      variant="contained"
+                      onClick={handleAddTask}
+                    >
+                      Add tasks
+                    </Button>
+                  </Grid>}
+                  <Grid item
+                    md={12}
+                    sm={12}
+                    xs={12}
+                  >
 
-              </Grid> :
-              // account 
+                    <Table
+                      size="small"
+                      padding="none"
+                      stickyHeader={true}
+                    >
+
+                      <TableHead >
+                        <TableRow>
+                          <TableCell align='center'
+                            width={20}
+                          >
+                            No
+                          </TableCell>
+                          {!isView && <TableCell align='center'
+                            width={50}
+                          >
+                            Action
+                          </TableCell>}
+                          <TableCell>
+                            Subject
+                          </TableCell>
+                          <TableCell width={250}>
+                            Assignee
+                          </TableCell>
+                          <TableCell width={100}>
+                            % Done
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody >
+                        {listTask?.map((item, index) => {
+                          return (<TableRow key={index}>
+                            <TableCell align='center' >
+                              {index + 1}
+                            </TableCell>
+                            {!isView && <TableCell align='center' >
+                              <SvgIcon
+                                fontSize="small"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => handleDeleteTask(index, item)}
+                              >
+                                <XMarkIcon style={{ color: COLOR.SUPPORT_THIRD }} />
+                              </SvgIcon>
+
+                            </TableCell>}
+                            <TableCell align='left' >
+                              <TextValidator
+                                disabled={isView}
+                                className='w-100'
+                                onChange={(event) => handleChangeTask(event, "taskName", index)}
+                                name="taskName"
+                                value={item.taskName}
+                              />
+                            </TableCell>
+                            <TableCell align='center' >
+                              <Autocomplete
+                                fullWidth
+                                options={listMember}
+                                value={item?.member || null}
+                                onChange={(e, value) => handleChangeMember(value, index)}
+                                getOptionLabel={(option) => option?.username}
+                                renderInput={(params) => (
+                                  <TextField {...params} />
+                                )}
+                                filterOptions={(options, params) => {
+                                  params.inputValue = params.inputValue.trim();
+                                  let filtered = filterAutocomplete(options, params);
+                                  return filtered;
+                                }}
+                                disabled={isView}
+                                noOptionsText={"No option"}
+                              />
+                            </TableCell>
+                            <TableCell align='center' >
+                              {item?.percentComplete}
+                            </TableCell>
+                          </TableRow>)
+                        })}
+                      </TableBody>
+                    </Table>
+                  </Grid>
+                </>}
+              </Grid>}
+            {/* group  */}
+            {isGroup &&
               <Grid container
                 spacing={1}
               >
@@ -318,12 +596,15 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   <TextValidator
                     disabled={isView}
                     className='w-100'
+                    name="projectName"
                     label={
                       <span>
-                        <span>Username</span>
+                        <span>Project name</span>
                       </span>
                     }
-                    value={formData?.username}
+                    value={formData?.projectName}
+                    validators={["required"]}
+                    errorMessages={["general.required"]}
                   />
                 </Grid>
                 <Grid item
@@ -334,13 +615,12 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   <TextValidator
                     disabled={isView}
                     className='w-100'
-                    name='planNumber'
                     label={
                       <span>
-                        <span>Number of plan</span>
+                        <span>Task name</span>
                       </span>
                     }
-                    value={formData?.planNumber}
+                    value={formData?.taskName}
                   />
                 </Grid>
                 <Grid item
@@ -351,13 +631,13 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   <TextValidator
                     disabled={isView}
                     className='w-100'
-                    name='completeNumber'
+                    name="createdAt"
                     label={
                       <span>
-                        <span>Number of completed projects</span>
+                        <span>Created at</span>
                       </span>
                     }
-                    value={formData?.completeNumber}
+                    value={formData?.createdAt ? format(new Date(formData?.createdAt), 'dd/MM/yyyy') : ""}
                   />
                 </Grid>
                 <Grid item
@@ -368,14 +648,17 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   <TextValidator
                     disabled={isView}
                     className='w-100'
-                    name='Email'
+                    onChange={handleChange}
+                    name="startDate"
+                    type='date'
                     label={
                       <span>
-                        <span>Email</span>
+                        <span>Start date</span>
                       </span>
                     }
-                    value={formData?.email}
+                    value={formData?.startDate ? format(formData?.startDate, 'yyyy-MM-dd') : ""}
                   />
+
                 </Grid>
                 <Grid item
                   md={4}
@@ -385,13 +668,15 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   <TextValidator
                     disabled={isView}
                     className='w-100'
-                    name='phone'
+                    onChange={handleChange}
+                    name='dueDate'
+                    type='date'
                     label={
                       <span>
-                        <span>Phone number</span>
+                        <span>Due date</span>
                       </span>
                     }
-                    value={formData?.phone}
+                    value={formData?.dueDate ? format(formData?.dueDate, 'yyyy-MM-dd') : ""}
                   />
                 </Grid>
                 <Grid item
@@ -399,19 +684,192 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   sm={12}
                   xs={12}
                 >
+                  <Autocomplete
+                    fullWidth
+                    options={LIST_PERCENT_COMPLETE}
+                    value={
+                      formData?.percent?.label == LIST_PERCENT_COMPLETE[0].label ?
+                        LIST_PERCENT_COMPLETE[0] :
+                        formData?.percent?.label == LIST_PERCENT_COMPLETE[1].label ?
+                          LIST_PERCENT_COMPLETE[1] :
+                          formData?.percent?.label == LIST_PERCENT_COMPLETE[1].label ?
+                            LIST_PERCENT_COMPLETE[1] :
+                            formData?.percent?.label == LIST_PERCENT_COMPLETE[2].label ?
+                              LIST_PERCENT_COMPLETE[2] :
+                              formData?.percent?.label == LIST_PERCENT_COMPLETE[3].label ?
+                                LIST_PERCENT_COMPLETE[3] :
+                                formData?.percent?.label == LIST_PERCENT_COMPLETE[4].label ?
+                                  LIST_PERCENT_COMPLETE[4] :
+                                  formData?.percent?.label == LIST_PERCENT_COMPLETE[5].label ?
+                                    LIST_PERCENT_COMPLETE[5] :
+                                    formData?.percent?.label == LIST_PERCENT_COMPLETE[6].label ?
+                                      LIST_PERCENT_COMPLETE[6] :
+                                      formData?.percent?.label == LIST_PERCENT_COMPLETE[7].label ?
+                                        LIST_PERCENT_COMPLETE[7] :
+                                        formData?.percent?.label == LIST_PERCENT_COMPLETE[8].label ?
+                                          LIST_PERCENT_COMPLETE[8] :
+                                          formData?.percent?.label == LIST_PERCENT_COMPLETE[9].label ?
+                                            LIST_PERCENT_COMPLETE[9] : null
+                    }
+                    onChange={(e, value) => handleChangePercent(value)}
+                    getOptionLabel={(option) => option?.label}
+                    renderInput={(params) => (
+                      <TextField {...params}
+                        label={'Percent complete'} />
+                    )}
+                    filterOptions={(options, params) => {
+                      params.inputValue = params.inputValue.trim();
+                      let filtered = filterAutocomplete(options, params);
+                      return filtered;
+                    }}
+                    disabled={isView}
+                    noOptionsText={"No option"}
+                  />
+                </Grid>
+                <Grid item
+                  md={12}
+                  sm={12}
+                  xs={12}
+                >
                   <TextValidator
                     disabled={isView}
                     className='w-100'
-                    name='createdAt'
+                    onChange={handleChange}
+                    name="note"
                     label={
                       <span>
-                        <span>Registration date</span>
+                        <span>Note</span>
                       </span>
                     }
-                    value={formData?.createdAt ? format(formData?.createdAt, 'yyyy-MM-dd') : ""}
+                    value={formData?.note}
                   />
                 </Grid>
+                {/* <Grid item
+                  md={12}
+                  sm={12}
+                  xs={12}
+                >
+                  <TextValidator
+                    disabled={isView}
+                    className='w-100'
+                    rows="10"
+                    onChange={handleChange}
+                    name="description"
+                    label={
+                      <span>
+                        <span>Description</span>
+                      </span>
+                    }
+                    value={formData?.description}
+                  />
+                </Grid> */}
               </Grid>}
+            {/*  account  */}
+            {isAdmin && <Grid container
+              spacing={1}
+            >
+              <Grid item
+                md={4}
+                sm={12}
+                xs={12}
+              >
+                <TextValidator
+                  disabled={isView}
+                  className='w-100'
+                  label={
+                    <span>
+                      <span>Username</span>
+                    </span>
+                  }
+                  value={formData?.username}
+                />
+              </Grid>
+              <Grid item
+                md={4}
+                sm={12}
+                xs={12}
+              >
+                <TextValidator
+                  disabled={isView}
+                  className='w-100'
+                  name='planNumber'
+                  label={
+                    <span>
+                      <span>Number of plan</span>
+                    </span>
+                  }
+                  value={formData?.planNumber}
+                />
+              </Grid>
+              <Grid item
+                md={4}
+                sm={12}
+                xs={12}
+              >
+                <TextValidator
+                  disabled={isView}
+                  className='w-100'
+                  name='completeNumber'
+                  label={
+                    <span>
+                      <span>Number of completed projects</span>
+                    </span>
+                  }
+                  value={formData?.completeNumber}
+                />
+              </Grid>
+              <Grid item
+                md={4}
+                sm={12}
+                xs={12}
+              >
+                <TextValidator
+                  disabled={isView}
+                  className='w-100'
+                  name='Email'
+                  label={
+                    <span>
+                      <span>Email</span>
+                    </span>
+                  }
+                  value={formData?.email}
+                />
+              </Grid>
+              <Grid item
+                md={4}
+                sm={12}
+                xs={12}
+              >
+                <TextValidator
+                  disabled={isView}
+                  className='w-100'
+                  name='phone'
+                  label={
+                    <span>
+                      <span>Phone number</span>
+                    </span>
+                  }
+                  value={formData?.phone}
+                />
+              </Grid>
+              <Grid item
+                md={4}
+                sm={12}
+                xs={12}
+              >
+                <TextValidator
+                  disabled={isView}
+                  className='w-100'
+                  name='createdAt'
+                  label={
+                    <span>
+                      <span>Registration date</span>
+                    </span>
+                  }
+                  value={formData?.createdAt ? format(formData?.createdAt, 'yyyy-MM-dd') : ""}
+                />
+              </Grid>
+            </Grid>}
           </DialogContent>
           <DialogActions>
             <Button
@@ -429,6 +887,6 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
           </DialogActions>
         </ValidatorForm>
       </Dialog>
-    </Fragment>
+    </Fragment >
   );
 }

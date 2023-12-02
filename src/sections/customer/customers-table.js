@@ -23,7 +23,7 @@ import PencilIcon from '@heroicons/react/24/solid/PencilIcon';
 import EyeIcon from '@heroicons/react/24/solid/EyeIcon';
 import XMarkIcon from '@heroicons/react/24/solid/XMarkIcon';
 import { COLOR, ROLE_OBJECT, STATUS_OBJECT } from 'src/appConst';
-import { getCurrentUser, renderRole, renderStatus } from 'src/appFunctions';
+import { convertTxt, getCurrentUser, renderRole, renderStatus } from 'src/appFunctions';
 import { SeverityPill } from 'src/components/severity-pill';
 export const CustomersTable = (props) => {
   const {
@@ -34,12 +34,13 @@ export const CustomersTable = (props) => {
     page = 0,
     rowsPerPage = 0,
     isPlant,
+    isAdmin,
+    isGroup,
     handleClickOpen,
     handleEdit,
     handleClickOpenDelete,
 
   } = props;
-
 
   return (
     <Card>
@@ -48,7 +49,7 @@ export const CustomersTable = (props) => {
           <Table>
             <TableHead>
               <TableRow>
-                {isPlant ? <>
+                {isPlant && <>
                   <TableCell align='center' >
                     No
                   </TableCell>
@@ -74,30 +75,58 @@ export const CustomersTable = (props) => {
                   <TableCell>
                     Note
                   </TableCell>
-                </> :
-                  <>
-                    <TableCell align='center' >
-                      No
-                    </TableCell>
-                    <TableCell padding="checkbox"
-                      align='center'>
-                      Action
-                    </TableCell>
-                    <TableCell>
-                      Name
-                    </TableCell>
-                    <TableCell>
-                      Email
-                    </TableCell>
-                    <TableCell>
-                      Phone
-                    </TableCell>
-                    <TableCell align='center'>
-                      Created At
-                    </TableCell>
-                    <TableCell align='center'>
-                      Role
-                    </TableCell></>}
+                </>}
+                {isGroup && <>
+                  <TableCell align='center' >
+                    No
+                  </TableCell>
+                  <TableCell padding="checkbox"
+                    align='center' >
+                    Action
+                  </TableCell>
+                  <TableCell align='center' width={190}>
+                    Project name
+                  </TableCell>
+                  <TableCell align='center'>
+                    Task name
+                  </TableCell>
+                  <TableCell align='center' width={120} >
+                    % Done
+                  </TableCell>
+                  <TableCell align='center' width={130}>
+                    Start Date
+                  </TableCell>
+                  <TableCell align='center' width={130}>
+                    Due Date
+                  </TableCell>
+                  <TableCell align='center' width={130} >
+                    Updated At
+                  </TableCell>
+                </>}
+
+                {isAdmin && <>
+                  <TableCell align='center' >
+                    No
+                  </TableCell>
+                  <TableCell padding="checkbox"
+                    align='center'>
+                    Action
+                  </TableCell>
+                  <TableCell>
+                    Name
+                  </TableCell>
+                  <TableCell>
+                    Email
+                  </TableCell>
+                  <TableCell>
+                    Phone
+                  </TableCell>
+                  <TableCell align='center'>
+                    Created At
+                  </TableCell>
+                  <TableCell align='center'>
+                    Role
+                  </TableCell></>}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -107,7 +136,7 @@ export const CustomersTable = (props) => {
                     hover
                     key={customer.id}
                   >
-                    {isPlant ?
+                    {isPlant &&
                       <>
                         <TableCell align='center' >
                           {index + 1}
@@ -169,7 +198,52 @@ export const CustomersTable = (props) => {
                         <TableCell>
                           {customer?.note}
                         </TableCell>
-                      </> :
+                      </>}
+                    {isGroup &&
+                      <>
+                        <TableCell align='center' >
+                          {index + 1}
+                        </TableCell>
+                        <TableCell align='center' >
+                          <div
+                            style={{ display: "flex", justifyContent: "center", cursor: "pointer", gap: 10 }}
+                          >
+                            <SvgIcon fontSize="small"
+                              onClick={() => handleEdit(customer)}
+                            >
+                              <PencilIcon style={{ color: COLOR.PRIMARY }} />
+                            </SvgIcon>
+
+                            <SvgIcon fontSize="small"
+                              onClick={() => {
+                                handleClickOpen(customer)
+                              }}
+                            >
+                              <EyeIcon />
+                            </SvgIcon>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {convertTxt(customer?.projectName, 50)}
+                        </TableCell>
+                        <TableCell>
+                          {convertTxt(customer?.taskName, 35)}
+                        </TableCell>
+                        <TableCell align='center' >
+                          {customer?.percentComplete}
+                        </TableCell>
+                        <TableCell align='center' >
+                          {customer?.startDate ? format(new Date(customer?.startDate), 'dd/MM/yyyy') : ""}
+                        </TableCell>
+                        <TableCell align='center' >
+                          {customer?.dueDate ? format(new Date(customer?.dueDate), 'dd/MM/yyyy') : ""}
+                        </TableCell>
+                        <TableCell align='center' >
+                          {customer?.updatedAt ? format(new Date(customer?.updatedAt), 'dd/MM/yyyy') : ""}
+                        </TableCell>
+                      </>}
+
+                    {isAdmin &&
                       <>
                         <TableCell align='center' >
                           {index + 1}

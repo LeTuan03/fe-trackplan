@@ -11,8 +11,9 @@ import Square3Stack3DIcon from '@heroicons/react/24/solid/Square3Stack3DIcon';
 import { getCurrentUser } from 'src/appFunctions';
 
 export const items = () => {
-  let currentUser = getCurrentUser();
-  return [
+  const currentUser = getCurrentUser();
+
+  const roleBasedItems = [
     {
       title: 'Overview',
       path: '/',
@@ -22,26 +23,25 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    currentUser?.role === "1"
-      ? {
-        title: 'Plans',
-        path: '/plans',
-        icon: (
-          <SvgIcon fontSize="small">
-            <Square3Stack3DIcon />
-          </SvgIcon>
-        ),
-      }
-      : {
-        title: 'Customers',
-        path: '/customers',
-        icon: (
-          <SvgIcon fontSize="small">
-            <UsersIcon />
-          </SvgIcon>
-        ),
-      },
-    {
+    currentUser?.role === "1" && {
+      title: 'Plans',
+      path: '/plans',
+      icon: (
+        <SvgIcon fontSize="small">
+          <Square3Stack3DIcon />
+        </SvgIcon>
+      ),
+    },
+    currentUser?.role === "2" && {
+      title: 'Customers',
+      path: '/customers',
+      icon: (
+        <SvgIcon fontSize="small">
+          <UsersIcon />
+        </SvgIcon>
+      ),
+    },
+    currentUser?.role === "3" && {
       title: 'Group',
       path: '/groups',
       icon: (
@@ -68,6 +68,7 @@ export const items = () => {
         </SvgIcon>
       ),
     },
+
     // {
     //   title: 'Login',
     //   path: '/auth/login',
@@ -87,4 +88,6 @@ export const items = () => {
     //   ),
     // },
   ];
+
+  return roleBasedItems.filter(Boolean);
 };

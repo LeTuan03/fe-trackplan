@@ -22,6 +22,7 @@ module.exports = Object.freeze({
   ROOT_PATH: APPLICATION_PATH,
   URL_PREFIX: "/org",
   API_ENPOINT: "http://localhost:9090", //dev
+  PRE_FIX: "/api",
   ROLES: ROLES,
   COLOR: COlOR,
   ERROR_CODE: ERROR_CODE,

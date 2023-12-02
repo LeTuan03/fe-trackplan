@@ -1,6 +1,8 @@
 import axios from "axios";
 import ConstantList from "../appConfig";
+import { getCurrentUser } from "src/appFunctions";
 const API_PATH = ConstantList.API_ENPOINT;
+const API_PATH_V1 = ConstantList.API_ENPOINT + ConstantList.PRE_FIX
 
 // account 
 export const getAll = async () => {
@@ -22,6 +24,10 @@ export const searchAccount = async (searchObject) => {
 
 
 // project 
+export const getAllProject = async () => {
+  let url = API_PATH + "/getAllProjects"
+  return axios.get(url)
+}
 export const getProjectById = async (id) => {
   let url = API_PATH + "/getProjectById/" + id
   return axios.get(url)
@@ -41,4 +47,35 @@ export const deleteProject = async (searchObject) => {
 export const searchProject = async (searchObject) => {
   let url = API_PATH + "/search"
   return axios.post(url, searchObject)
+}
+
+
+//task
+
+export const deleteTask = async (id) => {
+  let url = API_PATH_V1 + "/task/delete/" + id
+  return axios.delete(url)
+}
+export const updateAdds = async (searchObject) => {
+  let url = API_PATH_V1 + "/task/adds"
+  return axios.post(url, searchObject)
+}
+export const updateTask = async (searchObject) => {
+  let url = API_PATH_V1 + "/task/edit/" + searchObject.id
+  return axios.put(url, searchObject)
+}
+export const getById = async (id) => {
+  let url = API_PATH_V1 + "/task/getById/" + id;
+  return axios.get(url)
+}
+export const getByMemberId = async () => {
+  let url = API_PATH_V1 + "/task/getByUserId/" + getCurrentUser()?.id
+  return axios.get(url)
+}
+
+//member
+
+export const getMember = async () => {
+  let url = API_PATH + "/getMember/3";
+  return axios.get(url)
 }
