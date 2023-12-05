@@ -6,19 +6,16 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import {
-  Autocomplete, Box, Card, Grid, Stack, SvgIcon, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography, createFilterOptions,
+  Autocomplete, Grid, SvgIcon, Table, TableBody, TableCell, TableHead, TableRow, TextField, createFilterOptions,
 
 } from '@mui/material';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 
 
-import { Scrollbar } from 'src/components/scrollbar';
 import { getCurrentUser } from 'src/appFunctions';
 import { LIST_STATUS, STATUS, STATUS_OBJECT, COLOR, LIST_PERCENT_COMPLETE } from 'src/appConst';
 import { addProject, deleteTask, editProject, getMember, updateAdds, updateTask } from 'src/services/customerServices';
-import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import PencilIcon from '@heroicons/react/24/solid/PencilIcon';
 import XMarkIcon from '@heroicons/react/24/solid/XMarkIcon';
 
 export default function CustomersDialog({ open, items, handleClose, title, isPlan, isView, pageUpdate, isAdmin, isGroup }) {
@@ -307,7 +304,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         fullWidth
-        maxWidth="md"
+        maxWidth="lg"
         minHeight="500px"
       >
         <ValidatorForm
@@ -315,7 +312,8 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
           <DialogTitle id="alert-dialog-title">
             {isView ? "Information" : title ? title : "Add/Edit accounts"}
           </DialogTitle>
-          <DialogContent style={{ maxHeight: 600, overflowY: "scroll" }}>
+          <DialogContent className='no-width-scroll'
+            style={{ maxHeight: 600, overflowY: "scroll" }}>
             {isPlan &&
               <Grid container
                 spacing={1}
@@ -527,6 +525,9 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                           <TableCell width={100}>
                             % Done
                           </TableCell>
+                          <TableCell>
+                            Note
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody >
@@ -575,6 +576,9 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                             </TableCell>
                             <TableCell align='center' >
                               {item?.percentComplete}
+                            </TableCell>
+                            <TableCell align='center' >
+                              {item?.note}
                             </TableCell>
                           </TableRow>)
                         })}
