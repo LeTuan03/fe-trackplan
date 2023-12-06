@@ -79,3 +79,24 @@ export const LIST_PERCENT_COMPLETE = [
     code: 10, label: "100%"
   }
 ]
+
+export const LIST_PLAN_STATUS = [
+  {
+    code: 1, label: "In Progress"
+  },
+  {
+    code: 2, label: "Resloved"
+  },
+  {
+    code: 3, label: "Feedback"
+  },
+  {
+    code: 4, label: "Pending"
+  },
+  {
+    code: 5, label: "Closed"
+  },
+  {
+    code: 6, label: "Completed"
+  },
+]

@@ -13,8 +13,8 @@ import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 
 
-import { getCurrentUser } from 'src/appFunctions';
-import { LIST_STATUS, STATUS, STATUS_OBJECT, COLOR, LIST_PERCENT_COMPLETE } from 'src/appConst';
+import { getCurrentUser, getSelectedStatusValue, getSelectedPercentValue } from 'src/appFunctions';
+import { LIST_STATUS, STATUS, STATUS_OBJECT, COLOR, LIST_PERCENT_COMPLETE, LIST_PLAN_STATUS } from 'src/appConst';
 import { addProject, deleteTask, editProject, getMember, updateAdds, updateTask } from 'src/services/customerServices';
 import XMarkIcon from '@heroicons/react/24/solid/XMarkIcon';
 
@@ -41,21 +41,22 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
   };
 
   const convertListTask = () => {
-    let convert = [...listTask].map(i => {
+    let convert = listTask?.map(i => {
       return {
         ...i,
         userId: i?.member?.userId || i?.member?.id,
         userName: i?.member?.username,
-        projectName: formData?.name
+        status: i?.status?.code,
+        projectName: formData?.name,
       }
     })
-    return convert
+    return convert?.length ? convert : null;
   }
   const convertDataSubmit = (data) => {
     return { ...data, status: data?.status?.label || LIST_STATUS[0].label, tasks: convertListTask() }
   }
   const convertDataGroupSubmit = (data) => {
-    return { ...data, percentComplete: data?.percent?.label }
+    return { ...data, percentComplete: data?.percent?.label, status: data?.status?.code }
   }
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -99,6 +100,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
         await pageUpdate();
         handleClose();
       } catch (error) {
+        console.log(error)
         if (error?.response?.status === STATUS.BAD_GATEWAY) {
           toast.error(error?.response?.data?.message, {
             autoClose: 1000
@@ -168,11 +170,17 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
   const handleChangeStatus = (data) => {
     setFormData((prevData) => ({ ...prevData, status: data }));
   }
+
   const handleChangePercent = (data) => {
     setFormData((prevData) => ({ ...prevData, percent: data }));
   }
+
+  const handleChangeTaskStatusItem = (data) => {
+    setFormData((prevData) => ({ ...prevData, status: data }));
+  }
+
   const handleAddTask = () => {
-    setListTask(pre => [...pre, { projectId: items?.id }])
+    setListTask(pre => ([...pre, { projectId: items?.id }]))
   }
 
 
@@ -209,6 +217,11 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
     updatedListTask[index].member = value;
     setListTask(updatedListTask);
   }
+  const handleChangeTaskStatus = (value, index) => {
+    const updatedListTask = [...listTask];
+    updatedListTask[index].status = value;
+    setListTask(updatedListTask);
+  }
 
   const getListMember = async () => {
     try {
@@ -220,32 +233,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
 
     }
   }
-  const getSelectedPercentValue = (label) => {
-    switch (label) {
-      case LIST_PERCENT_COMPLETE[0].label:
-        return LIST_PERCENT_COMPLETE[0];
-      case LIST_PERCENT_COMPLETE[1].label:
-        return LIST_PERCENT_COMPLETE[1];
-      case LIST_PERCENT_COMPLETE[2].label:
-        return LIST_PERCENT_COMPLETE[2];
-      case LIST_PERCENT_COMPLETE[3].label:
-        return LIST_PERCENT_COMPLETE[3];
-      case LIST_PERCENT_COMPLETE[4].label:
-        return LIST_PERCENT_COMPLETE[4];
-      case LIST_PERCENT_COMPLETE[5].label:
-        return LIST_PERCENT_COMPLETE[5];
-      case LIST_PERCENT_COMPLETE[6].label:
-        return LIST_PERCENT_COMPLETE[6];
-      case LIST_PERCENT_COMPLETE[7].label:
-        return LIST_PERCENT_COMPLETE[7];
-      case LIST_PERCENT_COMPLETE[8].label:
-        return LIST_PERCENT_COMPLETE[8];
-      case LIST_PERCENT_COMPLETE[9].label:
-        return LIST_PERCENT_COMPLETE[9];
-      default:
-        return;
-    }
-  };
+
 
   useEffect(() => {
     getListMember()
@@ -280,6 +268,9 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
         updatedAt: items?.updatedAt && new Date(items?.updatedAt),
         dueDate: items?.dueDate && new Date(items?.dueDate),
         createdAt: items?.createdAt,
+        spentTime: items?.spentTime,
+        estimatedTime: items?.estimatedTime,
+        status: getSelectedStatusValue(items?.status)
       });
     }
     if (isAdmin) {
@@ -294,7 +285,6 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
       });
     }
   }, [isPlan, isAdmin, isGroup, items, items?.status]);
-
 
   return (
     <Fragment>
@@ -522,6 +512,12 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                           <TableCell width={250}>
                             Assignee
                           </TableCell>
+                          <TableCell
+                            width={110}
+                            align='center'
+                          >
+                            Status
+                          </TableCell>
                           <TableCell width={100}>
                             % Done
                           </TableCell>
@@ -575,9 +571,29 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                               />
                             </TableCell>
                             <TableCell align='center' >
-                              {item?.percentComplete}
+                              {LIST_PLAN_STATUS.find(i => i?.code === item?.status)?.label}
+                              {/* <Autocomplete
+                                fullWidth
+                                options={LIST_PLAN_STATUS}
+                                value={item?.label}
+                                onChange={(e, value) => handleChangeTaskStatus(value, index)}
+                                getOptionLabel={(option) => option?.label}
+                                renderInput={(params) => (
+                                  <TextField {...params} />
+                                )}
+                                filterOptions={(options, params) => {
+                                  params.inputValue = params.inputValue.trim();
+                                  let filtered = filterAutocomplete(options, params);
+                                  return filtered;
+                                }}
+                                disabled={isView}
+                                noOptionsText={"No option"}
+                              /> */}
                             </TableCell>
                             <TableCell align='center' >
+                              {item?.percentComplete}
+                            </TableCell>
+                            <TableCell align='left' >
                               {item?.note}
                             </TableCell>
                           </TableRow>)
@@ -688,6 +704,81 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   sm={12}
                   xs={12}
                 >
+                  <TextValidator
+                    disabled={isView}
+                    className='w-100'
+                    onChange={handleChange}
+                    name='estimatedTime'
+                    type='number'
+                    label={
+                      <span>
+                        <span>Estimate time</span>
+                      </span>
+                    }
+                    value={formData?.estimatedTime}
+                  />
+                </Grid>
+                <Grid item
+                  md={4}
+                  sm={12}
+                  xs={12}
+                >
+                  <TextValidator
+                    disabled={isView}
+                    className='w-100'
+                    onChange={handleChange}
+                    name='spentTime'
+                    type='number'
+                    label={
+                      <span>
+                        <span>Spent time</span>
+                      </span>
+                    }
+                    value={formData?.spentTime}
+                  />
+                </Grid>
+                <Grid item
+                  md={4}
+                  sm={12}
+                  xs={12}
+                >
+                  <Autocomplete
+                    fullWidth
+                    options={LIST_PLAN_STATUS}
+                    value={
+                      formData?.status?.code === LIST_PLAN_STATUS[0].code ?
+                        LIST_PLAN_STATUS[0] :
+                        formData?.status?.code === LIST_PLAN_STATUS[1].code ?
+                          LIST_PLAN_STATUS[1] :
+                          formData?.status?.code === LIST_PLAN_STATUS[2].code ?
+                            LIST_PLAN_STATUS[2] :
+                            formData?.status?.code === LIST_PLAN_STATUS[3].code ?
+                              LIST_PLAN_STATUS[3] :
+                              formData?.status?.code === LIST_PLAN_STATUS[4].code ?
+                                LIST_PLAN_STATUS[4] :
+                                formData?.status?.code === LIST_PLAN_STATUS[5].code ?
+                                  LIST_PLAN_STATUS[5] : null
+                    }
+                    onChange={(e, value) => handleChangeTaskStatusItem(value)}
+                    getOptionLabel={(option) => option?.label}
+                    renderInput={(params) => (
+                      <TextField {...params}
+                        label={'Status'} />
+                    )}
+                    filterOptions={(options, params) => {
+                      params.inputValue = params.inputValue.trim();
+                      let filtered = filterAutocomplete(options, params);
+                      return filtered;
+                    }}
+                    disabled={isView}
+                    noOptionsText={"No option"}
+                  />
+                </Grid>
+                <Grid item
+                  md={4}
+                  sm={12}
+                  xs={12}
+                >
                   <Autocomplete
                     fullWidth
                     options={LIST_PERCENT_COMPLETE}
@@ -748,25 +839,6 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                     value={formData?.note}
                   />
                 </Grid>
-                {/* <Grid item
-                  md={12}
-                  sm={12}
-                  xs={12}
-                >
-                  <TextValidator
-                    disabled={isView}
-                    className='w-100'
-                    rows="10"
-                    onChange={handleChange}
-                    name="description"
-                    label={
-                      <span>
-                        <span>Description</span>
-                      </span>
-                    }
-                    value={formData?.description}
-                  />
-                </Grid> */}
               </Grid>}
             {/*  account  */}
             {isAdmin && <Grid container

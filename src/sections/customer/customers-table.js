@@ -22,7 +22,7 @@ import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
 import PencilIcon from '@heroicons/react/24/solid/PencilIcon';
 import EyeIcon from '@heroicons/react/24/solid/EyeIcon';
 import XMarkIcon from '@heroicons/react/24/solid/XMarkIcon';
-import { COLOR, ROLE_OBJECT, STATUS_OBJECT } from 'src/appConst';
+import { COLOR, LIST_PLAN_STATUS, ROLE_OBJECT, STATUS_OBJECT } from 'src/appConst';
 import { convertTxt, getCurrentUser, renderRole, renderStatus } from 'src/appFunctions';
 import { SeverityPill } from 'src/components/severity-pill';
 export const CustomersTable = (props) => {
@@ -89,6 +89,9 @@ export const CustomersTable = (props) => {
                   </TableCell>
                   <TableCell align='center'>
                     Task name
+                  </TableCell>
+                  <TableCell align='center' width={110}>
+                    Status
                   </TableCell>
                   <TableCell align='center' width={120} >
                     % Done
@@ -228,6 +231,9 @@ export const CustomersTable = (props) => {
                         </TableCell>
                         <TableCell>
                           {convertTxt(customer?.taskName, 35)}
+                        </TableCell>
+                        <TableCell width={100}>
+                          {LIST_PLAN_STATUS.find(i => i?.code === customer?.status)?.label}
                         </TableCell>
                         <TableCell align='center' >
                           {customer?.percentComplete}
