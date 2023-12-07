@@ -21,6 +21,14 @@ export const searchAccount = async (searchObject) => {
   let url = API_PATH + "/searchAcc"
   return axios.get(url, config)
 }
+export const getAccountById = async (id) => {
+  let url = API_PATH + "/getAccountById/" + id
+  return axios.get(url)
+}
+export const updateAccountById = async (searchObject) => {
+  let url = API_PATH + "/updateAccountById/" + searchObject?.id
+  return axios.post(url, searchObject)
+}
 
 
 // project 

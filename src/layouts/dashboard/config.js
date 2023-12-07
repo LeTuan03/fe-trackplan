@@ -32,6 +32,15 @@ export const items = () => {
         </SvgIcon>
       ),
     },
+    currentUser?.role === "1" && {
+      title: 'Member',
+      path: '/member',
+      icon: (
+        <SvgIcon fontSize="small">
+          <UsersIcon />
+        </SvgIcon>
+      ),
+    },
     currentUser?.role === "2" && {
       title: 'Customers',
       path: '/customers',
