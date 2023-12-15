@@ -244,7 +244,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Track Plan | User management
+          Phần mềm quản lý học sinh phổ thông | User management
         </title>
       </Head>
       <Box
@@ -263,9 +263,9 @@ const Page = () => {
             >
               <Stack spacing={1}>
                 <Typography variant="h4">
-                  List Users
+                  Danh sách người dùng
                 </Typography>
-                <Stack
+                {/* <Stack
                   alignItems="center"
                   direction="row"
                   spacing={1}
@@ -290,7 +290,7 @@ const Page = () => {
                   >
                     Export
                   </Button>
-                </Stack>
+                </Stack> */}
               </Stack>
               <div>
                 {/* <Button

@@ -1,4 +1,4 @@
-import { ROLE_OBJECT, STATUS_OBJECT, statusMap, LIST_PLAN_STATUS, LIST_PERCENT_COMPLETE } from "./appConst";
+import { ROLE_OBJECT, STATUS_OBJECT, statusMap, LIST_PLAN_STATUS, LIST_PERCENT_COMPLETE, ALL_ROLE } from "./appConst";
 
 export const getHighestRole = () => {
   return JSON.parse(sessionStorage.getItem("currentUser"))
@@ -48,6 +48,10 @@ export const convertTxt = (txt, length) => {
   let newTxt = txt.slice(0, length)
   return <p style={{ wordBreak: "break-all" }}>{newTxt + "..."}</p>
 }
+
+export const statusTable = (indexOrder) => {
+  return ALL_ROLE.find(i => i?.indexOrder === indexOrder)?.name
+};
 
 export const getSelectedStatusValue = (code) => {
   switch (code) {

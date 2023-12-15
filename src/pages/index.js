@@ -17,7 +17,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Overview | Track Plan
+        Overview | Phần mềm quản lý học sinh phổ thông
       </title>
     </Head>
     <Box

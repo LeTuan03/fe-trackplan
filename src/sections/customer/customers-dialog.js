@@ -18,7 +18,7 @@ import { LIST_STATUS, STATUS, STATUS_OBJECT, COLOR, LIST_PERCENT_COMPLETE, LIST_
 import { addAccount, addProject, deleteTask, editProject, getMember, updateAccountById, updateAdds, updateTask } from 'src/services/customerServices';
 import XMarkIcon from '@heroicons/react/24/solid/XMarkIcon';
 
-export default function CustomersDialog({ open, items, handleClose, title, isPlan, isView, pageUpdate, isAdmin, isGroup, isMember }) {
+export default function CustomersDialog({ open, items, handleClose, title, isPlan, isView, pageUpdate, isAdmin, isGroup, isMember, isGiaoVien }) {
   const filterAutocomplete = createFilterOptions();
   const [listTask, setListTask] = useState([])
   const [listMember, setListMember] = useState([])
@@ -59,7 +59,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
     return { ...data, percentComplete: data?.percent?.label, status: data?.status?.code }
   }
   const convertDataMemberSubmit = (data) => {
-    return { ...data, role: "3" }
+    return { ...data, role: isGiaoVien ? "1" : "3" }
   }
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -124,6 +124,58 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
       }
     }
     if (isMember) {
+      try {
+        if (formData?.id) {
+          const data = await updateAccountById(convertDataMemberSubmit(formData))
+
+          if (data?.status === STATUS.SUCCESS) {
+            toast.success("Project updated successfully", {
+              autoClose: 1000
+            })
+          } else if (data?.status === STATUS.NOCONTENT) {
+            toast.warn("Project name cannot be null", {
+              autoClose: 1000
+            })
+            return;
+          }
+        } else {
+          const data = await addAccount(convertDataMemberSubmit(formData))
+          if (data?.status === STATUS.SUCCESS) {
+            toast.success("Added new project successfully", {
+              autoClose: 1000
+            })
+          } else if (data?.status === STATUS.NOCONTENT) {
+            toast.warn("Project name cannot be null", {
+              autoClose: 1000
+            })
+            return;
+          }
+        }
+        setFormData({})
+        await pageUpdate();
+        handleClose();
+      } catch (error) {
+        console.log(error)
+        if (error?.response?.status === STATUS.BAD_GATEWAY) {
+          toast.error(error?.response?.data?.message, {
+            autoClose: 1000
+          })
+          return;
+        }
+
+        if (formData?.id) {
+          toast.error("Error updating member", {
+            autoClose: 1000
+          })
+        } else {
+          toast.error("Error creating member", {
+            autoClose: 1000
+          })
+        }
+
+      }
+    }
+    if (isGiaoVien) {
       try {
         if (formData?.id) {
           const data = await updateAccountById(convertDataMemberSubmit(formData))
@@ -280,7 +332,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
 
   const getListMember = async () => {
     try {
-      const data = await getMember();
+      const data = await getMember("3");
       if (data?.status === STATUS.SUCCESS && data?.data?.length > 0) {
         setListMember(data?.data)
       }
@@ -338,6 +390,16 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
         createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
       });
     }
+    if (isGiaoVien) {
+      setFormData({
+        id: items?.id,
+        username: items?.username,
+        password: items?.password,
+        phone: items?.phone,
+        email: items?.email,
+        createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
+      });
+    }
     if (isAdmin) {
       setFormData({
         id: items?.id,
@@ -349,7 +411,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
         createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
       });
     }
-  }, [isPlan, isAdmin, isGroup, items, items?.status, isMember]);
+  }, [isPlan, isAdmin, isGroup, items, items?.status, isMember, isGiaoVien]);
 
   return (
     <Fragment>
@@ -385,7 +447,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                     name="name"
                     label={
                       <span>
-                        <span>Project name</span>
+                        <span>Tên lớp học</span>
                       </span>
                     }
                     value={formData?.name}
@@ -403,13 +465,13 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                     className='w-100'
                     label={
                       <span>
-                        <span>Created by</span>
+                        <span>Giáo viên chủ nhiệm</span>
                       </span>
                     }
                     value={formData?.createdBy}
                   />
                 </Grid>
-                <Grid item
+                {/* <Grid item
                   md={4}
                   sm={12}
                   xs={12}
@@ -425,7 +487,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                     }
                     value={formData?.createdAt ? format(new Date(formData?.createdAt), 'dd/MM/yyyy') : ""}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item
                   md={4}
                   sm={12}
@@ -439,14 +501,14 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                     type='date'
                     label={
                       <span>
-                        <span>Start date</span>
+                        <span>Ngày nhận lớp</span>
                       </span>
                     }
                     value={formData?.startDate ? format(formData?.startDate, 'yyyy-MM-dd') : ""}
                   />
 
                 </Grid>
-                <Grid item
+                {/* <Grid item
                   md={4}
                   sm={12}
                   xs={12}
@@ -464,8 +526,8 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                     }
                     value={formData?.endDate ? format(formData?.endDate, 'yyyy-MM-dd') : ""}
                   />
-                </Grid>
-                <Grid item
+                </Grid> */}
+                {/* <Grid item
                   md={4}
                   sm={12}
                   xs={12}
@@ -496,8 +558,8 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                     disabled={isView}
                     noOptionsText={"No option"}
                   />
-                </Grid>
-                <Grid item
+                </Grid> */}
+                {/* <Grid item
                   md={12}
                   sm={12}
                   xs={12}
@@ -514,8 +576,8 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                     }
                     value={formData?.note}
                   />
-                </Grid>
-                <Grid item
+                </Grid> */}
+                {/* <Grid item
                   md={12}
                   sm={12}
                   xs={12}
@@ -533,7 +595,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                     }
                     value={formData?.description}
                   />
-                </Grid>
+                </Grid> */}
                 {items?.id && <>
                   {!isView && <Grid item
                     md={12}
@@ -544,7 +606,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                       variant="contained"
                       onClick={handleAddTask}
                     >
-                      Add tasks
+                      Thêm học sinh
                     </Button>
                   </Grid>}
                   <Grid item
@@ -553,6 +615,239 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                     xs={12}
                   >
 
+                    <Table
+                      size="small"
+                      padding="none"
+                      stickyHeader={true}
+                    >
+
+                      <TableHead >
+                        <TableRow>
+                          <TableCell align='center'
+                            width={20}
+                          >
+                            STT
+                          </TableCell>
+                          {!isView && <TableCell align='center'
+                            width={100}
+                          >
+                            Thao tác
+                          </TableCell>}
+                          <TableCell>
+                            Subject
+                          </TableCell>
+                          <TableCell width={250}>
+                            Assignee
+                          </TableCell>
+                          <TableCell
+                            width={110}
+                            align='center'
+                          >
+                            Status
+                          </TableCell>
+                          <TableCell width={100}>
+                            % Done
+                          </TableCell>
+                          <TableCell>
+                            Note
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody >
+                        {listTask?.map((item, index) => {
+                          return (<TableRow key={index}>
+                            <TableCell align='center' >
+                              {index + 1}
+                            </TableCell>
+                            {!isView && <TableCell align='center' >
+                              <SvgIcon
+                                fontSize="small"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => handleDeleteTask(index, item)}
+                              >
+                                <XMarkIcon style={{ color: COLOR.SUPPORT_THIRD }} />
+                              </SvgIcon>
+
+                            </TableCell>}
+                            <TableCell align='left' >
+                              <TextValidator
+                                disabled={isView}
+                                className='w-100'
+                                onChange={(event) => handleChangeTask(event, "taskName", index)}
+                                name="taskName"
+                                value={item.taskName}
+                              />
+                            </TableCell>
+                            <TableCell align='center' >
+                              <Autocomplete
+                                fullWidth
+                                options={listMember}
+                                value={item?.member || null}
+                                onChange={(e, value) => handleChangeMember(value, index)}
+                                getOptionLabel={(option) => option?.username}
+                                renderInput={(params) => (
+                                  <TextField {...params} />
+                                )}
+                                filterOptions={(options, params) => {
+                                  params.inputValue = params.inputValue.trim();
+                                  let filtered = filterAutocomplete(options, params);
+                                  return filtered;
+                                }}
+                                disabled={isView}
+                                noOptionsText={"No option"}
+                              />
+                            </TableCell>
+                            <TableCell align='center' >
+                              {LIST_PLAN_STATUS.find(i => i?.code === item?.status)?.label}
+                              {/* <Autocomplete
+                                fullWidth
+                                options={LIST_PLAN_STATUS}
+                                value={item?.label}
+                                onChange={(e, value) => handleChangeTaskStatus(value, index)}
+                                getOptionLabel={(option) => option?.label}
+                                renderInput={(params) => (
+                                  <TextField {...params} />
+                                )}
+                                filterOptions={(options, params) => {
+                                  params.inputValue = params.inputValue.trim();
+                                  let filtered = filterAutocomplete(options, params);
+                                  return filtered;
+                                }}
+                                disabled={isView}
+                                noOptionsText={"No option"}
+                              /> */}
+                            </TableCell>
+                            <TableCell align='center' >
+                              {item?.percentComplete}
+                            </TableCell>
+                            <TableCell align='left' >
+                              {item?.note}
+                            </TableCell>
+                          </TableRow>)
+                        })}
+                      </TableBody>
+                    </Table>
+                  </Grid>
+                </>}
+              </Grid>}
+            {isMember &&
+              <Grid container
+                spacing={1}
+              >
+                <Grid item
+                  md={4}
+                  sm={12}
+                  xs={12}
+                >
+                  <TextValidator
+                    disabled={isView}
+                    className='w-100'
+                    onChange={handleChange}
+                    name="username"
+                    label={
+                      <span>
+                        <span>Username</span>
+                      </span>
+                    }
+                    value={formData?.username}
+                    validators={["required"]}
+                    errorMessages={["general.required"]}
+                  />
+                </Grid>
+                <Grid item
+                  md={4}
+                  sm={12}
+                  xs={12}
+                >
+                  <TextValidator
+                    disabled={isView}
+                    className='w-100'
+                    onChange={handleChange}
+                    type='password'
+                    name="password"
+                    label={
+                      <span>
+                        <span>Password</span>
+                      </span>
+                    }
+                    value={formData?.password}
+                    validators={["required"]}
+                    errorMessages={["general.required"]}
+                  />
+                </Grid>
+                <Grid item
+                  md={4}
+                  sm={12}
+                  xs={12}
+                >
+                  <TextValidator
+                    disabled={isView}
+                    className='w-100'
+                    name='phone'
+                    onChange={handleChange}
+                    label={
+                      <span>
+                        <span>Number phone</span>
+                      </span>
+                    }
+                    value={formData?.phone}
+                  />
+                </Grid>
+                <Grid item
+                  md={4}
+                  sm={12}
+                  xs={12}
+                >
+                  <TextValidator
+                    disabled={isView}
+                    className='w-100'
+                    name='email'
+                    onChange={handleChange}
+                    label={
+                      <span>
+                        <span>Email</span>
+                      </span>
+                    }
+                    value={formData?.email}
+                  />
+                </Grid>
+                <Grid item
+                  md={4}
+                  sm={12}
+                  xs={12}
+                >
+                  <TextValidator
+                    disabled={isView}
+                    className='w-100'
+                    name="createdAt"
+                    label={
+                      <span>
+                        <span>Created at</span>
+                      </span>
+                    }
+                    value={formData?.createdAt ? format(new Date(formData?.createdAt), 'dd/MM/yyyy') : format(new Date(), 'dd/MM/yyyy')}
+                  />
+                </Grid>
+                {items?.id && isPlan && <>
+                  {!isView &&
+                    <Grid item
+                      md={12}
+                      sm={12}
+                      xs={12}
+                    >
+                      <Button
+                        variant="contained"
+                        onClick={handleAddTask}
+                      >
+                        Add tasks
+                      </Button>
+                    </Grid>
+                  }
+                  <Grid item
+                    md={12}
+                    sm={12}
+                    xs={12}
+                  >
                     <Table
                       size="small"
                       padding="none"
@@ -668,7 +963,7 @@ export default function CustomersDialog({ open, items, handleClose, title, isPla
                   </Grid>
                 </>}
               </Grid>}
-            {isMember &&
+            {isGiaoVien &&
               <Grid container
                 spacing={1}
               >

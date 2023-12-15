@@ -83,7 +83,7 @@ export const getByMemberId = async () => {
 
 //member
 
-export const getMember = async () => {
-  let url = API_PATH + "/getMember/3";
+export const getMember = async (role) => {
+  let url = API_PATH + "/getMember/" + role;
   return axios.get(url)
 }

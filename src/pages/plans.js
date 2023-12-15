@@ -131,7 +131,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Track Plan | Project management
+          Phần mềm quản lý học sinh phổ thông | Project management
         </title>
       </Head>
       <Box

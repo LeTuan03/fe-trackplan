@@ -15,7 +15,7 @@ export const items = () => {
 
   const roleBasedItems = [
     {
-      title: 'Overview',
+      title: 'Trang chủ',
       path: '/',
       icon: (
         <SvgIcon fontSize="small">
@@ -23,8 +23,8 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    currentUser?.role === "1" && {
-      title: 'Plans',
+    (currentUser?.role === "1")&& {
+      title: 'Quản lý lớp học',
       path: '/plans',
       icon: (
         <SvgIcon fontSize="small">
@@ -32,8 +32,17 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    currentUser?.role === "1" && {
-      title: 'Member',
+    (currentUser?.role === "2") && {
+      title: 'Quản lý giáo viên',
+      path: '/giaovien',
+      icon: (
+        <SvgIcon fontSize="small">
+          <UsersIcon />
+        </SvgIcon>
+      ),
+    },
+    (currentUser?.role === "2") && {
+      title: 'Quản lý học sinh',
       path: '/member',
       icon: (
         <SvgIcon fontSize="small">
@@ -42,7 +51,7 @@ export const items = () => {
       ),
     },
     currentUser?.role === "2" && {
-      title: 'Customers',
+      title: 'Quản lý người dùng',
       path: '/customers',
       icon: (
         <SvgIcon fontSize="small">
@@ -51,7 +60,7 @@ export const items = () => {
       ),
     },
     currentUser?.role === "3" && {
-      title: 'Group',
+      title: 'Lớp học',
       path: '/groups',
       icon: (
         <SvgIcon fontSize="small">
@@ -60,7 +69,7 @@ export const items = () => {
       ),
     },
     {
-      title: 'Account',
+      title: 'Thông tin cá nhân',
       path: '/account',
       icon: (
         <SvgIcon fontSize="small">
@@ -69,7 +78,7 @@ export const items = () => {
       ),
     },
     {
-      title: 'Settings',
+      title: 'Cài đặt',
       path: '/settings',
       icon: (
         <SvgIcon fontSize="small">

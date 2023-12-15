@@ -114,7 +114,7 @@ const Page = () => {
   }
   const pageUpdate = async () => {
     try {
-      const data = await getMember();
+      const data = await getMember(3);
       if (data?.status === STATUS.SUCCESS) {
         setListUser(data?.data)
       } else {
@@ -131,7 +131,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Track Plan | Members
+          Phần mềm quản lý học sinh phổ thông | Members
         </title>
       </Head>
       <Box
@@ -150,7 +150,7 @@ const Page = () => {
             >
               <Stack spacing={1}>
                 <Typography variant="h4">
-                  Project List
+                  Danh sách học sinh
                 </Typography>
                 <Stack
                   alignItems="center"

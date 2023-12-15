@@ -11,13 +11,17 @@ export const STATUS_OBJECT = {
   END: { code: 3, name: "End" }
 }
 export const ROLE = [
-  { code: 1, indexOrder: "1", name: "ADMIN" },
-  { code: 3, indexOrder: "3", name: "MEMBER" },
+  { code: 1, indexOrder: "1", name: "Giáo viên" },
+  { code: 3, indexOrder: "3", name: "Học sinh" },
+]
+export const ALL_ROLE = [
+  { code: 1, indexOrder: "1", name: "Giáo viên" },
+  { code: 3, indexOrder: "3", name: "Học sinh" },
 ]
 export const ROLE_OBJECT = {
-  ADMIN: { code: 1, indexOrder: "1", name: "ADMIN" },
-  SUPPER_ADMIN: { code: 2, indexOrder: "2", name: "SUPPER ADMIN" },
-  MEMBER: { code: 3, indexOrder: "3", name: "MEMBER" },
+  ADMIN: { code: 1, indexOrder: "1", name: "Giáo viên" },
+  SUPPER_ADMIN: { code: 2, indexOrder: "2", name: "Người quản lý" },
+  MEMBER: { code: 3, indexOrder: "3", name: "Học sinh" },
 }
 export const LIST_STATUS = [
   {

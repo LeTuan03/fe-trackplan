@@ -23,7 +23,7 @@ import PencilIcon from '@heroicons/react/24/solid/PencilIcon';
 import EyeIcon from '@heroicons/react/24/solid/EyeIcon';
 import XMarkIcon from '@heroicons/react/24/solid/XMarkIcon';
 import { COLOR, LIST_PLAN_STATUS, ROLE, ROLE_OBJECT, STATUS_OBJECT } from 'src/appConst';
-import { convertTxt, getCurrentUser, renderRole, renderStatus } from 'src/appFunctions';
+import { convertTxt, getCurrentUser, renderRole, renderStatus, statusTable } from 'src/appFunctions';
 import { SeverityPill } from 'src/components/severity-pill';
 export const CustomersTable = (props) => {
   const {
@@ -35,11 +35,12 @@ export const CustomersTable = (props) => {
     rowsPerPage = 0,
     isPlant,
     isAdmin,
-    isGroup, isMember,
+    isGroup, 
+    isMember,
     handleClickOpen,
     handleEdit,
     handleClickOpenDelete,
-
+    isGiaoVien
   } = props;
 
   return (
@@ -77,6 +78,24 @@ export const CustomersTable = (props) => {
                   </TableCell>
                 </>}
                 {isMember && <>
+                  <TableCell align='center' >
+                    No
+                  </TableCell>
+                  <TableCell padding="checkbox"
+                    align='center' >
+                    Action
+                  </TableCell>
+                  <TableCell>
+                    Username
+                  </TableCell>
+                  <TableCell align='center' >
+                    Created at
+                  </TableCell>
+                  <TableCell align='center' >
+                    Role
+                  </TableCell>
+                </>}
+                {isGiaoVien && <>
                   <TableCell align='center' >
                     No
                   </TableCell>
@@ -280,6 +299,60 @@ export const CustomersTable = (props) => {
                           </SeverityPill>
                         </TableCell>
                       </>}
+                    {isGiaoVien &&
+                      <>
+                        <TableCell align='center' >
+                          {index + 1}
+                        </TableCell>
+                        <TableCell align='center' >
+                          <div
+                            style={{ display: "flex", justifyContent: "center", cursor: "pointer", gap: 10 }}
+                          >
+                            <SvgIcon fontSize="small"
+                              onClick={() => handleEdit(customer)}
+                            >
+                              <PencilIcon style={{ color: COLOR.PRIMARY }} />
+                            </SvgIcon>
+                            {customer?.status !== STATUS_OBJECT.INPROGRESS.name && <SvgIcon fontSize="small"
+                              onClick={() => {
+                                handleClickOpenDelete(customer)
+                              }}
+                            >
+                              <XMarkIcon />
+                            </SvgIcon>}
+
+                            <SvgIcon fontSize="small"
+                              onClick={() => {
+                                handleClickOpen(customer)
+                              }}
+                            >
+                              <EyeIcon />
+                            </SvgIcon>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Stack
+                            alignItems="center"
+                            direction="row"
+                            spacing={2}
+                          >
+                            <Avatar src={customer.avatar}>
+                              {getInitials(customer.username)}
+                            </Avatar>
+                            <Typography variant="subtitle2">
+                              {customer.username}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+                        <TableCell align='center' >
+                          {customer?.createdAt ? format(new Date(customer?.createdAt), 'dd/MM/yyyy') : ""}
+                        </TableCell>
+                        <TableCell align='center' >
+                          <SeverityPill color={[renderRole(customer?.role)]}>
+                            {ROLE.find(i => i?.indexOrder === customer?.role)?.name}
+                          </SeverityPill>
+                        </TableCell>
+                      </>}
                     {isGroup &&
                       <>
                         <TableCell align='center' >
@@ -370,7 +443,7 @@ export const CustomersTable = (props) => {
                         <TableCell style={{ maxWidth: 80 }}
                           align='center'>
                           <SeverityPill color={[renderRole(customer?.role)]}>
-                            {customer?.role === ROLE_OBJECT.ADMIN.indexOrder ? "ADMIN" : "SUPPER ADMIN"}
+                            {statusTable(customer?.role)}
                           </SeverityPill>
                         </TableCell>
                       </>

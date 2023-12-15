@@ -85,7 +85,7 @@ export const Layout = (props) => {
                 sx={{ color: '#15B79E' }}
                 target="_blank"
               >
-                Track Plan
+                Phần mềm quản lý học sinh phổ thông
               </Box>
             </Typography>
 

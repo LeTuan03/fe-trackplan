@@ -62,7 +62,7 @@ const RegisterPage = () => {
     <>
       <Head>
         <title>
-          Register | Track Plan
+          Đăng ký | Phần mềm quản lý học sinh phổ thông
         </title>
       </Head>
       <Box
@@ -87,13 +87,13 @@ const RegisterPage = () => {
               sx={{ mb: 3 }}
             >
               <Typography variant="h4">
-                Register
+                Đăng ký
               </Typography>
               <Typography
                 color="text.secondary"
                 variant="body2"
               >
-                Already have an account?
+                Bạn đẵ có tài khoản?
                 &nbsp;
                 <Link
                   component={NextLink}
@@ -101,7 +101,7 @@ const RegisterPage = () => {
                   underline="hover"
                   variant="subtitle2"
                 >
-                  Log in
+                  Đăng nhập
                 </Link>
               </Typography>
             </Stack>
@@ -118,7 +118,7 @@ const RegisterPage = () => {
                   renderInput={(params) => (
                     <TextField {...params}
                       name='role'
-                      label={'Role'}
+                      label={'Vai trò'}
                     />
                   )}
                   filterOptions={(options, params) => {
@@ -132,7 +132,7 @@ const RegisterPage = () => {
                   error={!!(formik.touched.username && formik.errors.username)}
                   fullWidth
                   helperText={formik.touched.username && formik.errors.username}
-                  label="Name"
+                  label="Tên đăng nhập"
                   name="username"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -142,7 +142,7 @@ const RegisterPage = () => {
                   error={!!(formik.touched.email && formik.errors.email)}
                   fullWidth
                   helperText={formik.touched.email && formik.errors.email}
-                  label="Email Address"
+                  label="Email"
                   name="email"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -153,7 +153,7 @@ const RegisterPage = () => {
                   error={!!(formik.touched.password && formik.errors.password)}
                   fullWidth
                   helperText={formik.touched.password && formik.errors.password}
-                  label="Password"
+                  label="Mật khẩu"
                   name="password"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -177,7 +177,7 @@ const RegisterPage = () => {
                 type="submit"
                 variant="contained"
               >
-                Register
+                Đăng ký
               </Button>
             </form>
           </div>

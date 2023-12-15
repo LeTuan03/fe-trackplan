@@ -8,7 +8,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Account | Track Plan
+        Account | Phần mềm quản lý học sinh phổ thông
       </title>
     </Head>
     <Box

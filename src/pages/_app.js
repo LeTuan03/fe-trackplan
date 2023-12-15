@@ -28,7 +28,7 @@ const App = (props) => {
     <CacheProvider value={emotionCache}>
       <Head>
         <title>
-          Track Plan
+          Phần mềm quản lý học sinh phổ thông
         </title>
         <meta
           name="viewport"

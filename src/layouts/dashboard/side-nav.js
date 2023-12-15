@@ -70,7 +70,7 @@ export const SideNav = (props) => {
                 color="inherit"
                 variant="subtitle1"
               >
-                Track Plan
+                Phần Mềm Quản Lý Học Sinh Phổ Thông
               </Typography>
               {/* <Typography
                 color="neutral.400"

@@ -12,7 +12,7 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { CustomersTable } from 'src/sections/customer/customers-table';
 import { CustomersSearch } from 'src/sections/customer/customers-search';
 import CustomersDialog from 'src/sections/customer/customers-dialog';
-import { deleteProject, getById, getByMemberId, getProjectByAccountId, getProjectById, searchProject } from 'src/services/customerServices';
+import { deleteProject, getAccountById, getMember, getProjectByAccountId, getProjectById, searchProject } from 'src/services/customerServices';
 import { getCurrentUser } from 'src/appFunctions';
 import { STATUS } from 'src/appConst';
 import CustomersDialogDelete from 'src/sections/customer/customers-dialog-delete';
@@ -50,7 +50,7 @@ const Page = () => {
 
   const handleClickOpen = async (item) => {
     try {
-      const data = await getById(item?.id);
+      const data = await getAccountById(item?.id);
       if (data?.status === STATUS.SUCCESS) {
         setCustomer(data?.data)
         setOpen(true);
@@ -62,7 +62,7 @@ const Page = () => {
   };
   const handleEdit = async (item) => {
     try {
-      const data = await getById(item?.id);
+      const data = await getAccountById(item?.id);
       if (data?.status === STATUS.SUCCESS) {
         setCustomer(data?.data);
         setOpen(true);
@@ -83,38 +83,38 @@ const Page = () => {
   };
 
   const handleDelete = async () => {
-    try {
-      const data = await deleteProject(customer)
-      if (data?.status === STATUS.SUCCESS) {
-        pageUpdate()
-        handleClose()
-        toast.success("Deleted project successfully", {
-          autoClose: 1000
-        })
-      }
-    } catch (error) {
-      toast.error("Delete failed project", {
-        autoClose: 1000
-      })
-    }
+    // try {
+    //   const data = await deleteProject(customer)
+    //   if (data?.status === STATUS.SUCCESS) {
+    //     pageUpdate()
+    //     handleClose()
+    //     toast.success("Deleted project successfully", {
+    //       autoClose: 1000
+    //     })
+    //   }
+    // } catch (error) {
+    //   toast.error("Delete failed project", {
+    //     autoClose: 1000
+    //   })
+    // }
   }
   const handleSearch = async (keyWord) => {
-    try {
-      if (keyWord !== "") {
-        const data = await searchProject({ accountId: getCurrentUser()?.id, name: keyWord });
-        if (data?.status === STATUS.SUCCESS) {
-          setListUser(data?.data)
-        }
-      } else {
-        pageUpdate()
-      }
-    } catch (error) {
+    // try {
+    //   if (keyWord !== "") {
+    //     const data = await searchProject({ accountId: getCurrentUser()?.id, name: keyWord });
+    //     if (data?.status === STATUS.SUCCESS) {
+    //       setListUser(data?.data)
+    //     }
+    //   } else {
+    //     pageUpdate()
+    //   }
+    // } catch (error) {
 
-    }
+    // }
   }
   const pageUpdate = async () => {
     try {
-      const data = await getByMemberId();
+      const data = await getMember("1");
       if (data?.status === STATUS.SUCCESS) {
         setListUser(data?.data)
       } else {
@@ -131,7 +131,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Phần mềm quản lý học sinh phổ thông | Project management
+          Phần mềm quản lý học sinh phổ thông | Members
         </title>
       </Head>
       <Box
@@ -150,9 +150,9 @@ const Page = () => {
             >
               <Stack spacing={1}>
                 <Typography variant="h4">
-                  Thông tin lớp học
+                  Danh sách giáo viên
                 </Typography>
-                <Stack
+                {/* <Stack
                   alignItems="center"
                   direction="row"
                   spacing={1}
@@ -177,9 +177,9 @@ const Page = () => {
                   >
                     Export
                   </Button>
-                </Stack>
+                </Stack> */}
               </Stack>
-              {/* <div>
+              <div>
                 <Button
                   startIcon={(
                     <SvgIcon fontSize="small">
@@ -191,13 +191,13 @@ const Page = () => {
                 >
                   Add
                 </Button>
-              </div> */}
+              </div>
             </Stack>
             <CustomersSearch isPlant={true}
               handleSearch={handleSearch} />
             <CustomersDialog
-              title="Add/Edit project"
-              isGroup={true}
+              title="Add/Edit member"
+              isGiaoVien={true}
               open={open}
               handleClose={handleClose}
               items={customer}
@@ -211,7 +211,7 @@ const Page = () => {
               data={customer}
             />
             <CustomersTable
-              isGroup={true}
+              isGiaoVien={true}
               handleClickOpen={handleClickOpen}
               handleClickOpenDelete={handleClickOpenDelete}
               handleEdit={handleEdit}

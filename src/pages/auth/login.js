@@ -19,8 +19,8 @@ const Page = () => {
   const auth = useAuth();
   const formik = useFormik({
     initialValues: {
-      username: 'ducanh',
-      password: 'ducanh',
+      username: 'tunisme',
+      password: '`123456`',
       submit: null
     },
     validationSchema: Yup.object({
@@ -49,7 +49,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Login | Track Plan
+          Đăng nhập | Phần mềm quản lý học sinh phổ thông
         </title>
       </Head>
       <Box
@@ -75,13 +75,13 @@ const Page = () => {
               sx={{ mb: 3 }}
             >
               <Typography variant="h4">
-                Login
+                Đăng nhập
               </Typography>
               <Typography
                 color="text.secondary"
                 variant="body2"
               >
-                Don&apos;t have an account?
+                Bạn chưa có tài khoản?
                 &nbsp;
                 <Link
                   component={NextLink}
@@ -89,7 +89,7 @@ const Page = () => {
                   underline="hover"
                   variant="subtitle2"
                 >
-                  Register
+                  Đăng ký
                 </Link>
               </Typography>
             </Stack>
@@ -101,7 +101,7 @@ const Page = () => {
               <Stack spacing={3}>
                 <TextField
                   fullWidth
-                  label="Username"
+                  label="Tên đăng nhập"
                   name="username"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -112,7 +112,7 @@ const Page = () => {
                   error={!!(formik.touched.password && formik.errors.password)}
                   fullWidth
                   helperText={formik.touched.password && formik.errors.password}
-                  label="Password"
+                  label="Mật khẩu"
                   name="password"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -136,7 +136,7 @@ const Page = () => {
                 type="submit"
                 variant="contained"
               >
-                Continue
+                Tiếp tục
               </Button>
             </form>
           </div>
