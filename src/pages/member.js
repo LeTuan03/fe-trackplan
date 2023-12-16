@@ -1,21 +1,28 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import Head from 'next/head';
-import { subDays, subHours } from 'date-fns';
-import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
-import ArrowUpOnSquareIcon from '@heroicons/react/24/solid/ArrowUpOnSquareIcon';
-import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+import { useCallback, useEffect, useMemo, useState } from "react";
+import Head from "next/head";
+import { subDays, subHours } from "date-fns";
+import ArrowDownOnSquareIcon from "@heroicons/react/24/solid/ArrowDownOnSquareIcon";
+import ArrowUpOnSquareIcon from "@heroicons/react/24/solid/ArrowUpOnSquareIcon";
+import PlusIcon from "@heroicons/react/24/solid/PlusIcon";
+import { Box, Button, Container, Stack, SvgIcon, Typography } from "@mui/material";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { CustomersTable } from 'src/sections/customer/customers-table';
-import { CustomersSearch } from 'src/sections/customer/customers-search';
-import CustomersDialog from 'src/sections/customer/customers-dialog';
-import { deleteProject, getAccountById, getMember, getProjectByAccountId, getProjectById, searchProject } from 'src/services/customerServices';
-import { getCurrentUser } from 'src/appFunctions';
-import { STATUS } from 'src/appConst';
-import CustomersDialogDelete from 'src/sections/customer/customers-dialog-delete';
+import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
+import { CustomersTable } from "src/sections/customer/customers-table";
+import { CustomersSearch } from "src/sections/customer/customers-search";
+import CustomersDialog from "src/sections/customer/customers-dialog";
+import {
+  deleteProject,
+  getAccountById,
+  getMember,
+  getProjectByAccountId,
+  getProjectById,
+  searchProject,
+} from "src/services/customerServices";
+import { getCurrentUser } from "src/appFunctions";
+import { STATUS } from "src/appConst";
+import CustomersDialogDelete from "src/sections/customer/customers-dialog-delete";
 
 const Page = () => {
   const [page, setPage] = useState(0);
@@ -25,20 +32,14 @@ const Page = () => {
   const [customer, setCustomer] = useState("");
   const [listUser, setListUser] = useState([]);
   const [isView, setIsView] = useState(false);
-  const handlePageChange = useCallback(
-    (event, value) => {
-      setPage(value);
-    },
-    []
-  );
+  const handlePageChange = useCallback((event, value) => {
+    setPage(value);
+  }, []);
 
-  const handleRowsPerPageChange = useCallback(
-    (event) => {
-      setRowsPerPage(event.target.value);
-      setPage(0);
-    },
-    []
-  );
+  const handleRowsPerPageChange = useCallback((event) => {
+    setRowsPerPage(event.target.value);
+    setPage(0);
+  }, []);
 
   const getPaginatedData = () => {
     const startIndex = page * rowsPerPage;
@@ -52,12 +53,12 @@ const Page = () => {
     try {
       const data = await getAccountById(item?.id);
       if (data?.status === STATUS.SUCCESS) {
-        setCustomer(data?.data)
+        setCustomer(data?.data);
         setOpen(true);
         setIsView(true);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
   const handleEdit = async (item) => {
@@ -68,18 +69,18 @@ const Page = () => {
         setOpen(true);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
   const handleClickOpenDelete = (data) => {
-    setCustomer(data)
-    setOpenDelete(true)
-  }
+    setCustomer(data);
+    setOpenDelete(true);
+  };
   const handleClose = () => {
-    setCustomer(null)
+    setCustomer(null);
     setOpen(false);
-    setOpenDelete(false)
-    setIsView(false)
+    setOpenDelete(false);
+    setIsView(false);
   };
 
   const handleDelete = async () => {
@@ -97,7 +98,7 @@ const Page = () => {
     //     autoClose: 1000
     //   })
     // }
-  }
+  };
   const handleSearch = async (keyWord) => {
     // try {
     //   if (keyWord !== "") {
@@ -109,50 +110,41 @@ const Page = () => {
     //     pageUpdate()
     //   }
     // } catch (error) {
-
     // }
-  }
+  };
   const pageUpdate = async () => {
     try {
       const data = await getMember(3);
       if (data?.status === STATUS.SUCCESS) {
-        setListUser(data?.data)
+        setListUser(data?.data);
       } else {
-        setListUser([])
+        setListUser([]);
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
   useEffect(() => {
-    pageUpdate()
-  }, [])
+    pageUpdate();
+  }, []);
   return (
     <>
       <Head>
-        <title>
-          Phần mềm quản lý học sinh phổ thông | Members
-        </title>
+        <title>Phần mềm quản lý học sinh phổ thông | Members</title>
       </Head>
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          pt: 1
+          pt: 1,
         }}
       >
         <Container maxWidth="xl">
           <Stack spacing={3}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              spacing={4}
-            >
+            <Stack direction="row" justifyContent="space-between" spacing={4}>
               <Stack spacing={1}>
-                <Typography variant="h4">
-                  Danh sách học sinh
-                </Typography>
-                <Stack
+                <Typography variant="h4">Danh sách học sinh</Typography>
+                {/* <Stack
                   alignItems="center"
                   direction="row"
                   spacing={1}
@@ -177,26 +169,29 @@ const Page = () => {
                   >
                     Export
                   </Button>
-                </Stack>
+                </Stack> */}
               </Stack>
               <div>
                 <Button
-                  startIcon={(
+                  startIcon={
                     <SvgIcon fontSize="small">
                       <PlusIcon />
                     </SvgIcon>
-                  )}
+                  }
                   variant="contained"
                   onClick={() => setOpen(true)}
                 >
-                  Add
+                  Thêm mới
                 </Button>
               </div>
             </Stack>
-            <CustomersSearch isPlant={true}
-              handleSearch={handleSearch} />
+            <CustomersSearch
+              isPlant={true}
+              handleSearch={handleSearch}
+              placeHolder="Tìm kiếm theo tên học sinh"
+            />
             <CustomersDialog
-              title="Add/Edit member"
+              title="Thêm mới/Cập nhật học sinh"
               isMember={true}
               open={open}
               handleClose={handleClose}
@@ -230,10 +225,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => (
-  <DashboardLayout>
-    {page}
-  </DashboardLayout>
-);
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Page;

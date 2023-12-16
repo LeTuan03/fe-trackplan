@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
-import { format } from 'date-fns';
+import PropTypes from "prop-types";
+import { format } from "date-fns";
 import {
   Avatar,
   Box,
@@ -12,35 +12,41 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
-} from '@mui/material';
-import { Scrollbar } from 'src/components/scrollbar';
-import { getInitials } from 'src/utils/get-initials';
-import { SvgIcon } from '@mui/material';
-import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
-import PencilIcon from '@heroicons/react/24/solid/PencilIcon';
-import EyeIcon from '@heroicons/react/24/solid/EyeIcon';
-import XMarkIcon from '@heroicons/react/24/solid/XMarkIcon';
-import { COLOR, LIST_PLAN_STATUS, ROLE, ROLE_OBJECT, STATUS_OBJECT } from 'src/appConst';
-import { convertTxt, getCurrentUser, renderRole, renderStatus, statusTable } from 'src/appFunctions';
-import { SeverityPill } from 'src/components/severity-pill';
+  Typography,
+} from "@mui/material";
+import { Scrollbar } from "src/components/scrollbar";
+import { getInitials } from "src/utils/get-initials";
+import { SvgIcon } from "@mui/material";
+import PlusIcon from "@heroicons/react/24/solid/PlusIcon";
+import UsersIcon from "@heroicons/react/24/solid/UsersIcon";
+import PencilIcon from "@heroicons/react/24/solid/PencilIcon";
+import EyeIcon from "@heroicons/react/24/solid/EyeIcon";
+import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
+import { COLOR, LIST_PLAN_STATUS, ROLE, ROLE_OBJECT, STATUS_OBJECT } from "src/appConst";
+import {
+  convertTxt,
+  getCurrentUser,
+  renderRole,
+  renderStatus,
+  statusTable,
+} from "src/appFunctions";
+import { SeverityPill } from "src/components/severity-pill";
 export const CustomersTable = (props) => {
   const {
     count = 0,
     items = [],
-    onPageChange = () => { },
+    onPageChange = () => {},
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
     isPlant,
     isAdmin,
-    isGroup, 
+    isGroup,
     isMember,
     handleClickOpen,
     handleEdit,
     handleClickOpenDelete,
-    isGiaoVien
+    isGiaoVien,
   } = props;
 
   return (
@@ -50,24 +56,16 @@ export const CustomersTable = (props) => {
           <Table>
             <TableHead>
               <TableRow>
-                {isPlant && <>
-                  <TableCell align='center' >
-                    No
-                  </TableCell>
-                  <TableCell padding="checkbox"
-                    align='center' >
-                    Action
-                  </TableCell>
-                  <TableCell>
-                    Name of project
-                  </TableCell>
-                  <TableCell>
-                    Created by
-                  </TableCell>
-                  <TableCell align='center' >
-                    Created at
-                  </TableCell>
-                  <TableCell align='center' >
+                {isPlant && (
+                  <>
+                    <TableCell align="center">STT</TableCell>
+                    <TableCell padding="checkbox" align="center">
+                      Thao tác
+                    </TableCell>
+                    <TableCell>Tên lớp học</TableCell>
+                    <TableCell>Giáo viên chủ nhiệm</TableCell>
+                    <TableCell align="center">Sĩ số lớp</TableCell>
+                    {/* <TableCell align='center' >
                     Status
                   </TableCell>
                   <TableCell align='center' >
@@ -75,138 +73,106 @@ export const CustomersTable = (props) => {
                   </TableCell>
                   <TableCell>
                     Note
-                  </TableCell>
-                </>}
-                {isMember && <>
-                  <TableCell align='center' >
-                    No
-                  </TableCell>
-                  <TableCell padding="checkbox"
-                    align='center' >
-                    Action
-                  </TableCell>
-                  <TableCell>
-                    Username
-                  </TableCell>
-                  <TableCell align='center' >
-                    Created at
-                  </TableCell>
-                  <TableCell align='center' >
-                    Role
-                  </TableCell>
-                </>}
-                {isGiaoVien && <>
-                  <TableCell align='center' >
-                    No
-                  </TableCell>
-                  <TableCell padding="checkbox"
-                    align='center' >
-                    Action
-                  </TableCell>
-                  <TableCell>
-                    Username
-                  </TableCell>
-                  <TableCell align='center' >
-                    Created at
-                  </TableCell>
-                  <TableCell align='center' >
-                    Role
-                  </TableCell>
-                </>}
-                {isGroup && <>
-                  <TableCell align='center' >
-                    No
-                  </TableCell>
-                  <TableCell padding="checkbox"
-                    align='center' >
-                    Action
-                  </TableCell>
-                  <TableCell align='center'
-                    width={190}>
-                    Project name
-                  </TableCell>
-                  <TableCell align='center'>
-                    Task name
-                  </TableCell>
-                  <TableCell align='center'
-                    width={110}>
-                    Status
-                  </TableCell>
-                  <TableCell align='center'
-                    width={120} >
-                    % Done
-                  </TableCell>
-                  <TableCell align='center'
-                    width={130}>
-                    Start Date
-                  </TableCell>
-                  <TableCell align='center'
-                    width={130}>
-                    Due Date
-                  </TableCell>
-                  <TableCell align='center'
-                    width={130} >
-                    Updated At
-                  </TableCell>
-                </>}
+                  </TableCell> */}
+                  </>
+                )}
+                {isMember && (
+                  <>
+                    <TableCell align="center">STT</TableCell>
+                    <TableCell padding="checkbox" align="center">
+                      Thao tác
+                    </TableCell>
+                    <TableCell>Tên học sinh</TableCell>
+                    <TableCell>Số điện thoại</TableCell>
+                    <TableCell>Email</TableCell>
+                    {/* <TableCell align="center">Created at</TableCell>
+                    <TableCell align="center">Role</TableCell> */}
+                  </>
+                )}
+                {isGiaoVien && (
+                  <>
+                    <TableCell align="center">STT</TableCell>
+                    <TableCell padding="checkbox" align="center">
+                      Action
+                    </TableCell>
+                    <TableCell>Username</TableCell>
+                    <TableCell align="center">Created at</TableCell>
+                    <TableCell align="center">Role</TableCell>
+                  </>
+                )}
+                {isGroup && (
+                  <>
+                    <TableCell width={20}>STT</TableCell>
+                    <TableCell width={100}>Thao tác</TableCell>
+                    <TableCell>Tên lớp học</TableCell>
+                    <TableCell>Giáo viên chủ nhiệm</TableCell>
+                    {/* <TableCell align="center" width={110}>
+                      Status
+                    </TableCell>
+                    <TableCell align="center" width={120}>
+                      % Done
+                    </TableCell>
+                    <TableCell align="center" width={130}>
+                      Start Date
+                    </TableCell>
+                    <TableCell align="center" width={130}>
+                      Due Date
+                    </TableCell>
+                    <TableCell align="center" width={130}>
+                      Updated At
+                    </TableCell> */}
+                  </>
+                )}
 
-                {isAdmin && <>
-                  <TableCell align='center' >
-                    No
-                  </TableCell>
-                  <TableCell padding="checkbox"
-                    align='center'>
-                    Action
-                  </TableCell>
-                  <TableCell>
-                    Name
-                  </TableCell>
-                  <TableCell>
-                    Email
-                  </TableCell>
-                  <TableCell>
-                    Phone
-                  </TableCell>
-                  <TableCell align='center'>
-                    Created At
-                  </TableCell>
-                  <TableCell align='center'>
-                    Role
-                  </TableCell></>}
+                {isAdmin && (
+                  <>
+                    <TableCell align="center">STT</TableCell>
+                    <TableCell align="center" width={100}>
+                      Thao tác
+                    </TableCell>
+                    <TableCell>Tên người dùng</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Số điện thoại</TableCell>
+                    <TableCell>Ngày tạo</TableCell>
+                    <TableCell>Vai trò</TableCell>
+                  </>
+                )}
               </TableRow>
             </TableHead>
             <TableBody>
               {items.map((customer, index) => {
                 return (
-                  <TableRow
-                    hover
-                    key={customer.id}
-                  >
-                    {isPlant &&
+                  <TableRow hover key={customer.id}>
+                    {isPlant && (
                       <>
-                        <TableCell align='center' >
-                          {index + 1}
-                        </TableCell>
-                        <TableCell align='center' >
+                        <TableCell align="center">{index + 1}</TableCell>
+                        <TableCell align="center">
                           <div
-                            style={{ display: "flex", justifyContent: "center", cursor: "pointer", gap: 10 }}
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              gap: 10,
+                            }}
                           >
-                            <SvgIcon fontSize="small"
-                              onClick={() => handleEdit(customer)}
-                            >
+                            <SvgIcon fontSize="small" onClick={() => handleEdit(customer)}>
                               <PencilIcon style={{ color: COLOR.PRIMARY }} />
                             </SvgIcon>
-                            {customer?.status !== STATUS_OBJECT.INPROGRESS.name && <SvgIcon fontSize="small"
-                              onClick={() => {
-                                handleClickOpenDelete(customer)
-                              }}
-                            >
-                              <XMarkIcon />
-                            </SvgIcon>}
+                            {customer?.status !== STATUS_OBJECT.INPROGRESS.name && (
+                              <SvgIcon
+                                fontSize="small"
+                                onClick={() => {
+                                  handleClickOpenDelete(customer);
+                                }}
+                              >
+                                <XMarkIcon />
+                              </SvgIcon>
+                            )}
 
-                            <SvgIcon fontSize="small"
+                            <SvgIcon
+                              fontSize="small"
                               onClick={() => {
-                                handleClickOpen(customer)
+                                handleClickOpen(customer);
                               }}
                             >
                               <EyeIcon />
@@ -214,26 +180,20 @@ export const CustomersTable = (props) => {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Stack
-                            alignItems="center"
-                            direction="row"
-                            spacing={2}
-                          >
-                            <Avatar src={customer.avatar}>
-                              {getInitials(customer.name)}
-                            </Avatar>
-                            <Typography variant="subtitle2">
-                              {customer.name}
-                            </Typography>
+                          <Stack alignItems="center" direction="row" spacing={2}>
+                            <Avatar src={customer.avatar}>{getInitials(customer.name)}</Avatar>
+                            <Typography variant="subtitle2">{customer.name}</Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell>
-                          {getCurrentUser()?.username}
+                        {/* <TableCell>{getCurrentUser()?.username}</TableCell> */}
+                        <TableCell>{customer?.createdBy}</TableCell>
+                        <TableCell align="center">
+                          {/* {customer?.createdAt
+                            ? format(new Date(customer?.createdAt), "dd/MM/yyyy")
+                            : ""} */}
+                          {customer?.tasks?.length}
                         </TableCell>
-                        <TableCell align='center' >
-                          {customer?.createdAt ? format(new Date(customer?.createdAt), 'dd/MM/yyyy') : ""}
-                        </TableCell>
-                        <TableCell align='center' >
+                        {/* <TableCell align='center' >
                           <SeverityPill color={[renderStatus(customer?.status)]}>
                             {customer?.status}
                           </SeverityPill>
@@ -243,33 +203,39 @@ export const CustomersTable = (props) => {
                         </TableCell>
                         <TableCell>
                           {customer?.note}
-                        </TableCell>
-                      </>}
-                    {isMember &&
+                        </TableCell> */}
+                      </>
+                    )}
+                    {isMember && (
                       <>
-                        <TableCell align='center' >
-                          {index + 1}
-                        </TableCell>
-                        <TableCell align='center' >
+                        <TableCell align="center">{index + 1}</TableCell>
+                        <TableCell align="center">
                           <div
-                            style={{ display: "flex", justifyContent: "center", cursor: "pointer", gap: 10 }}
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              gap: 10,
+                            }}
                           >
-                            <SvgIcon fontSize="small"
-                              onClick={() => handleEdit(customer)}
-                            >
+                            <SvgIcon fontSize="small" onClick={() => handleEdit(customer)}>
                               <PencilIcon style={{ color: COLOR.PRIMARY }} />
                             </SvgIcon>
-                            {customer?.status !== STATUS_OBJECT.INPROGRESS.name && <SvgIcon fontSize="small"
-                              onClick={() => {
-                                handleClickOpenDelete(customer)
-                              }}
-                            >
-                              <XMarkIcon />
-                            </SvgIcon>}
+                            {customer?.status !== STATUS_OBJECT.INPROGRESS.name && (
+                              <SvgIcon
+                                fontSize="small"
+                                onClick={() => {
+                                  handleClickOpenDelete(customer);
+                                }}
+                              >
+                                <XMarkIcon />
+                              </SvgIcon>
+                            )}
 
-                            <SvgIcon fontSize="small"
+                            <SvgIcon
+                              fontSize="small"
                               onClick={() => {
-                                handleClickOpen(customer)
+                                handleClickOpen(customer);
                               }}
                             >
                               <EyeIcon />
@@ -277,53 +243,59 @@ export const CustomersTable = (props) => {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Stack
-                            alignItems="center"
-                            direction="row"
-                            spacing={2}
-                          >
-                            <Avatar src={customer.avatar}>
-                              {getInitials(customer.username)}
-                            </Avatar>
-                            <Typography variant="subtitle2">
-                              {customer.username}
-                            </Typography>
+                          <Stack alignItems="center" direction="row" spacing={2}>
+                            <Avatar src={customer.avatar}>{getInitials(customer.username)}</Avatar>
+                            <Typography variant="subtitle2">{customer.username}</Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell align='center' >
-                          {customer?.createdAt ? format(new Date(customer?.createdAt), 'dd/MM/yyyy') : ""}
+                        <TableCell>
+                          <Typography variant="subtitle2">{customer?.phone}</Typography>
                         </TableCell>
-                        <TableCell align='center' >
+                        <TableCell>
+                          <Typography variant="subtitle2">{customer?.email}</Typography>
+                        </TableCell>
+                        {/* <TableCell align="center">
+                          {customer?.createdAt
+                            ? format(new Date(customer?.createdAt), "dd/MM/yyyy")
+                            : ""}
+                        </TableCell>
+                        <TableCell align="center">
                           <SeverityPill color={[renderRole(customer?.role)]}>
-                            {ROLE.find(i => i?.indexOrder === customer?.role)?.name}
+                            {ROLE.find((i) => i?.indexOrder === customer?.role)?.name}
                           </SeverityPill>
-                        </TableCell>
-                      </>}
-                    {isGiaoVien &&
+                        </TableCell> */}
+                      </>
+                    )}
+                    {isGiaoVien && (
                       <>
-                        <TableCell align='center' >
-                          {index + 1}
-                        </TableCell>
-                        <TableCell align='center' >
+                        <TableCell align="center">{index + 1}</TableCell>
+                        <TableCell align="center">
                           <div
-                            style={{ display: "flex", justifyContent: "center", cursor: "pointer", gap: 10 }}
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              gap: 10,
+                            }}
                           >
-                            <SvgIcon fontSize="small"
-                              onClick={() => handleEdit(customer)}
-                            >
+                            <SvgIcon fontSize="small" onClick={() => handleEdit(customer)}>
                               <PencilIcon style={{ color: COLOR.PRIMARY }} />
                             </SvgIcon>
-                            {customer?.status !== STATUS_OBJECT.INPROGRESS.name && <SvgIcon fontSize="small"
-                              onClick={() => {
-                                handleClickOpenDelete(customer)
-                              }}
-                            >
-                              <XMarkIcon />
-                            </SvgIcon>}
+                            {customer?.status !== STATUS_OBJECT.INPROGRESS.name && (
+                              <SvgIcon
+                                fontSize="small"
+                                onClick={() => {
+                                  handleClickOpenDelete(customer);
+                                }}
+                              >
+                                <XMarkIcon />
+                              </SvgIcon>
+                            )}
 
-                            <SvgIcon fontSize="small"
+                            <SvgIcon
+                              fontSize="small"
                               onClick={() => {
-                                handleClickOpen(customer)
+                                handleClickOpen(customer);
                               }}
                             >
                               <EyeIcon />
@@ -331,123 +303,108 @@ export const CustomersTable = (props) => {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Stack
-                            alignItems="center"
-                            direction="row"
-                            spacing={2}
-                          >
-                            <Avatar src={customer.avatar}>
-                              {getInitials(customer.username)}
-                            </Avatar>
-                            <Typography variant="subtitle2">
-                              {customer.username}
-                            </Typography>
+                          <Stack alignItems="center" direction="row" spacing={2}>
+                            <Avatar src={customer.avatar}>{getInitials(customer.username)}</Avatar>
+                            <Typography variant="subtitle2">{customer.username}</Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell align='center' >
-                          {customer?.createdAt ? format(new Date(customer?.createdAt), 'dd/MM/yyyy') : ""}
+                        <TableCell align="center">
+                          {customer?.createdAt
+                            ? format(new Date(customer?.createdAt), "dd/MM/yyyy")
+                            : ""}
                         </TableCell>
-                        <TableCell align='center' >
+                        <TableCell align="center">
                           <SeverityPill color={[renderRole(customer?.role)]}>
-                            {ROLE.find(i => i?.indexOrder === customer?.role)?.name}
+                            {ROLE.find((i) => i?.indexOrder === customer?.role)?.name}
                           </SeverityPill>
                         </TableCell>
-                      </>}
-                    {isGroup &&
+                      </>
+                    )}
+                    {isGroup && (
                       <>
-                        <TableCell align='center' >
-                          {index + 1}
-                        </TableCell>
-                        <TableCell align='center' >
+                        <TableCell align="center">{index + 1}</TableCell>
+                        <TableCell align="center">
                           <div
-                            style={{ display: "flex", justifyContent: "center", cursor: "pointer", gap: 10 }}
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              gap: 10,
+                            }}
                           >
-                            <SvgIcon fontSize="small"
-                              onClick={() => handleEdit(customer)}
-                            >
+                            <SvgIcon fontSize="small" onClick={() => handleEdit(customer)}>
                               <PencilIcon style={{ color: COLOR.PRIMARY }} />
                             </SvgIcon>
 
-                            <SvgIcon fontSize="small"
+                            <SvgIcon
+                              fontSize="small"
                               onClick={() => {
-                                handleClickOpen(customer)
+                                handleClickOpen(customer);
                               }}
                             >
                               <EyeIcon />
                             </SvgIcon>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          {convertTxt(customer?.projectName, 50)}
+                        <TableCell>{convertTxt(customer?.projectName, 50)}</TableCell>
+                        <TableCell>{convertTxt(customer?.taskName, 35)}</TableCell>
+                        {/* <TableCell width={100}>
+                          {LIST_PLAN_STATUS.find((i) => i?.code === customer?.status)?.label}
                         </TableCell>
-                        <TableCell>
-                          {convertTxt(customer?.taskName, 35)}
+                        <TableCell align="center">{customer?.percentComplete}</TableCell>
+                        <TableCell align="center">
+                          {customer?.startDate
+                            ? format(new Date(customer?.startDate), "dd/MM/yyyy")
+                            : ""}
                         </TableCell>
-                        <TableCell width={100}>
-                          {LIST_PLAN_STATUS.find(i => i?.code === customer?.status)?.label}
+                        <TableCell align="center">
+                          {customer?.dueDate
+                            ? format(new Date(customer?.dueDate), "dd/MM/yyyy")
+                            : ""}
                         </TableCell>
-                        <TableCell align='center' >
-                          {customer?.percentComplete}
-                        </TableCell>
-                        <TableCell align='center' >
-                          {customer?.startDate ? format(new Date(customer?.startDate), 'dd/MM/yyyy') : ""}
-                        </TableCell>
-                        <TableCell align='center' >
-                          {customer?.dueDate ? format(new Date(customer?.dueDate), 'dd/MM/yyyy') : ""}
-                        </TableCell>
-                        <TableCell align='center' >
-                          {customer?.updatedAt ? format(new Date(customer?.updatedAt), 'dd/MM/yyyy') : ""}
-                        </TableCell>
-                      </>}
+                        <TableCell align="center">
+                          {customer?.updatedAt
+                            ? format(new Date(customer?.updatedAt), "dd/MM/yyyy")
+                            : ""}
+                        </TableCell> */}
+                      </>
+                    )}
 
-                    {isAdmin &&
+                    {isAdmin && (
                       <>
-                        <TableCell align='center' >
-                          {index + 1}
-                        </TableCell>
+                        <TableCell align="center">{index + 1}</TableCell>
                         <TableCell>
                           <div
                             style={{ display: "flex", justifyContent: "center", cursor: "pointer" }}
                             onClick={() => {
-                              handleClickOpen(customer)
-                            }} >
+                              handleClickOpen(customer);
+                            }}
+                          >
                             <SvgIcon fontSize="small">
                               <EyeIcon />
                             </SvgIcon>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Stack
-                            alignItems="center"
-                            direction="row"
-                            spacing={2}
-                          >
-                            <Avatar src={customer.avatar}>
-                              {getInitials(customer.username
-                              )}
-                            </Avatar>
-                            <Typography variant="subtitle2">
-                              {customer.username}
-                            </Typography>
+                          <Stack alignItems="center" direction="row" spacing={2}>
+                            <Avatar src={customer.avatar}>{getInitials(customer.username)}</Avatar>
+                            <Typography variant="subtitle2">{customer.username}</Typography>
                           </Stack>
                         </TableCell>
+                        <TableCell>{customer.email}</TableCell>
+                        <TableCell>{customer.phone}</TableCell>
                         <TableCell>
-                          {customer.email}
+                          {customer?.createdAt
+                            ? format(new Date(customer?.createdAt), "dd/MM/yyyy")
+                            : ""}
                         </TableCell>
-                        <TableCell>
-                          {customer.phone}
-                        </TableCell>
-                        <TableCell>
-                          {customer?.createdAt ? format(new Date(customer?.createdAt), 'dd/MM/yyyy') : ""}
-                        </TableCell>
-                        <TableCell style={{ maxWidth: 80 }}
-                          align='center'>
+                        <TableCell style={{ maxWidth: 80 }} align="center">
                           <SeverityPill color={[renderRole(customer?.role)]}>
                             {statusTable(customer?.role)}
                           </SeverityPill>
                         </TableCell>
                       </>
-                    }
+                    )}
                   </TableRow>
                 );
               })}
@@ -456,6 +413,7 @@ export const CustomersTable = (props) => {
         </Box>
       </Scrollbar>
       <TablePagination
+        labelRowsPerPage="Số hàng mỗi trang"
         component="div"
         count={count}
         onPageChange={onPageChange}
@@ -479,5 +437,5 @@ CustomersTable.propTypes = {
   onSelectOne: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
-  selected: PropTypes.array
+  selected: PropTypes.array,
 };

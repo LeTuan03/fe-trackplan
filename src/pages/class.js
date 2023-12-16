@@ -14,7 +14,7 @@ import { CustomersSearch } from "src/sections/customer/customers-search";
 import CustomersDialog from "src/sections/customer/customers-dialog";
 import {
   deleteProject,
-  getProjectByAccountId,
+  getAllProject,
   getProjectById,
   searchProject,
 } from "src/services/customerServices";
@@ -111,7 +111,7 @@ const Page = () => {
   };
   const pageUpdate = async () => {
     try {
-      const data = await getProjectByAccountId({ id: getCurrentUser()?.id });
+      const data = await getAllProject();
       if (data?.status === STATUS.SUCCESS) {
         setListUser(data?.data);
       } else {
@@ -141,6 +141,32 @@ const Page = () => {
             <Stack direction="row" justifyContent="space-between" spacing={4}>
               <Stack spacing={1}>
                 <Typography variant="h4">Danh sách lớp học</Typography>
+                {/* <Stack
+                  alignItems="center"
+                  direction="row"
+                  spacing={1}
+                >
+                  <Button
+                    color="inherit"
+                    startIcon={(
+                      <SvgIcon fontSize="small">
+                        <ArrowUpOnSquareIcon />
+                      </SvgIcon>
+                    )}
+                  >
+                    Import
+                  </Button>
+                  <Button
+                    color="inherit"
+                    startIcon={(
+                      <SvgIcon fontSize="small">
+                        <ArrowDownOnSquareIcon />
+                      </SvgIcon>
+                    )}
+                  >
+                    Export
+                  </Button>
+                </Stack> */}
               </Stack>
               <div>
                 <Button
@@ -152,17 +178,17 @@ const Page = () => {
                   variant="contained"
                   onClick={() => setOpen(true)}
                 >
-                  Thêm mới
+                  Add
                 </Button>
               </div>
             </Stack>
             <CustomersSearch
               isPlant={true}
               handleSearch={handleSearch}
-              placeHolder="Tìm kiếm theo tên lớp"
+              placeHolder={"Tìm kiếm theo tên lớp học"}
             />
             <CustomersDialog
-              title="Add/Edit project"
+              title="Thêm mới/Cập nhật lớp học"
               isPlan={true}
               open={open}
               handleClose={handleClose}
