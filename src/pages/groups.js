@@ -143,7 +143,7 @@ const Page = () => {
             <Stack direction="row" justifyContent="space-between" spacing={4}>
               <Stack spacing={1}>
                 <Typography variant="h4">Thông tin lớp học</Typography>
-                <Stack alignItems="center" direction="row" spacing={1}>
+                {/* <Stack alignItems="center" direction="row" spacing={1}>
                   <Button
                     color="inherit"
                     startIcon={
@@ -164,7 +164,7 @@ const Page = () => {
                   >
                     Export
                   </Button>
-                </Stack>
+                </Stack> */}
               </Stack>
               {/* <div>
                 <Button

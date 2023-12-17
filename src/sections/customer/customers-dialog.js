@@ -64,11 +64,11 @@ export default function CustomersDialog({
   const filterAutocomplete = createFilterOptions();
   const [listTask, setListTask] = useState([]);
   const [listMember, setListMember] = useState([]);
+  const [listTeacher, setListTeacher] = useState([]);
 
   const [formData, setFormData] = useState({});
 
   const handleChange = (event) => {
-    console.log(event);
     const { name, value } = event.target;
     if (name === "createdAt") {
     } else if (name === "startDate") {
@@ -93,6 +93,7 @@ export default function CustomersDialog({
         status: i?.status?.code,
         projectName: formData?.name,
         note: i?.note,
+        homeroomTeacher: formData?.createdBy?.username,
       };
     });
     return convert?.length ? convert : null;
@@ -101,6 +102,8 @@ export default function CustomersDialog({
     return {
       ...data,
       status: data?.status?.label || LIST_STATUS[0].label,
+      accountId: data?.createdBy?.id,
+      createdBy: data?.createdBy?.username,
       tasks: convertListTask(),
     };
   };
@@ -352,6 +355,10 @@ export default function CustomersDialog({
     setListTask((pre) => [...pre, { projectId: items?.id }]);
   };
 
+  const handleChangeTeacher = (data) => {
+    setFormData((prevData) => ({ ...prevData, createdBy: data }));
+  };
+
   const handleChangeTask = (event, taskName, index) => {
     const updatedListTask = [...listTask];
     updatedListTask[index].taskName = event.target.value;
@@ -426,8 +433,18 @@ export default function CustomersDialog({
       }
     } catch (error) {}
   };
+  const getListTeacher = async () => {
+    try {
+      const data = await getMember("1");
+      if (data?.status === STATUS.SUCCESS && data?.data?.length > 0) {
+        setListTeacher(data?.data);
+      }
+    } catch (error) {}
+  };
+  console.log(formData?.createdBy);
   useEffect(() => {
     getListMember();
+    getListTeacher();
     setListTask(
       items?.tasks?.map((i) => ({ ...i, member: { username: i?.userName, userId: i?.userId } }))
     );
@@ -442,7 +459,8 @@ export default function CustomersDialog({
         startDate: items?.startDate ? new Date(items?.startDate) : new Date(),
         endDate: items?.endDate ? new Date(items?.endDate) : new Date(),
         createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
-        createdBy: items?.createdBy || getCurrentUser()?.username,
+        // createdBy: items?.createdBy || getCurrentUser()?.username,
+        createdBy: { username: items?.createdBy, id: items?.accountId },
         tasks: items?.tasks,
       });
     }
@@ -463,6 +481,7 @@ export default function CustomersDialog({
         createdAt: items?.createdAt,
         spentTime: items?.spentTime,
         estimatedTime: items?.estimatedTime,
+        homeroomTeacher: items?.homeroomTeacher,
         status: getSelectedStatusValue(items?.status),
       });
     }
@@ -550,7 +569,7 @@ export default function CustomersDialog({
                   />
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
-                  <TextValidator
+                  {/* <TextValidator
                     disabled={isView}
                     className="w-100"
                     label={
@@ -559,6 +578,27 @@ export default function CustomersDialog({
                       </span>
                     }
                     value={formData?.createdBy}
+                  /> */}
+
+                  <Autocomplete
+                    fullWidth
+                    options={listTeacher}
+                    label={
+                      <span>
+                        <span>Giáo viên chủ nhiệm</span>
+                      </span>
+                    }
+                    value={formData?.createdBy}
+                    onChange={(e, value) => handleChangeTeacher(value)}
+                    getOptionLabel={(option) => option?.username}
+                    renderInput={(params) => <TextField {...params} />}
+                    filterOptions={(options, params) => {
+                      params.inputValue = params.inputValue.trim();
+                      let filtered = filterAutocomplete(options, params);
+                      return filtered;
+                    }}
+                    disabled={isView || getCurrentUser()?.role === "1"}
+                    noOptionsText={"No option"}
                   />
                 </Grid>
                 {/* <Grid item
@@ -1262,7 +1302,7 @@ export default function CustomersDialog({
                     name="projectName"
                     label={
                       <span>
-                        <span>Project name</span>
+                        <span>Tên lớp học</span>
                       </span>
                     }
                     value={formData?.projectName}
@@ -1276,10 +1316,10 @@ export default function CustomersDialog({
                     className="w-100"
                     label={
                       <span>
-                        <span>Task name</span>
+                        <span>Giáo viên chủ nhiệm</span>
                       </span>
                     }
-                    value={formData?.taskName}
+                    value={formData?.homeroomTeacher}
                   />
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>

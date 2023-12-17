@@ -347,7 +347,7 @@ export const CustomersTable = (props) => {
                           </div>
                         </TableCell>
                         <TableCell>{convertTxt(customer?.projectName, 50)}</TableCell>
-                        <TableCell>{convertTxt(customer?.taskName, 35)}</TableCell>
+                        <TableCell>{convertTxt(customer?.homeroomTeacher, 35)}</TableCell>
                         {/* <TableCell width={100}>
                           {LIST_PLAN_STATUS.find((i) => i?.code === customer?.status)?.label}
                         </TableCell>
