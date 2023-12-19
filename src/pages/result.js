@@ -7,7 +7,7 @@ import { AccountProfileDetails } from "src/sections/account/account-profile-deta
 const Page = () => (
   <>
     <Head>
-      <title>Tài khoản | Phần mềm quản lý học sinh phổ thông</title>
+      <title>Kết quả học tập | Phần mềm quản lý học sinh phổ thông</title>
     </Head>
     <Box
       component="main"
@@ -19,7 +19,7 @@ const Page = () => (
       <Container maxWidth="lg">
         <Stack spacing={3}>
           <div>
-            <Typography variant="h4">Account</Typography>
+            <Typography variant="h4">Kết quả học tập</Typography>
           </div>
           <div>
             <Grid container spacing={3}>

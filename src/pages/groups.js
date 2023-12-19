@@ -187,6 +187,7 @@ const Page = () => {
             />
             <CustomersDialog
               title="Cập nhật thông tin"
+              isViewTitle="Thông tin lớp học"
               isGroup={true}
               open={open}
               handleClose={handleClose}

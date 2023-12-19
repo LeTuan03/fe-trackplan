@@ -60,6 +60,7 @@ export default function CustomersDialog({
   isGroup,
   isMember,
   isGiaoVien,
+  isViewTitle,
 }) {
   const filterAutocomplete = createFilterOptions();
   const [listTask, setListTask] = useState([]);
@@ -104,7 +105,7 @@ export default function CustomersDialog({
       status: data?.status?.label || LIST_STATUS[0].label,
       accountId: data?.createdBy?.id,
       createdBy: data?.createdBy?.username,
-      tasks: convertListTask(),
+      memberStudents: convertListTask(),
     };
   };
   const convertDataGroupSubmit = (data) => {
@@ -347,7 +348,7 @@ export default function CustomersDialog({
     setFormData((prevData) => ({ ...prevData, percent: data }));
   };
 
-  const handleChangeTaskStatusItem = (data) => {
+  const handleChangememberStudentstatusItem = (data) => {
     setFormData((prevData) => ({ ...prevData, status: data }));
   };
 
@@ -397,7 +398,7 @@ export default function CustomersDialog({
     updatedListTask[index].member = value;
     setListTask(updatedListTask);
   };
-  const handleChangeTaskStatus = (value, index) => {
+  const handleChangememberStudentstatus = (value, index) => {
     const updatedListTask = [...listTask];
     updatedListTask[index].status = value;
     setListTask(updatedListTask);
@@ -441,12 +442,15 @@ export default function CustomersDialog({
       }
     } catch (error) {}
   };
-  console.log(formData?.createdBy);
+
   useEffect(() => {
     getListMember();
     getListTeacher();
     setListTask(
-      items?.tasks?.map((i) => ({ ...i, member: { username: i?.userName, userId: i?.userId } }))
+      items?.memberStudents?.map((i) => ({
+        ...i,
+        member: { username: i?.userName, userId: i?.userId },
+      }))
     );
     if (isPlan) {
       setFormData({
@@ -461,7 +465,7 @@ export default function CustomersDialog({
         createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
         // createdBy: items?.createdBy || getCurrentUser()?.username,
         createdBy: { username: items?.createdBy, id: items?.accountId },
-        tasks: items?.tasks,
+        memberStudents: items?.memberStudents,
       });
     }
     if (isGroup) {
@@ -482,6 +486,7 @@ export default function CustomersDialog({
         spentTime: items?.spentTime,
         estimatedTime: items?.estimatedTime,
         homeroomTeacher: items?.homeroomTeacher,
+        classroom: items?.classroom,
         status: getSelectedStatusValue(items?.status),
       });
     }
@@ -518,9 +523,9 @@ export default function CustomersDialog({
       setFormData({
         id: items?.id,
         username: items?.username,
-        planNumber: items?.projects?.length || 0,
+        planNumber: items?.classes?.length || 0,
         completeNumber:
-          items?.projects?.filter((item) => item?.status === STATUS_OBJECT.END.name)?.length || 0,
+          items?.classes?.filter((item) => item?.status === STATUS_OBJECT.END.name)?.length || 0,
         phone: items?.phone,
         email: items?.email,
         createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
@@ -530,7 +535,6 @@ export default function CustomersDialog({
       });
     }
   }, [isPlan, isAdmin, isGroup, items, items?.status, isMember, isGiaoVien]);
-
   return (
     <Fragment>
       <Dialog
@@ -544,7 +548,7 @@ export default function CustomersDialog({
       >
         <ValidatorForm onSubmit={handleFormSubmit}>
           <DialogTitle id="alert-dialog-title">
-            {isView ? "Information" : title ? title : "Add/Edit accounts"}
+            {isView ? isViewTitle : title ? title : "Add/Edit accounts"}
           </DialogTitle>
           <DialogContent
             className="no-width-scroll"
@@ -583,15 +587,19 @@ export default function CustomersDialog({
                   <Autocomplete
                     fullWidth
                     options={listTeacher}
-                    label={
-                      <span>
-                        <span>Giáo viên chủ nhiệm</span>
-                      </span>
-                    }
                     value={formData?.createdBy}
                     onChange={(e, value) => handleChangeTeacher(value)}
                     getOptionLabel={(option) => option?.username}
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => (
+                      <TextField
+                        label={
+                          <span>
+                            <span>Giáo viên chủ nhiệm</span>
+                          </span>
+                        }
+                        {...params}
+                      />
+                    )}
                     filterOptions={(options, params) => {
                       params.inputValue = params.inputValue.trim();
                       let filtered = filterAutocomplete(options, params);
@@ -627,10 +635,25 @@ export default function CustomersDialog({
                     type="date"
                     label={
                       <span>
-                        <span>Ngày nhận lớp</span>
+                        <span>Ngày bắt đầu</span>
                       </span>
                     }
                     value={formData?.startDate ? format(formData?.startDate, "yyyy-MM-dd") : ""}
+                  />
+                </Grid>
+                <Grid item md={4} sm={12} xs={12}>
+                  <TextValidator
+                    disabled={isView}
+                    className="w-100"
+                    onChange={handleChange}
+                    name="endDate"
+                    type="date"
+                    label={
+                      <span>
+                        <span>Ngày kết thúc</span>
+                      </span>
+                    }
+                    value={formData?.endDate ? format(formData?.endDate, "yyyy-MM-dd") : ""}
                   />
                 </Grid>
                 {/* <Grid item
@@ -684,24 +707,20 @@ export default function CustomersDialog({
                     noOptionsText={"No option"}
                   />
                 </Grid> */}
-                {/* <Grid item
-                  md={12}
-                  sm={12}
-                  xs={12}
-                >
+                <Grid item md={8} sm={12} xs={12}>
                   <TextValidator
                     disabled={isView}
-                    className='w-100'
+                    className="w-100"
                     onChange={handleChange}
                     name="note"
                     label={
                       <span>
-                        <span>Note</span>
+                        <span>Ghi chú</span>
                       </span>
                     }
                     value={formData?.note}
                   />
-                </Grid> */}
+                </Grid>
                 {/* <Grid item
                   md={12}
                   sm={12}
@@ -799,7 +818,7 @@ export default function CustomersDialog({
                                 fullWidth
                                 options={LIST_PLAN_STATUS}
                                 value={item?.label}
-                                onChange={(e, value) => handleChangeTaskStatus(value, index)}
+                                onChange={(e, value) => handleChangememberStudentstatus(value, index)}
                                 getOptionLabel={(option) => option?.label}
                                 renderInput={(params) => (
                                   <TextField {...params} />
@@ -966,7 +985,7 @@ export default function CustomersDialog({
                     {!isView && (
                       <Grid item md={12} sm={12} xs={12}>
                         <Button variant="contained" onClick={handleAddTask}>
-                          Add tasks
+                          Add memberStudents
                         </Button>
                       </Grid>
                     )}
@@ -1039,7 +1058,7 @@ export default function CustomersDialog({
                                 fullWidth
                                 options={LIST_PLAN_STATUS}
                                 value={item?.label}
-                                onChange={(e, value) => handleChangeTaskStatus(value, index)}
+                                onChange={(e, value) => handleChangememberStudentstatus(value, index)}
                                 getOptionLabel={(option) => option?.label}
                                 renderInput={(params) => (
                                   <TextField {...params} />
@@ -1193,7 +1212,7 @@ export default function CustomersDialog({
                     {!isView && (
                       <Grid item md={12} sm={12} xs={12}>
                         <Button variant="contained" onClick={handleAddTask}>
-                          Add tasks
+                          Add memberStudents
                         </Button>
                       </Grid>
                     )}
@@ -1266,7 +1285,7 @@ export default function CustomersDialog({
                                 fullWidth
                                 options={LIST_PLAN_STATUS}
                                 value={item?.label}
-                                onChange={(e, value) => handleChangeTaskStatus(value, index)}
+                                onChange={(e, value) => handleChangememberStudentstatus(value, index)}
                                 getOptionLabel={(option) => option?.label}
                                 renderInput={(params) => (
                                   <TextField {...params} />
@@ -1322,7 +1341,7 @@ export default function CustomersDialog({
                     value={formData?.homeroomTeacher}
                   />
                 </Grid>
-                <Grid item md={4} sm={12} xs={12}>
+                {/* <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
                     disabled={isView}
                     className="w-100"
@@ -1336,7 +1355,7 @@ export default function CustomersDialog({
                       formData?.createdAt ? format(new Date(formData?.createdAt), "dd/MM/yyyy") : ""
                     }
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
                     disabled={isView}
@@ -1346,7 +1365,7 @@ export default function CustomersDialog({
                     type="date"
                     label={
                       <span>
-                        <span>Start date</span>
+                        <span>Ngày bắt đầu năm học</span>
                       </span>
                     }
                     value={formData?.startDate ? format(formData?.startDate, "yyyy-MM-dd") : ""}
@@ -1361,10 +1380,25 @@ export default function CustomersDialog({
                     type="date"
                     label={
                       <span>
-                        <span>Due date</span>
+                        <span>Ngày kết thúc năm học</span>
                       </span>
                     }
                     value={formData?.dueDate ? format(formData?.dueDate, "yyyy-MM-dd") : ""}
+                  />
+                </Grid>
+                {/* <Grid item md={4} sm={12} xs={12}>
+                  <TextValidator
+                    disabled={isView}
+                    className="w-100"
+                    onChange={handleChange}
+                    name="classroom"
+                    type="number"
+                    label={
+                      <span>
+                        <span>Phòng học</span>
+                      </span>
+                    }
+                    value={formData?.classroom}
                   />
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
@@ -1416,7 +1450,7 @@ export default function CustomersDialog({
                         ? LIST_PLAN_STATUS[5]
                         : null
                     }
-                    onChange={(e, value) => handleChangeTaskStatusItem(value)}
+                    onChange={(e, value) => handleChangememberStudentstatusItem(value)}
                     getOptionLabel={(option) => option?.label}
                     renderInput={(params) => <TextField {...params} label={"Status"} />}
                     filterOptions={(options, params) => {
@@ -1468,8 +1502,8 @@ export default function CustomersDialog({
                     disabled={isView}
                     noOptionsText={"No option"}
                   />
-                </Grid>
-                <Grid item md={12} sm={12} xs={12}>
+                </Grid> */}
+                <Grid item md={8} sm={12} xs={12}>
                   <TextValidator
                     disabled={isView}
                     className="w-100"
@@ -1520,7 +1554,7 @@ export default function CustomersDialog({
                     name="completeNumber"
                     label={
                       <span>
-                        <span>Number of completed projects</span>
+                        <span>Number of completed classes</span>
                       </span>
                     }
                     value={formData?.completeNumber}

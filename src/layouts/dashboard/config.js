@@ -77,6 +77,15 @@ export const items = () => {
         </SvgIcon>
       ),
     },
+    currentUser?.role === "3" && {
+      title: "Kết quả học tập",
+      path: "/result",
+      icon: (
+        <SvgIcon fontSize="small">
+          <SpeakerWaveIcon />
+        </SvgIcon>
+      ),
+    },
     {
       title: "Thông tin cá nhân",
       path: "/account",

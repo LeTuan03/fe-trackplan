@@ -162,7 +162,8 @@ const Page = () => {
               placeHolder="Tìm kiếm theo tên lớp"
             />
             <CustomersDialog
-              title="Add/Edit project"
+              title="Thêm mới/Cập nhập thông tin lớp học"
+              isViewTitle="Thông tin lớp học"
               isPlan={true}
               open={open}
               handleClose={handleClose}

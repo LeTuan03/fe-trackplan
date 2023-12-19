@@ -192,6 +192,7 @@ const Page = () => {
             />
             <CustomersDialog
               title="Thêm mới/Cập nhật học sinh"
+              isViewTitle="Thông tin học sinh"
               isMember={true}
               open={open}
               handleClose={handleClose}

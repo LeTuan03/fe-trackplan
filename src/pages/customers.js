@@ -287,6 +287,7 @@ const Page = () => {
             />
             <CustomersDialog
               title={"Thông tin người dùng"}
+              isViewTitle="Thông tin người dùng"
               open={open}
               handleClose={handleClose}
               items={customer}

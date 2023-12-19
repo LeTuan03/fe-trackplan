@@ -191,7 +191,7 @@ export const CustomersTable = (props) => {
                           {/* {customer?.createdAt
                             ? format(new Date(customer?.createdAt), "dd/MM/yyyy")
                             : ""} */}
-                          {customer?.tasks?.length}
+                          {customer?.memberStudents?.length}
                         </TableCell>
                         {/* <TableCell align='center' >
                           <SeverityPill color={[renderStatus(customer?.status)]}>
@@ -332,9 +332,9 @@ export const CustomersTable = (props) => {
                               gap: 10,
                             }}
                           >
-                            <SvgIcon fontSize="small" onClick={() => handleEdit(customer)}>
+                            {/* <SvgIcon fontSize="small" onClick={() => handleEdit(customer)}>
                               <PencilIcon style={{ color: COLOR.PRIMARY }} />
-                            </SvgIcon>
+                            </SvgIcon> */}
 
                             <SvgIcon
                               fontSize="small"
