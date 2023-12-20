@@ -76,8 +76,8 @@ export default function CustomersDialog({
       setFormData((prevData) => ({ ...prevData, startDate: new Date(value) }));
     } else if (name === "endDate") {
       setFormData((prevData) => ({ ...prevData, endDate: new Date(value) }));
-    } else if (name === "dueDate") {
-      setFormData((prevData) => ({ ...prevData, dueDate: new Date(value) }));
+    } else if (name === "endDate") {
+      setFormData((prevData) => ({ ...prevData, endDate: new Date(value) }));
     } else if (name === "birth") {
       setFormData((prevData) => ({ ...prevData, birth: new Date(value) }));
     } else {
@@ -94,6 +94,8 @@ export default function CustomersDialog({
         status: i?.status?.code,
         projectName: formData?.name,
         note: i?.note,
+        startDate: new Date(formData?.startDate),
+        endDate: new Date(formData?.endDate),
         homeroomTeacher: formData?.createdBy?.username,
       };
     });
@@ -121,23 +123,35 @@ export default function CustomersDialog({
     event.preventDefault();
     if (isPlan) {
       try {
+        if (!formData?.startDate) {
+          toast.error("Ngày bắt đầu không được để trống", {
+            autoClose: 1000,
+          });
+          return;
+        }
+        if (!formData?.endDate) {
+          toast.error("Ngày kết thúc không được để trống", {
+            autoClose: 1000,
+          });
+          return;
+        }
         if (formData?.id) {
           const data = await editProject(convertDataSubmit(formData));
           if (listTask.length > 0) {
             const dataTask = await updateAdds(convertListTask());
             if (dataTask?.status === STATUS.ERROR) {
-              toast.error("Update task error", {
+              toast.error("Cập nhật lớp học lỗi", {
                 autoClose: 1000,
               });
               return;
             }
           }
           if (data?.status === STATUS.SUCCESS) {
-            toast.success("Project updated successfully", {
+            toast.success("Cập nhật lớp học thành công", {
               autoClose: 1000,
             });
           } else if (data?.status === STATUS.NOCONTENT) {
-            toast.warn("Project name cannot be null", {
+            toast.warn("Tên lớp không được để trống", {
               autoClose: 1000,
             });
             return;
@@ -145,11 +159,11 @@ export default function CustomersDialog({
         } else {
           const data = await addProject(convertDataSubmit(formData));
           if (data?.status === STATUS.SUCCESS) {
-            toast.success("Added new project successfully", {
+            toast.success("Thêm lớp học sinh thành công", {
               autoClose: 1000,
             });
           } else if (data?.status === STATUS.NOCONTENT) {
-            toast.warn("Project name cannot be null", {
+            toast.warn("Tên lớp không được để trống", {
               autoClose: 1000,
             });
             return;
@@ -198,11 +212,11 @@ export default function CustomersDialog({
             await addLop12(convertDataClassSubmit(formData?.lop12[0], items?.id));
           }
           if (data?.status === STATUS.SUCCESS) {
-            toast.success("Project updated successfully", {
+            toast.success("Cập nhật học sinh thành công", {
               autoClose: 1000,
             });
           } else if (data?.status === STATUS.NOCONTENT) {
-            toast.warn("Project name cannot be null", {
+            toast.warn("Tên học sinh không được để trống", {
               autoClose: 1000,
             });
             return;
@@ -210,11 +224,11 @@ export default function CustomersDialog({
         } else {
           const data = await addAccount(convertDataMemberSubmit(formData));
           if (data?.status === STATUS.SUCCESS) {
-            toast.success("Added new project successfully", {
+            toast.success("Thêm mới học sinh thành công", {
               autoClose: 1000,
             });
           } else if (data?.status === STATUS.NOCONTENT) {
-            toast.warn("Project name cannot be null", {
+            toast.warn("Tên học sinh không được để trống", {
               autoClose: 1000,
             });
             return;
@@ -233,11 +247,11 @@ export default function CustomersDialog({
         }
 
         if (formData?.id) {
-          toast.error("Error updating member", {
+          toast.error("Lỗi cập nhật học sinh", {
             autoClose: 1000,
           });
         } else {
-          toast.error("Error creating member", {
+          toast.error("Lỗi thêm mới học sinh", {
             autoClose: 1000,
           });
         }
@@ -249,11 +263,11 @@ export default function CustomersDialog({
           const data = await updateAccountById(convertDataMemberSubmit(formData));
 
           if (data?.status === STATUS.SUCCESS) {
-            toast.success("Project updated successfully", {
+            toast.success("Cập nhật thông tin giáo viên thành công", {
               autoClose: 1000,
             });
           } else if (data?.status === STATUS.NOCONTENT) {
-            toast.warn("Project name cannot be null", {
+            toast.warn("Tên không được để trống", {
               autoClose: 1000,
             });
             return;
@@ -261,11 +275,11 @@ export default function CustomersDialog({
         } else {
           const data = await addAccount(convertDataMemberSubmit(formData));
           if (data?.status === STATUS.SUCCESS) {
-            toast.success("Added new project successfully", {
+            toast.success("Thêm mới giáo viên thành công", {
               autoClose: 1000,
             });
           } else if (data?.status === STATUS.NOCONTENT) {
-            toast.warn("Project name cannot be null", {
+            toast.warn("Tên khong được để trống", {
               autoClose: 1000,
             });
             return;
@@ -284,59 +298,57 @@ export default function CustomersDialog({
         }
 
         if (formData?.id) {
-          toast.error("Error updating member", {
+          toast.error("Lỗi cập nhật thông tin giáo viên", {
             autoClose: 1000,
           });
         } else {
-          toast.error("Error creating member", {
+          toast.error("Lỗi thêm mới giáo viên", {
             autoClose: 1000,
           });
         }
       }
     }
     if (isGroup) {
-      try {
-        if (formData?.id) {
-          const data = await updateTask(convertDataGroupSubmit(formData));
-
-          if (data?.status === STATUS.SUCCESS) {
-            toast.success("Project updated successfully", {
-              autoClose: 1000,
-            });
-          } else if (data?.status === STATUS.NOCONTENT) {
-            toast.warn("Project name cannot be null", {
-              autoClose: 1000,
-            });
-            return;
-          }
-        } else {
-          if (data?.status === STATUS.SUCCESS) {
-            toast.warning("Something wrong", {
-              autoClose: 1000,
-            });
-          }
-        }
-        setFormData({});
-        await pageUpdate();
-        handleClose();
-      } catch (error) {
-        if (error?.response?.status === STATUS.BAD_GATEWAY) {
-          toast.error(error?.response?.data?.message, {
-            autoClose: 1000,
-          });
-          return;
-        }
-
-        if (formData?.id) {
-          toast.error("Error updating task", {
-            autoClose: 1000,
-          });
-        } else {
-          toast.error("Error creating task", {
-            autoClose: 1000,
-          });
-        }
-      }
+      // try {
+      //   if (formData?.id) {
+      //     const data = await updateTask(convertDataGroupSubmit(formData));
+      //     if (data?.status === STATUS.SUCCESS) {
+      //       toast.success("Project updated successfully", {
+      //         autoClose: 1000,
+      //       });
+      //     } else if (data?.status === STATUS.NOCONTENT) {
+      //       toast.warn("Project name cannot be null", {
+      //         autoClose: 1000,
+      //       });
+      //       return;
+      //     }
+      //   } else {
+      //     if (data?.status === STATUS.SUCCESS) {
+      //       toast.warning("Something wrong", {
+      //         autoClose: 1000,
+      //       });
+      //     }
+      //   }
+      //   setFormData({});
+      //   await pageUpdate();
+      //   handleClose();
+      // } catch (error) {
+      //   if (error?.response?.status === STATUS.BAD_GATEWAY) {
+      //     toast.error(error?.response?.data?.message, {
+      //       autoClose: 1000,
+      //     });
+      //     return;
+      //   }
+      //   if (formData?.id) {
+      //     toast.error("Error updating task", {
+      //       autoClose: 1000,
+      //     });
+      //   } else {
+      //     toast.error("Error creating task", {
+      //       autoClose: 1000,
+      //     });
+      //   }
+      // }
     }
   };
 
@@ -464,7 +476,7 @@ export default function CustomersDialog({
         endDate: items?.endDate ? new Date(items?.endDate) : new Date(),
         createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
         // createdBy: items?.createdBy || getCurrentUser()?.username,
-        createdBy: { username: items?.createdBy, id: items?.accountId },
+        createdBy: { username: items?.createdBy || "", id: items?.accountId || "" } || null,
         memberStudents: items?.memberStudents,
       });
     }
@@ -481,7 +493,7 @@ export default function CustomersDialog({
         note: items?.note,
         startDate: items?.startDate && new Date(items?.startDate),
         updatedAt: items?.updatedAt && new Date(items?.updatedAt),
-        dueDate: items?.dueDate && new Date(items?.dueDate),
+        endDate: items?.endDate && new Date(items?.endDate),
         createdAt: items?.createdAt,
         spentTime: items?.spentTime,
         estimatedTime: items?.estimatedTime,
@@ -1376,14 +1388,14 @@ export default function CustomersDialog({
                     disabled={isView}
                     className="w-100"
                     onChange={handleChange}
-                    name="dueDate"
+                    name="endDate"
                     type="date"
                     label={
                       <span>
                         <span>Ngày kết thúc năm học</span>
                       </span>
                     }
-                    value={formData?.dueDate ? format(formData?.dueDate, "yyyy-MM-dd") : ""}
+                    value={formData?.endDate ? format(formData?.endDate, "yyyy-MM-dd") : ""}
                   />
                 </Grid>
                 {/* <Grid item md={4} sm={12} xs={12}>

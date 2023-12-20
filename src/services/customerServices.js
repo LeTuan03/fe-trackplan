@@ -32,6 +32,10 @@ export const updateAccountById = async (searchObject) => {
   let url = API_PATH + "/updateAccountById/" + searchObject?.id;
   return axios.post(url, searchObject);
 };
+export const deleteAccountById = async (searchObject) => {
+  let url = API_PATH + "/deleteAccountById/" + searchObject?.id;
+  return axios.delete(url, searchObject);
+};
 
 // project
 export const getAllProject = async () => {

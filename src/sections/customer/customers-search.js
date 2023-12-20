@@ -14,9 +14,7 @@ export const CustomersSearch = ({ isPlant, handleSearch, placeHolder }) => (
       }}
       defaultValue=""
       fullWidth
-      placeholder={
-        placeHolder ? placeHolder : isPlant ? "Search by project name" : "Search account"
-      }
+      placeholder={placeHolder ? placeHolder : isPlant ? "Tìm kiếm theo tên" : "Tìm kiếm tài khoản"}
       startAdornment={
         <InputAdornment position="start">
           <SvgIcon color="action" fontSize="small">

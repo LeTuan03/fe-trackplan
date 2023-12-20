@@ -18,7 +18,8 @@ import {
   getMember,
   getProjectByAccountId,
   getProjectById,
-  searchProject,
+  searchAccount,
+  deleteAccountById,
 } from "src/services/customerServices";
 import { getCurrentUser } from "src/appFunctions";
 import { STATUS } from "src/appConst";
@@ -84,33 +85,32 @@ const Page = () => {
   };
 
   const handleDelete = async () => {
-    // try {
-    //   const data = await deleteProject(customer)
-    //   if (data?.status === STATUS.SUCCESS) {
-    //     pageUpdate()
-    //     handleClose()
-    //     toast.success("Deleted project successfully", {
-    //       autoClose: 1000
-    //     })
-    //   }
-    // } catch (error) {
-    //   toast.error("Delete failed project", {
-    //     autoClose: 1000
-    //   })
-    // }
+    try {
+      const data = await deleteAccountById(customer);
+      if (data?.status === STATUS.SUCCESS) {
+        pageUpdate();
+        handleClose();
+        toast.success("Deleted project successfully", {
+          autoClose: 1000,
+        });
+      }
+    } catch (error) {
+      toast.error("Delete failed project", {
+        autoClose: 1000,
+      });
+    }
   };
   const handleSearch = async (keyWord) => {
-    // try {
-    //   if (keyWord !== "") {
-    //     const data = await searchProject({ accountId: getCurrentUser()?.id, name: keyWord });
-    //     if (data?.status === STATUS.SUCCESS) {
-    //       setListUser(data?.data)
-    //     }
-    //   } else {
-    //     pageUpdate()
-    //   }
-    // } catch (error) {
-    // }
+    try {
+      if (keyWord !== "") {
+        const data = await searchAccount({ query: keyWord });
+        if (data?.status === STATUS.SUCCESS) {
+          setListUser(data?.data);
+        }
+      } else {
+        pageUpdate();
+      }
+    } catch (error) {}
   };
   const pageUpdate = async () => {
     try {
@@ -144,32 +144,6 @@ const Page = () => {
             <Stack direction="row" justifyContent="space-between" spacing={4}>
               <Stack spacing={1}>
                 <Typography variant="h4">Danh sách học sinh</Typography>
-                {/* <Stack
-                  alignItems="center"
-                  direction="row"
-                  spacing={1}
-                >
-                  <Button
-                    color="inherit"
-                    startIcon={(
-                      <SvgIcon fontSize="small">
-                        <ArrowUpOnSquareIcon />
-                      </SvgIcon>
-                    )}
-                  >
-                    Import
-                  </Button>
-                  <Button
-                    color="inherit"
-                    startIcon={(
-                      <SvgIcon fontSize="small">
-                        <ArrowDownOnSquareIcon />
-                      </SvgIcon>
-                    )}
-                  >
-                    Export
-                  </Button>
-                </Stack> */}
               </Stack>
               <div>
                 <Button

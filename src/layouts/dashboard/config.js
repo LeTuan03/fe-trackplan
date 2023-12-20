@@ -86,6 +86,15 @@ export const items = () => {
         </SvgIcon>
       ),
     },
+    currentUser?.role === "3" && {
+      title: "Thông tin tài chính",
+      path: "/pee",
+      icon: (
+        <SvgIcon fontSize="small">
+          <SpeakerWaveIcon />
+        </SvgIcon>
+      ),
+    },
     {
       title: "Thông tin cá nhân",
       path: "/account",
