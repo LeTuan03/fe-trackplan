@@ -68,6 +68,15 @@ export const items = () => {
         </SvgIcon>
       ),
     },
+    currentUser?.role === "2" && {
+      title: "Quản lý học phí",
+      path: "/finance",
+      icon: (
+        <SvgIcon fontSize="small">
+          <UsersIcon />
+        </SvgIcon>
+      ),
+    },
     currentUser?.role === "3" && {
       title: "Lớp học",
       path: "/groups",

@@ -25,3 +25,7 @@
 .m-100 {
   min-width: 100px;
 }
+
+.text-red {
+  color: red !important;
+}

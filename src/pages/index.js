@@ -17,7 +17,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Overview | Phần mềm quản lý học sinh phổ thông
+        Trang chủ | Phần mềm quản lý học sinh phổ thông
       </title>
     </Head>
     <Box

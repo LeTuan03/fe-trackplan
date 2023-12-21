@@ -21,12 +21,14 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { AccountProfile } from "src/sections/account/account-profile";
 import { AccountProfileDetails } from "src/sections/account/account-profile-details";
 import { LIST_CLASSES } from "src/appConst";
 import { useAuth } from "src/hooks/use-auth";
-import { getAccountById } from "src/services/customerServices";
+import { getPeeByAccountId } from "src/services/customerServices";
 
 const Page = () => {
   const { user, isAuthenticated } = useAuth();
@@ -36,12 +38,23 @@ const Page = () => {
     email: user?.email,
     phone: user?.phone,
   });
-  const [objSubject, setObjSubject] = useState([
-    { lop: "lop10", name: "Lớp 10" },
-    { lop: "lop10", name: "Lớp 11" },
-    { lop: "lop10", name: "Lớp 12" },
-  ]);
-
+  const [objSubject, setObjSubject] = useState([]);
+  const handleGetCurrentPee = async () => {
+    try {
+      const { data } = await getPeeByAccountId(user?.id);
+      setObjSubject([
+        { lop: "lop10", name: "Lớp 10", peeObligatory: data?.hocPhi10 },
+        { lop: "lop10", name: "Lớp 11", peeObligatory: data?.hocPhi11 },
+        { lop: "lop10", name: "Lớp 12", peeObligatory: data?.hocPhi12 },
+      ])
+    } catch (error) {
+      console.log(error)
+    }
+  } 
+  useEffect(() => {
+    handleGetCurrentPee();
+  }, [])
+  
   return (
     <>
       <Head>
@@ -80,7 +93,7 @@ const Page = () => {
                         <TableRow key={index}>
                           <TableCell align="center">{index + 1}</TableCell>
                           <TableCell align="left">{i?.name}</TableCell>
-                          <TableCell align="left">{i?.value}</TableCell>
+                          <TableCell align="left" className="text-red">{i?.peeObligatory} <small>VND</small></TableCell>
                           <TableCell align="left">{i?.value}</TableCell>
                           <TableCell align="left">{i?.value}</TableCell>
                           <TableCell align="left">{i?.value}</TableCell>

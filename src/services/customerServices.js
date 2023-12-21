@@ -6,6 +6,7 @@ const API_PATH_V1 = ConstantList.API_ENPOINT + ConstantList.PRE_FIX;
 const API_PATH_LOP10 = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/lop10";
 const API_PATH_LOP11 = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/lop11";
 const API_PATH_LOP12 = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/lop12";
+const API_PATH_PEE = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/pees";
 
 // account
 export const getAll = async () => {
@@ -151,4 +152,14 @@ export const updateLop12 = async (searchObject) => {
 export const getByIdLop12 = async (id) => {
   let url = API_PATH_LOP12 + "/getById/" + id;
   return axios.get(url);
+};
+
+//pee
+export const getPeeByAccountId = async (id) => {
+  let url = API_PATH_PEE + "/getByAccountId/" + id;
+  return axios.get(url);
+};
+export const updatePee = async (searchObject) => {
+  let url = API_PATH_PEE + "/update/" + searchObject?.id;
+  return axios.put(url, searchObject);
 };

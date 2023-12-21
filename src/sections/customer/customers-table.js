@@ -47,6 +47,7 @@ export const CustomersTable = (props) => {
     handleEdit,
     handleClickOpenDelete,
     isGiaoVien,
+    isDelete
   } = props;
 
   return (
@@ -63,7 +64,7 @@ export const CustomersTable = (props) => {
                       Thao tác
                     </TableCell>
                     <TableCell>Tên lớp học</TableCell>
-                    <TableCell>Giáo viên chủ nhiệm</TableCell>
+                    <TableCell>Giáo viên dạy</TableCell>
                     <TableCell align="center">Sĩ số lớp</TableCell>
                     {/* <TableCell align='center' >
                     Status
@@ -79,7 +80,7 @@ export const CustomersTable = (props) => {
                 {isMember && (
                   <>
                     <TableCell align="center">STT</TableCell>
-                    <TableCell padding="checkbox" align="center">
+                    <TableCell align="center">
                       Thao tác
                     </TableCell>
                     <TableCell>Tên học sinh</TableCell>
@@ -92,8 +93,8 @@ export const CustomersTable = (props) => {
                 {isGiaoVien && (
                   <>
                     <TableCell align="center">STT</TableCell>
-                    <TableCell padding="checkbox" align="center">
-                      Action
+                    <TableCell align="center">
+                      Thao tác
                     </TableCell>
                     <TableCell>Username</TableCell>
                     <TableCell align="center">Created at</TableCell>
@@ -105,7 +106,7 @@ export const CustomersTable = (props) => {
                     <TableCell width={20}>STT</TableCell>
                     <TableCell width={100}>Thao tác</TableCell>
                     <TableCell>Tên lớp học</TableCell>
-                    <TableCell>Giáo viên chủ nhiệm</TableCell>
+                    <TableCell>Giáo viên dạy</TableCell>
                     {/* <TableCell align="center" width={110}>
                       Status
                     </TableCell>
@@ -221,7 +222,7 @@ export const CustomersTable = (props) => {
                             <SvgIcon fontSize="small" onClick={() => handleEdit(customer)}>
                               <PencilIcon style={{ color: COLOR.PRIMARY }} />
                             </SvgIcon>
-                            {customer?.status !== STATUS_OBJECT.INPROGRESS.name && (
+                            {isDelete && (
                               <SvgIcon
                                 fontSize="small"
                                 onClick={() => {

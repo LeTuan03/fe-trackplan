@@ -20,6 +20,7 @@ import {
   getProjectById,
   searchAccount,
   deleteAccountById,
+  getPeeByAccountId
 } from "src/services/customerServices";
 import { getCurrentUser } from "src/appFunctions";
 import { STATUS } from "src/appConst";
@@ -64,7 +65,7 @@ const Page = () => {
   };
   const handleEdit = async (item) => {
     try {
-      const data = await getAccountById(item?.id);
+      const data = await getPeeByAccountId(item?.id);
       if (data?.status === STATUS.SUCCESS) {
         setCustomer(data?.data);
         setOpen(true);
@@ -130,7 +131,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Phần mềm quản lý học sinh phổ thông | Members</title>
+        <title>Học phí | Phần mềm quản lý học sinh phổ thông</title>
       </Head>
       <Box
         component="main"
@@ -165,9 +166,9 @@ const Page = () => {
               placeHolder="Tìm kiếm theo tên học sinh"
             />
             <CustomersDialog
-              title="Thêm mới/Cập nhật học sinh"
-              isViewTitle="Thông tin học sinh"
-              isMember={true}
+              title="Cập nhật học phí"
+              isViewTitle="Thông tin học phí"
+              isFinance={true}
               open={open}
               handleClose={handleClose}
               items={customer}
@@ -182,7 +183,7 @@ const Page = () => {
             />
             <CustomersTable
               isMember={true}
-              isDelete={true}
+              isDelete={false}
               handleClickOpen={handleClickOpen}
               handleClickOpenDelete={handleClickOpenDelete}
               handleEdit={handleEdit}

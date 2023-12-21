@@ -67,7 +67,7 @@ export const SideNav = (props) => {
           >
             <div>
               <Typography color="inherit" variant="subtitle1">
-                Quản Lý Học Sinh Phổ Thông
+                Trường Trung Học Phổ Thông A
               </Typography>
               {/* <Typography
                 color="neutral.400"

@@ -44,6 +44,7 @@ import {
   addLop10,
   addLop11,
   addLop12,
+  updatePee
 } from "src/services/customerServices";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import CustomersTab from "./customers-tab";
@@ -61,6 +62,7 @@ export default function CustomersDialog({
   isMember,
   isGiaoVien,
   isViewTitle,
+  isFinance
 }) {
   const filterAutocomplete = createFilterOptions();
   const [listTask, setListTask] = useState([]);
@@ -350,6 +352,24 @@ export default function CustomersDialog({
       //   }
       // }
     }
+    if (isFinance) {
+        try {
+        if (formData?.id) {
+          const data = await updatePee(formData);
+          if (data?.status === STATUS.SUCCESS) {
+            toast.success("Cập nhật học phí thành công", {
+              autoClose: 1000,
+            });
+          }
+        } 
+        setFormData({});
+        handleClose();
+      } catch (error) {
+        toast.error(error?.response?.data?.message || "Có lỗi xảy ra", {
+            autoClose: 1000,
+        });
+      }
+    }
   };
 
   const handleChangeStatus = (data) => {
@@ -546,7 +566,16 @@ export default function CustomersDialog({
         birth: items?.birth && new Date(items?.birth),
       });
     }
-  }, [isPlan, isAdmin, isGroup, items, items?.status, isMember, isGiaoVien]);
+    if (isFinance) {
+      setFormData({
+        id: items?.id,
+        hocPhi10: items?.hocPhi10,
+        hocPhi11: items?.hocPhi11,
+        hocPhi12: items?.hocPhi12,
+        accountId: items?.accountId,
+      });
+    }
+  }, [isPlan, isAdmin, isGroup, items, items?.status, isMember, isGiaoVien, isFinance]);
   return (
     <Fragment>
       <Dialog
@@ -590,7 +619,7 @@ export default function CustomersDialog({
                     className="w-100"
                     label={
                       <span>
-                        <span>Giáo viên chủ nhiệm</span>
+                        <span>Giáo viên dạy</span>
                       </span>
                     }
                     value={formData?.createdBy}
@@ -606,7 +635,7 @@ export default function CustomersDialog({
                       <TextField
                         label={
                           <span>
-                            <span>Giáo viên chủ nhiệm</span>
+                            <span>Giáo viên dạy</span>
                           </span>
                         }
                         {...params}
@@ -1347,7 +1376,7 @@ export default function CustomersDialog({
                     className="w-100"
                     label={
                       <span>
-                        <span>Giáo viên chủ nhiệm</span>
+                        <span>Giáo viên dạy</span>
                       </span>
                     }
                     value={formData?.homeroomTeacher}
@@ -1648,6 +1677,57 @@ export default function CustomersDialog({
                       </span>
                     }
                     value={formData?.address}
+                  />
+                </Grid>
+              </Grid>
+            )}
+            
+            {/* finance */}
+            {isFinance && (
+              <Grid container spacing={1}>
+                <Grid item md={4} sm={12} xs={12}>
+                  <TextValidator
+                    disabled={isView}
+                    className="w-100"
+                    name="hocPhi10"
+                    type="number"
+                    onChange={handleChange}
+                    label={
+                      <span>
+                        <span>Học phí lớp 10</span>
+                      </span>
+                    }
+                    value={formData?.hocPhi10}
+                  />
+                </Grid>
+                <Grid item md={4} sm={12} xs={12}>
+                  <TextValidator
+                    disabled={isView}
+                    className="w-100"
+                    name="hocPhi11"
+                    type="number"
+                    onChange={handleChange}
+                    label={
+                      <span>
+                        <span>Học phí lớp 11</span>
+                      </span>
+                    }
+                    value={formData?.hocPhi11}
+                  />
+                </Grid>
+                <Grid item md={4} sm={12} xs={12}>
+                  <TextValidator
+                    disabled={isView}
+                    className="w-100"
+                    name="hocPhi12"
+                    type="number"
+                    onChange={handleChange}
+                    label={
+                      <span>
+                        <span>Học phí lớp 12</span>
+                      </span>
+                    }
+                    value={formData?.hocPhi12}
                   />
                 </Grid>
               </Grid>
