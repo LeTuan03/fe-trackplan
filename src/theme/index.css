@@ -29,3 +29,7 @@
 .text-red {
   color: red !important;
 }
+
+.mr-3 {
+  margin-right: 10px;
+}

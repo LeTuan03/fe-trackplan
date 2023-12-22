@@ -7,6 +7,7 @@ const API_PATH_LOP10 = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/lop10
 const API_PATH_LOP11 = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/lop11";
 const API_PATH_LOP12 = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/lop12";
 const API_PATH_PEE = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/pees";
+const API_PATH_FAMILY = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/family";
 
 // account
 export const getAll = async () => {
@@ -162,4 +163,25 @@ export const getPeeByAccountId = async (id) => {
 export const updatePee = async (searchObject) => {
   let url = API_PATH_PEE + "/update/" + searchObject?.id;
   return axios.put(url, searchObject);
+};
+
+//family
+export const getFamilyByAccountId = async (id) => {
+  let url = API_PATH_FAMILY + "/getByAccountId/" + id;
+  return axios.get(url);
+};
+
+export const updateFamily = async (searchObject) => {
+  let url = API_PATH_FAMILY + "/updateById/" + searchObject?.id;
+  return axios.post(url, searchObject);
+};
+
+export const updateFamilys = async (searchObject) => {
+  let url = API_PATH_FAMILY + "/adds";
+  return axios.post(url, searchObject);
+};
+
+export const deleteFamilyById = async (searchObject) => {
+  let url = API_PATH_FAMILY + "/deleteById/" + searchObject?.id;
+  return axios.delete(url);
 };

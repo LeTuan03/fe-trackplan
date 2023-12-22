@@ -20,7 +20,7 @@ import {
   getProjectById,
   searchAccount,
   deleteAccountById,
-  getPeeByAccountId
+  getPeeByAccountId,
 } from "src/services/customerServices";
 import { getCurrentUser } from "src/appFunctions";
 import { STATUS } from "src/appConst";
@@ -146,7 +146,7 @@ const Page = () => {
               <Stack spacing={1}>
                 <Typography variant="h4">Danh sách học sinh</Typography>
               </Stack>
-              <div>
+              {/* <div>
                 <Button
                   startIcon={
                     <SvgIcon fontSize="small">
@@ -158,7 +158,7 @@ const Page = () => {
                 >
                   Thêm mới
                 </Button>
-              </div>
+              </div> */}
             </Stack>
             <CustomersSearch
               isPlant={true}

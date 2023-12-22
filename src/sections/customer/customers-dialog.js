@@ -19,6 +19,11 @@ import {
 } from "@mui/material";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 import { getCurrentUser, getSelectedStatusValue, getSelectedPercentValue } from "src/appFunctions";
 import {
@@ -44,10 +49,46 @@ import {
   addLop10,
   addLop11,
   addLop12,
-  updatePee
+  updatePee,
+  updateFamilys,
+  deleteFamilyById,
 } from "src/services/customerServices";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import CustomersTab from "./customers-tab";
+
+function CustomTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+    className: "m-100",
+  };
+}
 
 export default function CustomersDialog({
   open,
@@ -62,14 +103,22 @@ export default function CustomersDialog({
   isMember,
   isGiaoVien,
   isViewTitle,
-  isFinance
+  isFinance,
 }) {
   const filterAutocomplete = createFilterOptions();
   const [listTask, setListTask] = useState([]);
   const [listMember, setListMember] = useState([]);
   const [listTeacher, setListTeacher] = useState([]);
+  const [listFamilies, setListFamilies] = useState([]);
+  const [familiesObj, setFamiliesObj] = useState({});
 
   const [formData, setFormData] = useState({});
+
+  const [value, setValue] = useState(0);
+
+  const handleChangeTab = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -213,7 +262,8 @@ export default function CustomersDialog({
           } else {
             await addLop12(convertDataClassSubmit(formData?.lop12[0], items?.id));
           }
-          if (data?.status === STATUS.SUCCESS) {
+          const dataFamilies = await updateFamilys(listFamilies);
+          if ((data?.status && dataFamilies?.status) === STATUS.SUCCESS) {
             toast.success("Cập nhật học sinh thành công", {
               autoClose: 1000,
             });
@@ -353,7 +403,7 @@ export default function CustomersDialog({
       // }
     }
     if (isFinance) {
-        try {
+      try {
         if (formData?.id) {
           const data = await updatePee(formData);
           if (data?.status === STATUS.SUCCESS) {
@@ -361,15 +411,16 @@ export default function CustomersDialog({
               autoClose: 1000,
             });
           }
-        } 
+        }
         setFormData({});
         handleClose();
       } catch (error) {
         toast.error(error?.response?.data?.message || "Có lỗi xảy ra", {
-            autoClose: 1000,
+          autoClose: 1000,
         });
       }
     }
+    setValue(0);
   };
 
   const handleChangeStatus = (data) => {
@@ -458,6 +509,46 @@ export default function CustomersDialog({
     }
   };
 
+  const handleChangeFamily = (event) => {
+    const { value, name } = event.target;
+    if (name === "birth") {
+      setFamiliesObj((pre) => ({ ...pre, [name]: new Date(value) }));
+      return;
+    }
+    setFamiliesObj((pre) => ({ ...pre, [name]: value }));
+  };
+
+  const handleAddFamily = () => {
+    setListFamilies((pre) => [...pre, { ...familiesObj, accountId: items?.id }]);
+    setFamiliesObj((pre) => ({
+      ...pre,
+      fullName: "",
+      id: null,
+      address: "",
+      phone: "",
+      email: "",
+      address: "",
+      nation: "",
+      birth: new Date(),
+      relationship: "",
+    }));
+  };
+
+  const handleDeleteFamily = async (index, item) => {
+    try {
+      if (item?.id) {
+        await deleteFamilyById(item);
+      }
+      toast.success("Xóa thông tin gia đình thành công");
+    } catch (error) {
+      toast.success("Có lỗi xảy ra");
+    } finally {
+      const updatedList = [...listFamilies];
+      updatedList.splice(index, 1);
+      setListFamilies(updatedList);
+    }
+  };
+
   const getListMember = async () => {
     try {
       const data = await getMember("3");
@@ -536,7 +627,9 @@ export default function CustomersDialog({
         lop10: items?.lop10,
         lop11: items?.lop11,
         lop12: items?.lop12,
+        families: items?.families,
       });
+      setListFamilies(items?.families);
     }
     if (isGiaoVien) {
       setFormData({
@@ -572,6 +665,9 @@ export default function CustomersDialog({
         hocPhi10: items?.hocPhi10,
         hocPhi11: items?.hocPhi11,
         hocPhi12: items?.hocPhi12,
+        hocPhi10DaDong: items?.hocPhi10DaDong,
+        hocPhi11DaDong: items?.hocPhi11DaDong,
+        hocPhi12DaDong: items?.hocPhi12DaDong,
         accountId: items?.accountId,
       });
     }
@@ -894,236 +990,433 @@ export default function CustomersDialog({
               </Grid>
             )}
             {isMember && (
-              <Grid container spacing={1}>
-                <Grid item md={4} sm={12} xs={12}>
-                  <TextValidator
-                    disabled={isView}
-                    className="w-100"
-                    onChange={handleChange}
-                    name="username"
-                    label={
-                      <span>
-                        <span>Tên học sinh</span>
-                      </span>
-                    }
-                    value={formData?.username}
-                    validators={["required"]}
-                    errorMessages={["general.required"]}
-                  />
-                </Grid>
-                <Grid item md={4} sm={12} xs={12}>
-                  <TextValidator
-                    disabled={isView}
-                    className="w-100"
-                    onChange={handleChange}
-                    type="password"
-                    name="password"
-                    label={
-                      <span>
-                        <span>Mật khẩu</span>
-                      </span>
-                    }
-                    value={formData?.password}
-                    validators={["required"]}
-                    errorMessages={["general.required"]}
-                  />
-                </Grid>
-                <Grid item md={4} sm={12} xs={12}>
-                  <TextValidator
-                    disabled={isView}
-                    className="w-100"
-                    name="phone"
-                    onChange={handleChange}
-                    label={
-                      <span>
-                        <span>Số điện thoại</span>
-                      </span>
-                    }
-                    value={formData?.phone}
-                  />
-                </Grid>
-                <Grid item md={4} sm={12} xs={12}>
-                  <TextValidator
-                    disabled={isView}
-                    className="w-100"
-                    name="email"
-                    onChange={handleChange}
-                    label={
-                      <span>
-                        <span>Email</span>
-                      </span>
-                    }
-                    value={formData?.email}
-                  />
-                </Grid>
-                <Grid item md={4} sm={12} xs={12}>
-                  <TextValidator
-                    disabled={isView}
-                    className="w-100"
-                    onChange={handleChange}
-                    name="birth"
-                    type="date"
-                    label={
-                      <span>
-                        <span>Ngày sinh</span>
-                      </span>
-                    }
-                    value={formData?.birth ? format(formData?.birth, "yyyy-MM-dd") : ""}
-                  />
-                </Grid>
-                <Grid item md={4} sm={12} xs={12}>
-                  <TextValidator
-                    disabled={isView}
-                    className="w-100"
-                    name="nation"
-                    onChange={handleChange}
-                    label={
-                      <span>
-                        <span>Dân tộc</span>
-                      </span>
-                    }
-                    value={formData?.nation}
-                  />
-                </Grid>
-                <Grid item md={12} sm={12} xs={12}>
-                  <TextValidator
-                    disabled={isView}
-                    className="w-100"
-                    name="address"
-                    onChange={handleChange}
-                    label={
-                      <span>
-                        <span>Địa chỉ cụ thể</span>
-                      </span>
-                    }
-                    value={formData?.address}
-                  />
-                </Grid>
-                {/* <Grid item md={4} sm={12} xs={12}>
-                  <TextValidator
-                    disabled={isView}
-                    className="w-100"
-                    name="createdAt"
-                    label={
-                      <span>
-                        <span>Created at</span>
-                      </span>
-                    }
-                    value={
-                      formData?.createdAt
-                        ? format(new Date(formData?.createdAt), "dd/MM/yyyy")
-                        : format(new Date(), "dd/MM/yyyy")
-                    }
-                  />
-                </Grid> */}
-                <Grid item md={12} sm={12} xs={12}>
-                  {items?.id && (
-                    <CustomersTab formData={formData} handleChange={handleChangePoint} />
-                  )}
-                </Grid>
-                {items?.id && isPlan && (
-                  <>
-                    {!isView && (
-                      <Grid item md={12} sm={12} xs={12}>
-                        <Button variant="contained" onClick={handleAddTask}>
-                          Add memberStudents
-                        </Button>
+              <>
+                <Box sx={{ width: "100%" }}>
+                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
+                      <Tab
+                        style={{ minWidth: "200px" }}
+                        label="Thông tin học sinh"
+                        {...a11yProps(0)}
+                      />
+                      <Tab
+                        style={{ minWidth: "200px" }}
+                        label="Quan hệ gia đình"
+                        {...a11yProps(1)}
+                        disabled={!items?.id}
+                      />
+                    </Tabs>
+                  </Box>
+                  <CustomTabPanel value={value} index={0}>
+                    <Grid container spacing={1}>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          onChange={handleChange}
+                          name="username"
+                          label={
+                            <span>
+                              <span>Tên học sinh</span>
+                            </span>
+                          }
+                          value={formData?.username}
+                          validators={["required"]}
+                          errorMessages={["general.required"]}
+                        />
                       </Grid>
-                    )}
-                    <Grid item md={12} sm={12} xs={12}>
-                      <Table size="small" padding="none" stickyHeader={true}>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell align="center" width={20}>
-                              No
-                            </TableCell>
-                            {!isView && (
-                              <TableCell align="center" width={50}>
-                                Action
-                              </TableCell>
-                            )}
-                            <TableCell>Subject</TableCell>
-                            <TableCell width={250}>Tên học sinh</TableCell>
-                            <TableCell width={110} align="center">
-                              Status
-                            </TableCell>
-                            <TableCell width={100}>% Done</TableCell>
-                            <TableCell>Note</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {listTask?.map((item, index) => {
-                            return (
-                              <TableRow key={index}>
-                                <TableCell align="center">{index + 1}</TableCell>
-                                {!isView && (
-                                  <TableCell align="center">
-                                    <SvgIcon
-                                      fontSize="small"
-                                      style={{ cursor: "pointer" }}
-                                      onClick={() => handleDeleteTask(index, item)}
-                                    >
-                                      <XMarkIcon style={{ color: COLOR.SUPPORT_THIRD }} />
-                                    </SvgIcon>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          onChange={handleChange}
+                          type="password"
+                          name="password"
+                          label={
+                            <span>
+                              <span>Mật khẩu</span>
+                            </span>
+                          }
+                          value={formData?.password}
+                          validators={["required"]}
+                          errorMessages={["general.required"]}
+                        />
+                      </Grid>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          name="phone"
+                          onChange={handleChange}
+                          label={
+                            <span>
+                              <span>Số điện thoại</span>
+                            </span>
+                          }
+                          value={formData?.phone}
+                        />
+                      </Grid>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          name="email"
+                          onChange={handleChange}
+                          label={
+                            <span>
+                              <span>Email</span>
+                            </span>
+                          }
+                          value={formData?.email}
+                        />
+                      </Grid>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          onChange={handleChange}
+                          name="birth"
+                          type="date"
+                          label={
+                            <span>
+                              <span>Ngày sinh</span>
+                            </span>
+                          }
+                          value={formData?.birth ? format(formData?.birth, "yyyy-MM-dd") : ""}
+                        />
+                      </Grid>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          name="nation"
+                          onChange={handleChange}
+                          label={
+                            <span>
+                              <span>Dân tộc</span>
+                            </span>
+                          }
+                          value={formData?.nation}
+                        />
+                      </Grid>
+                      <Grid item md={12} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          name="address"
+                          onChange={handleChange}
+                          label={
+                            <span>
+                              <span>Địa chỉ cụ thể</span>
+                            </span>
+                          }
+                          value={formData?.address}
+                        />
+                      </Grid>
+                      {/* <Grid item md={4} sm={12} xs={12}>
+                    <TextValidator
+                      disabled={isView}
+                      className="w-100"
+                      name="createdAt"
+                      label={
+                        <span>
+                          <span>Created at</span>
+                        </span>
+                      }
+                      value={
+                        formData?.createdAt
+                          ? format(new Date(formData?.createdAt), "dd/MM/yyyy")
+                          : format(new Date(), "dd/MM/yyyy")
+                      }
+                    />
+                  </Grid> */}
+                      <Grid item md={12} sm={12} xs={12}>
+                        {items?.id && (
+                          <CustomersTab formData={formData} handleChange={handleChangePoint} />
+                        )}
+                      </Grid>
+                      {items?.id && isPlan && (
+                        <>
+                          {!isView && (
+                            <Grid item md={12} sm={12} xs={12}>
+                              <Button variant="contained" onClick={handleAddTask}>
+                                Add memberStudents
+                              </Button>
+                            </Grid>
+                          )}
+                          <Grid item md={12} sm={12} xs={12}>
+                            <Table size="small" padding="none" stickyHeader={true}>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell align="center" width={20}>
+                                    No
                                   </TableCell>
-                                )}
-                                <TableCell align="left">
-                                  <TextValidator
-                                    disabled={isView}
-                                    className="w-100"
-                                    onChange={(event) => handleChangeTask(event, "taskName", index)}
-                                    name="taskName"
-                                    value={item.taskName}
-                                  />
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Autocomplete
-                                    fullWidth
-                                    options={listMember}
-                                    value={item?.member || null}
-                                    onChange={(e, value) => handleChangeMember(value, index)}
-                                    getOptionLabel={(option) => option?.username}
-                                    renderInput={(params) => <TextField {...params} />}
-                                    filterOptions={(options, params) => {
-                                      params.inputValue = params.inputValue.trim();
-                                      let filtered = filterAutocomplete(options, params);
-                                      return filtered;
-                                    }}
-                                    disabled={isView}
-                                    noOptionsText={"No option"}
-                                  />
-                                </TableCell>
-                                <TableCell align="center">
-                                  {LIST_PLAN_STATUS.find((i) => i?.code === item?.status)?.label}
-                                  {/* <Autocomplete
-                                fullWidth
-                                options={LIST_PLAN_STATUS}
-                                value={item?.label}
-                                onChange={(e, value) => handleChangememberStudentstatus(value, index)}
-                                getOptionLabel={(option) => option?.label}
-                                renderInput={(params) => (
-                                  <TextField {...params} />
-                                )}
-                                filterOptions={(options, params) => {
-                                  params.inputValue = params.inputValue.trim();
-                                  let filtered = filterAutocomplete(options, params);
-                                  return filtered;
-                                }}
-                                disabled={isView}
-                                noOptionsText={"No option"}
-                              /> */}
-                                </TableCell>
-                                <TableCell align="center">{item?.percentComplete}</TableCell>
-                                <TableCell align="left">{item?.note}</TableCell>
-                              </TableRow>
-                            );
-                          })}
-                        </TableBody>
-                      </Table>
+                                  {!isView && (
+                                    <TableCell align="center" width={50}>
+                                      Action
+                                    </TableCell>
+                                  )}
+                                  <TableCell>Subject</TableCell>
+                                  <TableCell width={250}>Tên học sinh</TableCell>
+                                  <TableCell width={110} align="center">
+                                    Status
+                                  </TableCell>
+                                  <TableCell width={100}>% Done</TableCell>
+                                  <TableCell>Note</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {listTask?.map((item, index) => {
+                                  return (
+                                    <TableRow key={index}>
+                                      <TableCell align="center">{index + 1}</TableCell>
+                                      {!isView && (
+                                        <TableCell align="center">
+                                          <SvgIcon
+                                            fontSize="small"
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() => handleDeleteTask(index, item)}
+                                          >
+                                            <XMarkIcon style={{ color: COLOR.SUPPORT_THIRD }} />
+                                          </SvgIcon>
+                                        </TableCell>
+                                      )}
+                                      <TableCell align="left">
+                                        <TextValidator
+                                          disabled={isView}
+                                          className="w-100"
+                                          onChange={(event) =>
+                                            handleChangeTask(event, "taskName", index)
+                                          }
+                                          name="taskName"
+                                          value={item.taskName}
+                                        />
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        <Autocomplete
+                                          fullWidth
+                                          options={listMember}
+                                          value={item?.member || null}
+                                          onChange={(e, value) => handleChangeMember(value, index)}
+                                          getOptionLabel={(option) => option?.username}
+                                          renderInput={(params) => <TextField {...params} />}
+                                          filterOptions={(options, params) => {
+                                            params.inputValue = params.inputValue.trim();
+                                            let filtered = filterAutocomplete(options, params);
+                                            return filtered;
+                                          }}
+                                          disabled={isView}
+                                          noOptionsText={"No option"}
+                                        />
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        {
+                                          LIST_PLAN_STATUS.find((i) => i?.code === item?.status)
+                                            ?.label
+                                        }
+                                        {/* <Autocomplete
+                                  fullWidth
+                                  options={LIST_PLAN_STATUS}
+                                  value={item?.label}
+                                  onChange={(e, value) => handleChangememberStudentstatus(value, index)}
+                                  getOptionLabel={(option) => option?.label}
+                                  renderInput={(params) => (
+                                    <TextField {...params} />
+                                  )}
+                                  filterOptions={(options, params) => {
+                                    params.inputValue = params.inputValue.trim();
+                                    let filtered = filterAutocomplete(options, params);
+                                    return filtered;
+                                  }}
+                                  disabled={isView}
+                                  noOptionsText={"No option"}
+                                /> */}
+                                      </TableCell>
+                                      <TableCell align="center">{item?.percentComplete}</TableCell>
+                                      <TableCell align="left">{item?.note}</TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </Grid>
+                        </>
+                      )}
                     </Grid>
-                  </>
-                )}
-              </Grid>
+                  </CustomTabPanel>
+                  <CustomTabPanel value={value} index={1}>
+                    <Grid container spacing={1}>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          onChange={handleChangeFamily}
+                          name="fullName"
+                          label={
+                            <span>
+                              <span>Tên</span>
+                            </span>
+                          }
+                          value={familiesObj?.fullName}
+                          validators={["required"]}
+                          errorMessages={["general.required"]}
+                        />
+                      </Grid>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          name="phone"
+                          onChange={handleChangeFamily}
+                          label={
+                            <span>
+                              <span>Số điện thoại</span>
+                            </span>
+                          }
+                          value={familiesObj?.phone}
+                        />
+                      </Grid>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          name="email"
+                          onChange={handleChangeFamily}
+                          label={
+                            <span>
+                              <span>Email</span>
+                            </span>
+                          }
+                          value={familiesObj?.email}
+                        />
+                      </Grid>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          onChange={handleChangeFamily}
+                          name="birth"
+                          type="date"
+                          label={
+                            <span>
+                              <span>Ngày sinh</span>
+                            </span>
+                          }
+                          value={
+                            familiesObj?.birth
+                              ? format(familiesObj?.birth, "yyyy-MM-dd")
+                              : format(new Date(), "yyyy-MM-dd")
+                          }
+                        />
+                      </Grid>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          onChange={handleChangeFamily}
+                          name="relationship"
+                          label={
+                            <span>
+                              <span>Quan hệ với học sinh</span>
+                            </span>
+                          }
+                          value={familiesObj?.relationship}
+                        />
+                      </Grid>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          name="nation"
+                          onChange={handleChangeFamily}
+                          label={
+                            <span>
+                              <span>Dân tộc</span>
+                            </span>
+                          }
+                          value={familiesObj?.nation}
+                        />
+                      </Grid>
+                      <Grid item md={12} sm={12} xs={12}>
+                        <TextValidator
+                          disabled={isView}
+                          className="w-100"
+                          name="address"
+                          onChange={handleChangeFamily}
+                          label={
+                            <span>
+                              <span>Địa chỉ cụ thể</span>
+                            </span>
+                          }
+                          value={familiesObj?.address}
+                        />
+                      </Grid>
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Button
+                          variant="contained"
+                          style={{ marginRight: 10, minWidth: 100 }}
+                          onClick={handleAddFamily}
+                        >
+                          Thêm
+                        </Button>
+                        {/* <Button variant="outlined" color="error" style={{ minWidth: 100 }}>
+                          Hoàn tác
+                        </Button> */}
+                      </Grid>
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Table size="small" padding="none" stickyHeader={true}>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell align="center" width={20}>
+                                STT
+                              </TableCell>
+                              {!isView && (
+                                <TableCell align="center" width={100}>
+                                  Thao tác
+                                </TableCell>
+                              )}
+                              <TableCell>Họ và tên</TableCell>
+                              <TableCell width={200} align="center">
+                                Ngày sinh
+                              </TableCell>
+                              <TableCell width={200} align="center">
+                                Số điện thoại
+                              </TableCell>
+                              <TableCell align="center">Email</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {listFamilies?.map((item, index) => {
+                              return (
+                                <TableRow key={index}>
+                                  <TableCell align="center">{index + 1}</TableCell>
+                                  {!isView && (
+                                    <TableCell align="center">
+                                      <SvgIcon
+                                        fontSize="small"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => handleDeleteFamily(index, item)}
+                                      >
+                                        <XMarkIcon style={{ color: COLOR.SUPPORT_THIRD }} />
+                                      </SvgIcon>
+                                    </TableCell>
+                                  )}
+                                  <TableCell align="left">{item?.fullName}</TableCell>
+                                  <TableCell align="center">
+                                    {item?.birth ? format(new Date(item?.birth), "yyyy-MM-dd") : ""}
+                                  </TableCell>
+                                  <TableCell align="center">{item?.phone}</TableCell>
+                                  <TableCell align="center">{item?.email}</TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </Grid>
+                    </Grid>
+                  </CustomTabPanel>
+                </Box>
+              </>
             )}
             {isGiaoVien && (
               <Grid container spacing={1}>
@@ -1681,10 +1974,12 @@ export default function CustomersDialog({
                 </Grid>
               </Grid>
             )}
-            
             {/* finance */}
             {isFinance && (
               <Grid container spacing={1}>
+                <Grid item md={12} sm={12} xs={12}>
+                  Học phí lớp 10
+                </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
                     disabled={isView}
@@ -1694,11 +1989,44 @@ export default function CustomersDialog({
                     onChange={handleChange}
                     label={
                       <span>
-                        <span>Học phí lớp 10</span>
+                        <span>Số tiền phải nộp học phí</span>
                       </span>
                     }
                     value={formData?.hocPhi10}
                   />
+                </Grid>
+                <Grid item md={4} sm={12} xs={12}>
+                  <TextValidator
+                    disabled={isView}
+                    className="w-100"
+                    name="hocPhi10DaDong"
+                    type="number"
+                    onChange={handleChange}
+                    label={
+                      <span>
+                        <span>Số tiền đã đóng</span>
+                      </span>
+                    }
+                    value={formData?.hocPhi10DaDong}
+                  />
+                </Grid>
+                <Grid item md={4} sm={12} xs={12}>
+                  <TextValidator
+                    disabled={isView}
+                    className="w-100"
+                    name="hocPhi10"
+                    type="number"
+                    // onChange={handleChange}
+                    label={
+                      <span>
+                        <span>Thừa / Thiếu </span>
+                      </span>
+                    }
+                    value={formData?.hocPhi10 - formData?.hocPhi10DaDong}
+                  />
+                </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  Học phí lớp 11
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
@@ -1709,11 +2037,44 @@ export default function CustomersDialog({
                     onChange={handleChange}
                     label={
                       <span>
-                        <span>Học phí lớp 11</span>
+                        <span>Số tiền phải nộp học phí</span>
                       </span>
                     }
                     value={formData?.hocPhi11}
                   />
+                </Grid>
+                <Grid item md={4} sm={12} xs={12}>
+                  <TextValidator
+                    disabled={isView}
+                    className="w-100"
+                    name="hocPhi11DaDong"
+                    type="number"
+                    onChange={handleChange}
+                    label={
+                      <span>
+                        <span>Số tiền đã đóng</span>
+                      </span>
+                    }
+                    value={formData?.hocPhi11DaDong}
+                  />
+                </Grid>
+                <Grid item md={4} sm={12} xs={12}>
+                  <TextValidator
+                    disabled={isView}
+                    className="w-100"
+                    name="hocPhi11"
+                    type="number"
+                    // onChange={handleChange}
+                    label={
+                      <span>
+                        <span>Thừa / Thiếu </span>
+                      </span>
+                    }
+                    value={formData?.hocPhi11 - formData?.hocPhi11DaDong}
+                  />
+                </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  Học phí lớp 12
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
@@ -1724,17 +2085,54 @@ export default function CustomersDialog({
                     onChange={handleChange}
                     label={
                       <span>
-                        <span>Học phí lớp 12</span>
+                        <span>Số tiền phải nộp học phí</span>
                       </span>
                     }
                     value={formData?.hocPhi12}
+                  />
+                </Grid>
+                <Grid item md={4} sm={12} xs={12}>
+                  <TextValidator
+                    disabled={isView}
+                    className="w-100"
+                    name="hocPhi12DaDong"
+                    type="number"
+                    onChange={handleChange}
+                    label={
+                      <span>
+                        <span>Số tiền đã đóng</span>
+                      </span>
+                    }
+                    value={formData?.hocPhi12DaDong}
+                  />
+                </Grid>
+                <Grid item md={4} sm={12} xs={12}>
+                  <TextValidator
+                    disabled={isView}
+                    className="w-100"
+                    name="hocPhi12"
+                    type="number"
+                    // onChange={handleChange}
+                    label={
+                      <span>
+                        <span>Thừa / Thiếu </span>
+                      </span>
+                    }
+                    value={formData?.hocPhi12 - formData?.hocPhi12DaDong}
                   />
                 </Grid>
               </Grid>
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="error">
+            <Button
+              onClick={() => {
+                handleClose();
+                setValue(0);
+              }}
+              color="error"
+              variant="outlined"
+            >
               Hủy
             </Button>
             {isView === false && (

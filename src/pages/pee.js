@@ -43,18 +43,18 @@ const Page = () => {
     try {
       const { data } = await getPeeByAccountId(user?.id);
       setObjSubject([
-        { lop: "lop10", name: "Lớp 10", peeObligatory: data?.hocPhi10 },
-        { lop: "lop10", name: "Lớp 11", peeObligatory: data?.hocPhi11 },
-        { lop: "lop10", name: "Lớp 12", peeObligatory: data?.hocPhi12 },
-      ])
+        { lop: "lop10", name: "Lớp 10", peeObligatory: data?.hocPhi10, peed: data?.hocPhi10DaDong },
+        { lop: "lop10", name: "Lớp 11", peeObligatory: data?.hocPhi11, peed: data?.hocPhi11DaDong },
+        { lop: "lop10", name: "Lớp 12", peeObligatory: data?.hocPhi12, peed: data?.hocPhi12DaDong },
+      ]);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  } 
+  };
   useEffect(() => {
     handleGetCurrentPee();
-  }, [])
-  
+  }, []);
+
   return (
     <>
       <Head>
@@ -93,10 +93,22 @@ const Page = () => {
                         <TableRow key={index}>
                           <TableCell align="center">{index + 1}</TableCell>
                           <TableCell align="left">{i?.name}</TableCell>
-                          <TableCell align="left" className="text-red">{i?.peeObligatory} <small>VND</small></TableCell>
-                          <TableCell align="left">{i?.value}</TableCell>
-                          <TableCell align="left">{i?.value}</TableCell>
-                          <TableCell align="left">{i?.value}</TableCell>
+                          <TableCell align="left" className="text-red">
+                            {i?.peeObligatory} <small>VND</small>
+                          </TableCell>
+                          <TableCell align="left" className="text-red">
+                            {i?.peed} <small>VND</small>
+                          </TableCell>
+                          <TableCell align="left">
+                            {i?.peeObligatory - i?.peed} <small>VND</small>
+                          </TableCell>
+                          <TableCell align="left">
+                            {i?.peeObligatory - i?.peed > 0
+                              ? "Nộp thiếu"
+                              : i?.peeObligatory - i?.peed < 0
+                              ? "Nộp thừa"
+                              : "Đã nộp"}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
