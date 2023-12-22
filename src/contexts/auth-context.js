@@ -1,19 +1,19 @@
-import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { authenticationServices } from 'src/services/authServices';
-import { STATUS } from 'src/appConst';
-import { addAccount } from 'src/services/customerServices';
+import { createContext, useContext, useEffect, useReducer, useRef } from "react";
+import PropTypes from "prop-types";
+import { authenticationServices } from "src/services/authServices";
+import { STATUS } from "src/appConst";
+import { addAccount } from "src/services/customerServices";
 
 const HANDLERS = {
-  INITIALIZE: 'INITIALIZE',
-  SIGN_IN: 'SIGN_IN',
-  SIGN_OUT: 'SIGN_OUT',
+  INITIALIZE: "INITIALIZE",
+  SIGN_IN: "SIGN_IN",
+  SIGN_OUT: "SIGN_OUT",
 };
 
 const initialState = {
   isAuthenticated: false,
   isLoading: true,
-  user: null
+  user: null,
 };
 
 const handlers = {
@@ -22,18 +22,16 @@ const handlers = {
 
     return {
       ...state,
-      ...(
-        // if payload (user) is provided, then is authenticated
-        user
-          ? ({
+      ...// if payload (user) is provided, then is authenticated
+      (user
+        ? {
             isAuthenticated: true,
             isLoading: false,
-            user
-          })
-          : ({
-            isLoading: false
-          })
-      )
+            user,
+          }
+        : {
+            isLoading: false,
+          }),
     };
   },
   [HANDLERS.SIGN_IN]: (state, action) => {
@@ -42,21 +40,20 @@ const handlers = {
     return {
       ...state,
       isAuthenticated: true,
-      user
+      user,
     };
   },
   [HANDLERS.SIGN_OUT]: (state) => {
     return {
       ...state,
       isAuthenticated: false,
-      user: null
+      user: null,
     };
-  }
+  },
 };
 
-const reducer = (state, action) => (
-  handlers[action.type] ? handlers[action.type](state, action) : state
-);
+const reducer = (state, action) =>
+  handlers[action.type] ? handlers[action.type](state, action) : state;
 
 // The role of this context is to propagate authentication state through the App tree.
 
@@ -78,13 +75,14 @@ export const AuthProvider = (props) => {
     let isAuthenticated = false;
 
     try {
-      isAuthenticated = window.sessionStorage.getItem('authenticated') === 'true';
+      isAuthenticated = window.sessionStorage.getItem("authenticated") === "true";
     } catch (err) {
       console.error(err);
     }
 
     dispatch({
-      type: HANDLERS.INITIALIZE
+      type: HANDLERS.INITIALIZE,
+      payload: isAuthenticated ? JSON.parse(window.sessionStorage.getItem("currentUser")) : null,
     });
   };
 
@@ -99,11 +97,11 @@ export const AuthProvider = (props) => {
     try {
       const data = await authenticationServices({ username, password });
       if (data?.status === STATUS.SUCCESS) {
-        sessionStorage.setItem("currentUser", JSON.stringify(data?.data))
-        window.sessionStorage.setItem('authenticated', 'true');
+        sessionStorage.setItem("currentUser", JSON.stringify(data?.data));
+        window.sessionStorage.setItem("authenticated", "true");
         dispatch({
           type: HANDLERS.SIGN_IN,
-          payload: data?.data
+          payload: data?.data,
         });
       }
     } catch (error) {
@@ -112,7 +110,7 @@ export const AuthProvider = (props) => {
       } else if (error?.response?.status === STATUS.ERROR) {
         throw new Error(error?.response?.data?.message);
       } else {
-        throw new Error('Please check your email and password');
+        throw new Error("Please check your email and password");
       }
     }
   };
@@ -124,19 +122,19 @@ export const AuthProvider = (props) => {
       if (error?.response?.status === STATUS.ERROR) {
         throw new Error(error?.response?.data?.message);
       } else {
-        throw new Error('Please check your email and password');
+        throw new Error("Please check your email and password");
       }
     }
   };
 
   const signOut = () => {
     try {
-      window.sessionStorage.removeItem('authenticated');
+      window.sessionStorage.removeItem("authenticated");
       dispatch({
-        type: HANDLERS.SIGN_OUT
+        type: HANDLERS.SIGN_OUT,
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -146,7 +144,7 @@ export const AuthProvider = (props) => {
         ...state,
         signIn,
         signUp,
-        signOut
+        signOut,
       }}
     >
       {children}
@@ -155,7 +153,7 @@ export const AuthProvider = (props) => {
 };
 
 AuthProvider.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 export const AuthConsumer = AuthContext.Consumer;
