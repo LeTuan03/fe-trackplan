@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -8,10 +8,13 @@ import {
   CardHeader,
   Divider,
   TextField,
-  Unstable_Grid2 as Grid
-} from '@mui/material';
-import { useAuth } from 'src/hooks/use-auth';
+  Unstable_Grid2 as Grid,
+} from "@mui/material";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
+import { useAuth } from "src/hooks/use-auth";
 
+import { getAccountById, updateAccountById } from "src/services/customerServices";
 
 export const AccountProfileDetails = () => {
   const { user, isAuthenticated } = useAuth();
@@ -23,83 +26,77 @@ export const AccountProfileDetails = () => {
   });
 
   const handleChange = (event) => {
-    console.log(event.target.name, event.target.value)
     setValues((prevState) => ({
       ...prevState,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     }));
-  }
+  };
+  const getDetail = async () => {
+    try {
+      const data = await getAccountById(user?.id);
+      setValues(data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const handleSubmit = useCallback(
-    (event) => {
-      event.preventDefault();
-      console.log(values)
-    },
-    []
-  );
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const data = await updateAccountById(values);
+      toast.success("Cập nhật thông tin thành công !!", {
+        autoClose: 1000,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getDetail();
+  }, []);
 
   return (
-    <form
-      autoComplete="off"
-      onSubmit={handleSubmit}
-    >
+    <form autoComplete="off" onSubmit={handleFormSubmit}>
       <Card>
-        <CardHeader
-          title="Profile"
-        />
         <CardContent sx={{ pt: 0 }}>
           <Box sx={{ m: -1.5 }}>
-            <Grid
-              container
-              spacing={3}
-            >
-              <Grid
-                xs={12}
-                md={12}
-              >
+            <Grid container spacing={3}>
+              <Grid xs={12} md={12}>
                 <TextField
                   fullWidth
-                  label="Username"
+                  label="Tên người dùng"
                   name="username"
                   onChange={handleChange}
                   value={values?.username}
                 />
               </Grid>
-              <Grid
-                xs={12}
-                md={12}
-              >
+              <Grid xs={12} md={12}>
                 <TextField
                   fullWidth
-                  label="Password"
+                  label="Mật khẩu"
                   name="password"
-                  type='password'
+                  type="password"
                   onChange={handleChange}
                   value={values?.password}
                 />
               </Grid>
-              <Grid
-                xs={12}
-                md={12}
-              >
+              <Grid xs={12} md={12}>
                 <TextField
                   fullWidth
-                  label="Email Address"
+                  label="Email"
                   name="email"
-                  type='email'
+                  type="email"
                   onChange={handleChange}
                   value={values?.email}
                 />
               </Grid>
-              <Grid
-                xs={12}
-                md={12}
-              >
+              <Grid xs={12} md={12}>
                 <TextField
                   fullWidth
-                  label="Phone Number"
+                  label="Số điện thoại"
                   name="phone"
-                  type='number'
+                  type="number"
                   onChange={handleChange}
                   value={values?.phone}
                 />
@@ -108,15 +105,13 @@ export const AccountProfileDetails = () => {
           </Box>
         </CardContent>
         <Divider />
-        <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button
-            variant="contained"
-            type='submit'
-          >
-            Save details
+        <CardActions sx={{ justifyContent: "flex-end" }}>
+          <Button variant="contained" type="submit">
+            Lưu thông tin
           </Button>
         </CardActions>
       </Card>
+      <ToastContainer />
     </form>
   );
 };

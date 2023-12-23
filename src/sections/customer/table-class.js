@@ -63,9 +63,13 @@ export default function TableClass({ lop, handleChange, type }) {
               <TableCell align="center">
                 <TextValidator
                   className="w-100"
+                  type={i?.lable === "conduct" || i?.lable === "classification" ? "text" : "number"}
                   name={i?.lable}
                   value={i?.value}
                   onChange={(event) => handleChange(event, type)}
+                  // validators={["required"]}
+                  // errorMessages={["general.required"]}
+                  required
                 />
               </TableCell>
             </TableRow>

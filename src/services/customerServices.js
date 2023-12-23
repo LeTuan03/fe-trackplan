@@ -8,6 +8,7 @@ const API_PATH_LOP11 = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/lop11
 const API_PATH_LOP12 = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/lop12";
 const API_PATH_PEE = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/pees";
 const API_PATH_FAMILY = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/family";
+const API_PATH_FILE = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/files";
 
 // account
 export const getAll = async () => {
@@ -184,4 +185,18 @@ export const updateFamilys = async (searchObject) => {
 export const deleteFamilyById = async (searchObject) => {
   let url = API_PATH_FAMILY + "/deleteById/" + searchObject?.id;
   return axios.delete(url);
+};
+
+//file
+export const uploadAvata = async (searchObject) => {
+  let url = API_PATH_FILE + "/upload";
+  return axios.post(url, searchObject);
+};
+export const getAvata = async (id) => {
+  let url = API_PATH_FILE + `/${id}/image`;
+  return axios.get(url);
+};
+export const getAvataById = async (id) => {
+  let url = API_PATH_FILE + `/${id}`;
+  return axios.get(url);
 };

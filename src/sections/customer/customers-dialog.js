@@ -33,6 +33,7 @@ import {
   COLOR,
   LIST_PERCENT_COMPLETE,
   LIST_PLAN_STATUS,
+  ROLE_OBJECT,
 } from "src/appConst";
 import {
   addAccount,
@@ -105,6 +106,8 @@ export default function CustomersDialog({
   isViewTitle,
   isFinance,
 }) {
+  const permitsion = getCurrentUser();
+  const isEditMember = permitsion?.role === ROLE_OBJECT.SUPPER_ADMIN.indexOrder;
   const filterAutocomplete = createFilterOptions();
   const [listTask, setListTask] = useState([]);
   const [listMember, setListMember] = useState([]);
@@ -121,18 +124,23 @@ export default function CustomersDialog({
   };
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    if (name === "createdAt") {
-    } else if (name === "startDate") {
-      setFormData((prevData) => ({ ...prevData, startDate: new Date(value) }));
-    } else if (name === "endDate") {
-      setFormData((prevData) => ({ ...prevData, endDate: new Date(value) }));
-    } else if (name === "endDate") {
-      setFormData((prevData) => ({ ...prevData, endDate: new Date(value) }));
-    } else if (name === "birth") {
-      setFormData((prevData) => ({ ...prevData, birth: new Date(value) }));
-    } else {
-      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    if (isView) {
+      return;
+    }
+    if (isEditMember) {
+      const { name, value } = event.target;
+      if (name === "createdAt") {
+      } else if (name === "startDate") {
+        setFormData((prevData) => ({ ...prevData, startDate: new Date(value) }));
+      } else if (name === "endDate") {
+        setFormData((prevData) => ({ ...prevData, endDate: new Date(value) }));
+      } else if (name === "endDate") {
+        setFormData((prevData) => ({ ...prevData, endDate: new Date(value) }));
+      } else if (name === "birth") {
+        setFormData((prevData) => ({ ...prevData, birth: new Date(value) }));
+      } else {
+        setFormData((prevData) => ({ ...prevData, [name]: value }));
+      }
     }
   };
 
@@ -187,9 +195,9 @@ export default function CustomersDialog({
           return;
         }
         if (formData?.id) {
-          const data = await editProject(convertDataSubmit(formData));
           if (listTask.length > 0) {
             const dataTask = await updateAdds(convertListTask());
+            console.log(dataTask);
             if (dataTask?.status === STATUS.ERROR) {
               toast.error("Cập nhật lớp học lỗi", {
                 autoClose: 1000,
@@ -197,6 +205,7 @@ export default function CustomersDialog({
               return;
             }
           }
+          const data = await editProject(convertDataSubmit(formData));
           if (data?.status === STATUS.SUCCESS) {
             toast.success("Cập nhật lớp học thành công", {
               autoClose: 1000,
@@ -233,81 +242,80 @@ export default function CustomersDialog({
         }
 
         if (formData?.id) {
-          toast.error("Error updating project", {
+          toast.error("Lỗi cập nhật thông tin lớp học", {
             autoClose: 1000,
           });
         } else {
-          toast.error("Error creating project", {
+          toast.error("Lỗi tạo lớp học", {
             autoClose: 1000,
           });
         }
       }
     }
     if (isMember) {
-      try {
-        if (formData?.id) {
-          const data = await updateAccountById(convertDataMemberSubmit(formData));
-          if (formData?.lop10[0]?.id) {
-            await updateLop10(convertDataClassSubmit(formData?.lop10[0], items?.id));
-          } else {
-            await addLop10(convertDataClassSubmit(formData?.lop10[0], items?.id));
-          }
-          if (formData?.lop11[0]?.id) {
-            await updateLop11(convertDataClassSubmit(formData?.lop11[0], items?.id));
-          } else {
-            await addLop11(convertDataClassSubmit(formData?.lop11[0], items?.id));
-          }
-          if (formData?.lop12[0]?.id) {
-            await updateLop12(convertDataClassSubmit(formData?.lop12[0], items?.id));
-          } else {
-            await addLop12(convertDataClassSubmit(formData?.lop12[0], items?.id));
-          }
-          const dataFamilies = await updateFamilys(listFamilies);
-          if ((data?.status && dataFamilies?.status) === STATUS.SUCCESS) {
-            toast.success("Cập nhật học sinh thành công", {
-              autoClose: 1000,
-            });
-          } else if (data?.status === STATUS.NOCONTENT) {
-            toast.warn("Tên học sinh không được để trống", {
-              autoClose: 1000,
-            });
-            return;
-          }
-        } else {
-          const data = await addAccount(convertDataMemberSubmit(formData));
-          if (data?.status === STATUS.SUCCESS) {
-            toast.success("Thêm mới học sinh thành công", {
-              autoClose: 1000,
-            });
-          } else if (data?.status === STATUS.NOCONTENT) {
-            toast.warn("Tên học sinh không được để trống", {
-              autoClose: 1000,
-            });
-            return;
-          }
-        }
-        setFormData({});
-        await pageUpdate();
-        handleClose();
-      } catch (error) {
-        console.log(error);
-        if (error?.response?.status === STATUS.BAD_GATEWAY) {
-          toast.error(error?.response?.data?.message, {
-            autoClose: 1000,
-          });
-          return;
-        }
-
-        if (formData?.id) {
-          toast.error("Lỗi cập nhật học sinh", {
-            autoClose: 1000,
-          });
-        } else {
-          toast.error("Lỗi thêm mới học sinh", {
-            autoClose: 1000,
-          });
-        }
-      }
+      // try {
+      //   if (formData?.id) {
+      //     const data = await updateAccountById(convertDataMemberSubmit(formData));
+      //     if (formData?.lop10[0]?.id) {
+      //       await updateLop10(convertDataClassSubmit(formData?.lop10[0], items?.id));
+      //     } else {
+      //       await addLop10(convertDataClassSubmit(formData?.lop10[0], items?.id));
+      //     }
+      //     if (formData?.lop11[0]?.id) {
+      //       await updateLop11(convertDataClassSubmit(formData?.lop11[0], items?.id));
+      //     } else {
+      //       await addLop11(convertDataClassSubmit(formData?.lop11[0], items?.id));
+      //     }
+      //     if (formData?.lop12[0]?.id) {
+      //       await updateLop12(convertDataClassSubmit(formData?.lop12[0], items?.id));
+      //     } else {
+      //       await addLop12(convertDataClassSubmit(formData?.lop12[0], items?.id));
+      //     }
+      //     const dataFamilies = await updateFamilys(listFamilies);
+      //     if ((data?.status && dataFamilies?.status) === STATUS.SUCCESS) {
+      //       toast.success("Cập nhật học sinh thành công", {
+      //         autoClose: 1000,
+      //       });
+      //     } else if (data?.status === STATUS.NOCONTENT) {
+      //       toast.warn("Tên học sinh không được để trống", {
+      //         autoClose: 1000,
+      //       });
+      //       return;
+      //     }
+      //   } else {
+      //     const data = await addAccount(convertDataMemberSubmit(formData));
+      //     if (data?.status === STATUS.SUCCESS) {
+      //       toast.success("Thêm mới học sinh thành công", {
+      //         autoClose: 1000,
+      //       });
+      //     } else if (data?.status === STATUS.NOCONTENT) {
+      //       toast.warn("Tên học sinh không được để trống", {
+      //         autoClose: 1000,
+      //       });
+      //       return;
+      //     }
+      //   }
+      //   setFormData({});
+      //   await pageUpdate();
+      //   handleClose();
+      // } catch (error) {
+      //   console.log(error);
+      //   if (error?.response?.status === STATUS.BAD_GATEWAY) {
+      //     toast.error(error?.response?.data?.message, {
+      //       autoClose: 1000,
+      //     });
+      //     return;
+      //   }
+      //   if (formData?.id) {
+      //     toast.error("Lỗi cập nhật học sinh", {
+      //       autoClose: 1000,
+      //     });
+      //   } else {
+      //     toast.error("Lỗi thêm mới học sinh", {
+      //       autoClose: 1000,
+      //     });
+      //   }
+      // }
     }
     if (isGiaoVien) {
       try {
@@ -444,12 +452,18 @@ export default function CustomersDialog({
   };
 
   const handleChangeTask = (event, taskName, index) => {
+    if (isView) {
+      return;
+    }
     const updatedListTask = [...listTask];
     updatedListTask[index].taskName = event.target.value;
     setListTask(updatedListTask);
   };
 
   const handleChangeNote = (event, note, index) => {
+    if (isView) {
+      return;
+    }
     const updatedListTask = [...listTask];
     updatedListTask[index].note = event.target.value;
     setListTask(updatedListTask);
@@ -467,7 +481,7 @@ export default function CustomersDialog({
         await deleteTask(item.id);
       } catch (error) {
         console.log(error);
-        toast.error("Error when delete task");
+        toast.error("Có lỗi xảy ra");
       }
     }
 
@@ -488,6 +502,9 @@ export default function CustomersDialog({
   };
 
   const handleChangePoint = (event, type) => {
+    if (isView) {
+      return;
+    }
     let { name, value } = event.target;
     if (type === "10") {
       setFormData((prevData) => ({
@@ -695,7 +712,7 @@ export default function CustomersDialog({
               <Grid container spacing={1}>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     onChange={handleChange}
                     name="name"
@@ -720,52 +737,46 @@ export default function CustomersDialog({
                     }
                     value={formData?.createdBy}
                   /> */}
-
-                  <Autocomplete
-                    fullWidth
-                    options={listTeacher}
-                    value={formData?.createdBy}
-                    onChange={(e, value) => handleChangeTeacher(value)}
-                    getOptionLabel={(option) => option?.username}
-                    renderInput={(params) => (
-                      <TextField
-                        label={
-                          <span>
-                            <span>Giáo viên dạy</span>
-                          </span>
-                        }
-                        {...params}
-                      />
-                    )}
-                    filterOptions={(options, params) => {
-                      params.inputValue = params.inputValue.trim();
-                      let filtered = filterAutocomplete(options, params);
-                      return filtered;
-                    }}
-                    disabled={isView || getCurrentUser()?.role === "1"}
-                    noOptionsText={"No option"}
-                  />
+                  {isView ? (
+                    <TextValidator
+                      className="w-100"
+                      label={
+                        <span>
+                          <span>Giáo viên dạy</span>
+                        </span>
+                      }
+                      value={formData?.createdBy?.username}
+                    />
+                  ) : (
+                    <Autocomplete
+                      fullWidth
+                      options={listTeacher}
+                      value={formData?.createdBy}
+                      onChange={(e, value) => handleChangeTeacher(value)}
+                      getOptionLabel={(option) => option?.username}
+                      renderInput={(params) => (
+                        <TextField
+                          label={
+                            <span>
+                              <span>Giáo viên dạy</span>
+                            </span>
+                          }
+                          {...params}
+                        />
+                      )}
+                      filterOptions={(options, params) => {
+                        params.inputValue = params.inputValue.trim();
+                        let filtered = filterAutocomplete(options, params);
+                        return filtered;
+                      }}
+                      disabled={isView || getCurrentUser()?.role === "1"}
+                      noOptionsText={"No option"}
+                    />
+                  )}
                 </Grid>
-                {/* <Grid item
-                  md={4}
-                  sm={12}
-                  xs={12}
-                >
-                  <TextValidator
-                    disabled={isView}
-                    className='w-100'
-                    name="createdAt"
-                    label={
-                      <span>
-                        <span>Created at</span>
-                      </span>
-                    }
-                    value={formData?.createdAt ? format(new Date(formData?.createdAt), 'dd/MM/yyyy') : ""}
-                  />
-                </Grid> */}
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     onChange={handleChange}
                     name="startDate"
@@ -780,7 +791,7 @@ export default function CustomersDialog({
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     onChange={handleChange}
                     name="endDate"
@@ -846,7 +857,7 @@ export default function CustomersDialog({
                 </Grid> */}
                 <Grid item md={8} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     onChange={handleChange}
                     name="note"
@@ -900,10 +911,6 @@ export default function CustomersDialog({
                             )}
                             <TableCell width={250}>Tên học sinh</TableCell>
                             <TableCell>Mã học sinh</TableCell>
-                            {/* <TableCell width={110} align="center">
-                              Status
-                            </TableCell>
-                            <TableCell width={100}>% Done</TableCell> */}
                             <TableCell>Ghi chú</TableCell>
                           </TableRow>
                         </TableHead>
@@ -924,25 +931,31 @@ export default function CustomersDialog({
                                   </TableCell>
                                 )}
                                 <TableCell align="center">
-                                  <Autocomplete
-                                    fullWidth
-                                    options={listMember}
-                                    value={item?.member || null}
-                                    onChange={(e, value) => handleChangeMember(value, index)}
-                                    getOptionLabel={(option) => option?.username}
-                                    renderInput={(params) => <TextField {...params} />}
-                                    filterOptions={(options, params) => {
-                                      params.inputValue = params.inputValue.trim();
-                                      let filtered = filterAutocomplete(options, params);
-                                      return filtered;
-                                    }}
-                                    disabled={isView}
-                                    noOptionsText={"No option"}
-                                  />
+                                  {isView ? (
+                                    <TextValidator
+                                      className="w-100"
+                                      value={item?.member?.username}
+                                    />
+                                  ) : (
+                                    <Autocomplete
+                                      fullWidth
+                                      options={listMember}
+                                      value={item?.member || null}
+                                      onChange={(e, value) => handleChangeMember(value, index)}
+                                      getOptionLabel={(option) => option?.username}
+                                      renderInput={(params) => <TextField {...params} />}
+                                      filterOptions={(options, params) => {
+                                        params.inputValue = params.inputValue.trim();
+                                        let filtered = filterAutocomplete(options, params);
+                                        return filtered;
+                                      }}
+                                      disabled={isView}
+                                      noOptionsText={"No option"}
+                                    />
+                                  )}
                                 </TableCell>
                                 <TableCell align="left">
                                   <TextValidator
-                                    disabled={isView}
                                     className="w-100"
                                     onChange={(event) => handleChangeTask(event, "taskName", index)}
                                     name="taskName"
@@ -972,7 +985,7 @@ export default function CustomersDialog({
                                 {/* <TableCell align="center">{item?.percentComplete}</TableCell> */}
                                 <TableCell align="left">
                                   <TextValidator
-                                    disabled={isView}
+                                    // disabled={isView}
                                     className="w-100"
                                     onChange={(event) => handleChangeNote(event, "note", index)}
                                     name="note"
@@ -1011,7 +1024,7 @@ export default function CustomersDialog({
                     <Grid container spacing={1}>
                       <Grid item md={4} sm={12} xs={12}>
                         <TextValidator
-                          disabled={isView}
+                          // disabled={isView}
                           className="w-100"
                           onChange={handleChange}
                           name="username"
@@ -1022,12 +1035,12 @@ export default function CustomersDialog({
                           }
                           value={formData?.username}
                           validators={["required"]}
-                          errorMessages={["general.required"]}
+                          errorMessages={["generalrequired"]}
                         />
                       </Grid>
                       <Grid item md={4} sm={12} xs={12}>
                         <TextValidator
-                          disabled={isView}
+                          // disabled={isView}
                           className="w-100"
                           onChange={handleChange}
                           type="password"
@@ -1044,7 +1057,7 @@ export default function CustomersDialog({
                       </Grid>
                       <Grid item md={4} sm={12} xs={12}>
                         <TextValidator
-                          disabled={isView}
+                          // disabled={isView}
                           className="w-100"
                           name="phone"
                           onChange={handleChange}
@@ -1058,7 +1071,7 @@ export default function CustomersDialog({
                       </Grid>
                       <Grid item md={4} sm={12} xs={12}>
                         <TextValidator
-                          disabled={isView}
+                          // disabled={isView}
                           className="w-100"
                           name="email"
                           onChange={handleChange}
@@ -1072,7 +1085,7 @@ export default function CustomersDialog({
                       </Grid>
                       <Grid item md={4} sm={12} xs={12}>
                         <TextValidator
-                          disabled={isView}
+                          // disabled={isView}
                           className="w-100"
                           onChange={handleChange}
                           name="birth"
@@ -1087,7 +1100,7 @@ export default function CustomersDialog({
                       </Grid>
                       <Grid item md={4} sm={12} xs={12}>
                         <TextValidator
-                          disabled={isView}
+                          // disabled={isView}
                           className="w-100"
                           name="nation"
                           onChange={handleChange}
@@ -1101,7 +1114,7 @@ export default function CustomersDialog({
                       </Grid>
                       <Grid item md={12} sm={12} xs={12}>
                         <TextValidator
-                          disabled={isView}
+                          // disabled={isView}
                           className="w-100"
                           name="address"
                           onChange={handleChange}
@@ -1113,23 +1126,6 @@ export default function CustomersDialog({
                           value={formData?.address}
                         />
                       </Grid>
-                      {/* <Grid item md={4} sm={12} xs={12}>
-                    <TextValidator
-                      disabled={isView}
-                      className="w-100"
-                      name="createdAt"
-                      label={
-                        <span>
-                          <span>Created at</span>
-                        </span>
-                      }
-                      value={
-                        formData?.createdAt
-                          ? format(new Date(formData?.createdAt), "dd/MM/yyyy")
-                          : format(new Date(), "dd/MM/yyyy")
-                      }
-                    />
-                  </Grid> */}
                       <Grid item md={12} sm={12} xs={12}>
                         {items?.id && (
                           <CustomersTab formData={formData} handleChange={handleChangePoint} />
@@ -1246,123 +1242,129 @@ export default function CustomersDialog({
                   </CustomTabPanel>
                   <CustomTabPanel value={value} index={1}>
                     <Grid container spacing={1}>
-                      <Grid item md={4} sm={12} xs={12}>
-                        <TextValidator
-                          disabled={isView}
-                          className="w-100"
-                          onChange={handleChangeFamily}
-                          name="fullName"
-                          label={
-                            <span>
-                              <span>Tên</span>
-                            </span>
-                          }
-                          value={familiesObj?.fullName}
-                          validators={["required"]}
-                          errorMessages={["general.required"]}
-                        />
-                      </Grid>
-                      <Grid item md={4} sm={12} xs={12}>
-                        <TextValidator
-                          disabled={isView}
-                          className="w-100"
-                          name="phone"
-                          onChange={handleChangeFamily}
-                          label={
-                            <span>
-                              <span>Số điện thoại</span>
-                            </span>
-                          }
-                          value={familiesObj?.phone}
-                        />
-                      </Grid>
-                      <Grid item md={4} sm={12} xs={12}>
-                        <TextValidator
-                          disabled={isView}
-                          className="w-100"
-                          name="email"
-                          onChange={handleChangeFamily}
-                          label={
-                            <span>
-                              <span>Email</span>
-                            </span>
-                          }
-                          value={familiesObj?.email}
-                        />
-                      </Grid>
-                      <Grid item md={4} sm={12} xs={12}>
-                        <TextValidator
-                          disabled={isView}
-                          className="w-100"
-                          onChange={handleChangeFamily}
-                          name="birth"
-                          type="date"
-                          label={
-                            <span>
-                              <span>Ngày sinh</span>
-                            </span>
-                          }
-                          value={
-                            familiesObj?.birth
-                              ? format(familiesObj?.birth, "yyyy-MM-dd")
-                              : format(new Date(), "yyyy-MM-dd")
-                          }
-                        />
-                      </Grid>
-                      <Grid item md={4} sm={12} xs={12}>
-                        <TextValidator
-                          disabled={isView}
-                          className="w-100"
-                          onChange={handleChangeFamily}
-                          name="relationship"
-                          label={
-                            <span>
-                              <span>Quan hệ với học sinh</span>
-                            </span>
-                          }
-                          value={familiesObj?.relationship}
-                        />
-                      </Grid>
-                      <Grid item md={4} sm={12} xs={12}>
-                        <TextValidator
-                          disabled={isView}
-                          className="w-100"
-                          name="nation"
-                          onChange={handleChangeFamily}
-                          label={
-                            <span>
-                              <span>Dân tộc</span>
-                            </span>
-                          }
-                          value={familiesObj?.nation}
-                        />
-                      </Grid>
-                      <Grid item md={12} sm={12} xs={12}>
-                        <TextValidator
-                          disabled={isView}
-                          className="w-100"
-                          name="address"
-                          onChange={handleChangeFamily}
-                          label={
-                            <span>
-                              <span>Địa chỉ cụ thể</span>
-                            </span>
-                          }
-                          value={familiesObj?.address}
-                        />
-                      </Grid>
-                      <Grid item md={12} sm={12} xs={12}>
-                        <Button
-                          variant="contained"
-                          style={{ marginRight: 10, minWidth: 100 }}
-                          onClick={handleAddFamily}
-                        >
-                          Thêm
-                        </Button>
-                        {/* <Button variant="outlined" color="error" style={{ minWidth: 100 }}>
+                      {isView ? (
+                        ""
+                      ) : (
+                        <>
+                          <Grid item md={4} sm={12} xs={12}>
+                            <TextValidator
+                              disabled={isView}
+                              className="w-100"
+                              onChange={handleChangeFamily}
+                              name="fullName"
+                              label={
+                                <span>
+                                  <span>Tên</span>
+                                </span>
+                              }
+                              value={familiesObj?.fullName}
+                              validators={["required"]}
+                              errorMessages={["general.required"]}
+                            />
+                          </Grid>
+                          <Grid item md={4} sm={12} xs={12}>
+                            <TextValidator
+                              disabled={isView}
+                              className="w-100"
+                              name="phone"
+                              onChange={handleChangeFamily}
+                              label={
+                                <span>
+                                  <span>Số điện thoại</span>
+                                </span>
+                              }
+                              value={familiesObj?.phone}
+                            />
+                          </Grid>
+                          <Grid item md={4} sm={12} xs={12}>
+                            <TextValidator
+                              disabled={isView}
+                              className="w-100"
+                              name="email"
+                              onChange={handleChangeFamily}
+                              label={
+                                <span>
+                                  <span>Email</span>
+                                </span>
+                              }
+                              value={familiesObj?.email}
+                            />
+                          </Grid>
+                          <Grid item md={4} sm={12} xs={12}>
+                            <TextValidator
+                              disabled={isView}
+                              className="w-100"
+                              onChange={handleChangeFamily}
+                              name="birth"
+                              type="date"
+                              label={
+                                <span>
+                                  <span>Ngày sinh</span>
+                                </span>
+                              }
+                              value={
+                                familiesObj?.birth
+                                  ? format(familiesObj?.birth, "yyyy-MM-dd")
+                                  : format(new Date(), "yyyy-MM-dd")
+                              }
+                            />
+                          </Grid>
+                          <Grid item md={4} sm={12} xs={12}>
+                            <TextValidator
+                              disabled={isView}
+                              className="w-100"
+                              onChange={handleChangeFamily}
+                              name="relationship"
+                              label={
+                                <span>
+                                  <span>Quan hệ với học sinh</span>
+                                </span>
+                              }
+                              value={familiesObj?.relationship}
+                            />
+                          </Grid>
+                          <Grid item md={4} sm={12} xs={12}>
+                            <TextValidator
+                              disabled={isView}
+                              className="w-100"
+                              name="nation"
+                              onChange={handleChangeFamily}
+                              label={
+                                <span>
+                                  <span>Dân tộc</span>
+                                </span>
+                              }
+                              value={familiesObj?.nation}
+                            />
+                          </Grid>
+                          <Grid item md={12} sm={12} xs={12}>
+                            <TextValidator
+                              disabled={isView}
+                              className="w-100"
+                              name="address"
+                              onChange={handleChangeFamily}
+                              label={
+                                <span>
+                                  <span>Địa chỉ cụ thể</span>
+                                </span>
+                              }
+                              value={familiesObj?.address}
+                            />
+                          </Grid>
+                          <Grid item md={12} sm={12} xs={12}>
+                            <Button
+                              variant="contained"
+                              style={{ marginRight: 10, minWidth: 100 }}
+                              onClick={handleAddFamily}
+                            >
+                              Thêm
+                            </Button>
+                            {/* <Button variant="outlined" color="error" style={{ minWidth: 100 }}>
                           Hoàn tác
                         </Button> */}
-                      </Grid>
+                          </Grid>
+                        </>
+                      )}
                       <Grid item md={12} sm={12} xs={12}>
                         <Table size="small" padding="none" stickyHeader={true}>
                           <TableHead>
@@ -1524,23 +1526,6 @@ export default function CustomersDialog({
                     value={formData?.address}
                   />
                 </Grid>
-                {/* <Grid item md={4} sm={12} xs={12}>
-                  <TextValidator
-                    disabled={isView}
-                    className="w-100"
-                    name="createdAt"
-                    label={
-                      <span>
-                        <span>Created at</span>
-                      </span>
-                    }
-                    value={
-                      formData?.createdAt
-                        ? format(new Date(formData?.createdAt), "dd/MM/yyyy")
-                        : format(new Date(), "dd/MM/yyyy")
-                    }
-                  />
-                </Grid> */}
                 {items?.id && isPlan && (
                   <>
                     {!isView && (
@@ -1650,7 +1635,7 @@ export default function CustomersDialog({
               <Grid container spacing={1}>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     name="projectName"
                     label={
@@ -1665,7 +1650,7 @@ export default function CustomersDialog({
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     label={
                       <span>
@@ -1692,14 +1677,14 @@ export default function CustomersDialog({
                 </Grid> */}
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     onChange={handleChange}
                     name="startDate"
                     type="date"
                     label={
                       <span>
-                        <span>Ngày bắt đầu năm học</span>
+                        <span>Ngày bắt đầu</span>
                       </span>
                     }
                     value={formData?.startDate ? format(formData?.startDate, "yyyy-MM-dd") : ""}
@@ -1707,14 +1692,14 @@ export default function CustomersDialog({
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     onChange={handleChange}
                     name="endDate"
                     type="date"
                     label={
                       <span>
-                        <span>Ngày kết thúc năm học</span>
+                        <span>Ngày kết thúc</span>
                       </span>
                     }
                     value={formData?.endDate ? format(formData?.endDate, "yyyy-MM-dd") : ""}
@@ -1839,7 +1824,7 @@ export default function CustomersDialog({
                 </Grid> */}
                 <Grid item md={8} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     onChange={handleChange}
                     name="note"
@@ -1982,7 +1967,7 @@ export default function CustomersDialog({
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     name="hocPhi10"
                     type="number"
@@ -1997,7 +1982,7 @@ export default function CustomersDialog({
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     name="hocPhi10DaDong"
                     type="number"
@@ -2012,7 +1997,7 @@ export default function CustomersDialog({
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     name="hocPhi10"
                     type="number"
@@ -2030,7 +2015,7 @@ export default function CustomersDialog({
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     name="hocPhi11"
                     type="number"
@@ -2045,7 +2030,7 @@ export default function CustomersDialog({
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     name="hocPhi11DaDong"
                     type="number"
@@ -2060,7 +2045,7 @@ export default function CustomersDialog({
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     name="hocPhi11"
                     type="number"
@@ -2078,7 +2063,7 @@ export default function CustomersDialog({
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     name="hocPhi12"
                     type="number"
@@ -2093,7 +2078,7 @@ export default function CustomersDialog({
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     name="hocPhi12DaDong"
                     type="number"
@@ -2108,7 +2093,7 @@ export default function CustomersDialog({
                 </Grid>
                 <Grid item md={4} sm={12} xs={12}>
                   <TextValidator
-                    disabled={isView}
+                    // disabled={isView}
                     className="w-100"
                     name="hocPhi12"
                     type="number"

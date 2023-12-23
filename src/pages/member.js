@@ -130,7 +130,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Phần mềm quản lý học sinh phổ thông | Members</title>
+        <title>Danh sách học sinh | Phần mềm quản lý học sinh phổ thông</title>
       </Head>
       <Box
         component="main"

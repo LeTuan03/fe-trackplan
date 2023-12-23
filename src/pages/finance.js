@@ -53,7 +53,7 @@ const Page = () => {
 
   const handleClickOpen = async (item) => {
     try {
-      const data = await getAccountById(item?.id);
+      const data = await getPeeByAccountId(item?.id);
       if (data?.status === STATUS.SUCCESS) {
         setCustomer(data?.data);
         setOpen(true);
@@ -146,19 +146,6 @@ const Page = () => {
               <Stack spacing={1}>
                 <Typography variant="h4">Danh sách học sinh</Typography>
               </Stack>
-              {/* <div>
-                <Button
-                  startIcon={
-                    <SvgIcon fontSize="small">
-                      <PlusIcon />
-                    </SvgIcon>
-                  }
-                  variant="contained"
-                  onClick={() => setOpen(true)}
-                >
-                  Thêm mới
-                </Button>
-              </div> */}
             </Stack>
             <CustomersSearch
               isPlant={true}

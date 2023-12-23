@@ -47,7 +47,7 @@ export const CustomersTable = (props) => {
     handleEdit,
     handleClickOpenDelete,
     isGiaoVien,
-    isDelete
+    isDelete,
   } = props;
 
   return (
@@ -80,9 +80,7 @@ export const CustomersTable = (props) => {
                 {isMember && (
                   <>
                     <TableCell align="center">STT</TableCell>
-                    <TableCell align="center">
-                      Thao tác
-                    </TableCell>
+                    <TableCell align="center">Thao tác</TableCell>
                     <TableCell>Tên học sinh</TableCell>
                     <TableCell>Số điện thoại</TableCell>
                     <TableCell>Email</TableCell>
@@ -93,12 +91,10 @@ export const CustomersTable = (props) => {
                 {isGiaoVien && (
                   <>
                     <TableCell align="center">STT</TableCell>
-                    <TableCell align="center">
-                      Thao tác
-                    </TableCell>
-                    <TableCell>Username</TableCell>
-                    <TableCell align="center">Created at</TableCell>
-                    <TableCell align="center">Role</TableCell>
+                    <TableCell align="center">Thao tác</TableCell>
+                    <TableCell>Tên giáo viên</TableCell>
+                    <TableCell align="center">Số điện thoại</TableCell>
+                    <TableCell align="center">Email</TableCell>
                   </>
                 )}
                 {isGroup && (
@@ -309,15 +305,12 @@ export const CustomersTable = (props) => {
                             <Typography variant="subtitle2">{customer.username}</Typography>
                           </Stack>
                         </TableCell>
+                        <TableCell align="center">{customer?.phone}</TableCell>
                         <TableCell align="center">
-                          {customer?.createdAt
-                            ? format(new Date(customer?.createdAt), "dd/MM/yyyy")
-                            : ""}
-                        </TableCell>
-                        <TableCell align="center">
-                          <SeverityPill color={[renderRole(customer?.role)]}>
+                          {customer?.email}
+                          {/* <SeverityPill color={[renderRole(customer?.role)]}>
                             {ROLE.find((i) => i?.indexOrder === customer?.role)?.name}
-                          </SeverityPill>
+                          </SeverityPill> */}
                         </TableCell>
                       </>
                     )}

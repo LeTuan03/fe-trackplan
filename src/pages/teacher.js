@@ -181,7 +181,7 @@ const Page = () => {
                   variant="contained"
                   onClick={() => setOpen(true)}
                 >
-                  Add
+                  Thêm mới
                 </Button>
               </div>
             </Stack>
