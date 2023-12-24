@@ -19,6 +19,7 @@ import {
   getProjectByAccountId,
   getProjectById,
   searchProject,
+  searchClassesByAccountId,
 } from "src/services/customerServices";
 import { getCurrentUser } from "src/appFunctions";
 import { STATUS } from "src/appConst";
@@ -102,7 +103,10 @@ const Page = () => {
   const handleSearch = async (keyWord) => {
     try {
       if (keyWord !== "") {
-        const data = await searchProject({ accountId: getCurrentUser()?.id, name: keyWord });
+        const data = await searchClassesByAccountId({
+          userId: getCurrentUser()?.id,
+          query: keyWord,
+        });
         if (data?.status === STATUS.SUCCESS) {
           setListUser(data?.data);
         }

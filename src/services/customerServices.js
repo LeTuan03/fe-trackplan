@@ -9,6 +9,7 @@ const API_PATH_LOP12 = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/lop12
 const API_PATH_PEE = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/pees";
 const API_PATH_FAMILY = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/family";
 const API_PATH_FILE = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/files";
+const API_PATH_TASK = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/task";
 
 // account
 export const getAll = async () => {
@@ -39,6 +40,13 @@ export const deleteAccountById = async (searchObject) => {
   let url = API_PATH + "/deleteAccountById/" + searchObject?.id;
   return axios.delete(url, searchObject);
 };
+export const searchTeacher = async (searchObject) => {
+  const config = {
+    params: searchObject,
+  };
+  let url = API_PATH + "/searchAccTeacher";
+  return axios.get(url, config);
+};
 
 // project
 export const getAllProject = async () => {
@@ -62,8 +70,25 @@ export const deleteProject = async (searchObject) => {
   return axios.delete(url);
 };
 export const searchProject = async (searchObject) => {
+  const config = {
+    params: searchObject,
+  };
   let url = API_PATH + "/search";
-  return axios.post(url, searchObject);
+  return axios.post(url, config);
+};
+export const searchClasses = async (searchObject) => {
+  const config = {
+    params: searchObject,
+  };
+  let url = API_PATH + "/searchClasses";
+  return axios.get(url, config);
+};
+export const searchClassesByAccountId = async (searchObject) => {
+  const config = {
+    params: searchObject,
+  };
+  let url = API_PATH_TASK + "/searchClasses";
+  return axios.get(url, config);
 };
 
 //task

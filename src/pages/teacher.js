@@ -19,9 +19,10 @@ import {
   getProjectByAccountId,
   getProjectById,
   searchProject,
+  searchTeacher,
 } from "src/services/customerServices";
 import { getCurrentUser } from "src/appFunctions";
-import { STATUS } from "src/appConst";
+import { STATUS, ROLE_OBJECT } from "src/appConst";
 import CustomersDialogDelete from "src/sections/customer/customers-dialog-delete";
 
 const Page = () => {
@@ -100,17 +101,19 @@ const Page = () => {
     // }
   };
   const handleSearch = async (keyWord) => {
-    // try {
-    //   if (keyWord !== "") {
-    //     const data = await searchProject({ accountId: getCurrentUser()?.id, name: keyWord });
-    //     if (data?.status === STATUS.SUCCESS) {
-    //       setListUser(data?.data)
-    //     }
-    //   } else {
-    //     pageUpdate()
-    //   }
-    // } catch (error) {
-    // }
+    console.log({ role: ROLE_OBJECT?.ADMIN?.indexOrder, query: keyWord });
+    try {
+      if (keyWord !== "") {
+        const data = await searchTeacher({ role: ROLE_OBJECT?.ADMIN?.indexOrder, query: keyWord });
+        if (data?.status === STATUS.SUCCESS) {
+          setListUser(data?.data);
+        }
+      } else {
+        pageUpdate();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   const pageUpdate = async () => {
     try {

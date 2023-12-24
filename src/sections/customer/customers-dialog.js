@@ -108,6 +108,7 @@ export default function CustomersDialog({
 }) {
   const permitsion = getCurrentUser();
   const isEditMember = permitsion?.role === ROLE_OBJECT.SUPPER_ADMIN.indexOrder;
+  const isEditTeacher = permitsion?.role === ROLE_OBJECT.ADMIN.indexOrder;
   const filterAutocomplete = createFilterOptions();
   const [listTask, setListTask] = useState([]);
   const [listMember, setListMember] = useState([]);
@@ -127,8 +128,8 @@ export default function CustomersDialog({
     if (isView) {
       return;
     }
+    const { name, value } = event.target;
     if (isEditMember) {
-      const { name, value } = event.target;
       if (name === "createdAt") {
       } else if (name === "startDate") {
         setFormData((prevData) => ({ ...prevData, startDate: new Date(value) }));
@@ -138,6 +139,13 @@ export default function CustomersDialog({
         setFormData((prevData) => ({ ...prevData, endDate: new Date(value) }));
       } else if (name === "birth") {
         setFormData((prevData) => ({ ...prevData, birth: new Date(value) }));
+      } else {
+        setFormData((prevData) => ({ ...prevData, [name]: value }));
+      }
+    }
+    if (isEditTeacher) {
+      if (name === "name") {
+        setFormData((prevData) => ({ ...prevData, [name]: value }));
       } else {
         setFormData((prevData) => ({ ...prevData, [name]: value }));
       }
@@ -603,8 +611,10 @@ export default function CustomersDialog({
         startDate: items?.startDate ? new Date(items?.startDate) : new Date(),
         endDate: items?.endDate ? new Date(items?.endDate) : new Date(),
         createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
-        // createdBy: items?.createdBy || getCurrentUser()?.username,
-        createdBy: { username: items?.createdBy || "", id: items?.accountId || "" } || null,
+        createdBy: {
+          username: items?.createdBy || getCurrentUser()?.username,
+          id: items?.accountId || getCurrentUser()?.id,
+        },
         memberStudents: items?.memberStudents,
       });
     }
@@ -769,7 +779,7 @@ export default function CustomersDialog({
                         let filtered = filterAutocomplete(options, params);
                         return filtered;
                       }}
-                      disabled={isView || getCurrentUser()?.role === "1"}
+                      disabled={getCurrentUser()?.role === "1"}
                       noOptionsText={"No option"}
                     />
                   )}
@@ -1378,6 +1388,7 @@ export default function CustomersDialog({
                                 </TableCell>
                               )}
                               <TableCell>Họ và tên</TableCell>
+                              <TableCell>Quan hệ với học sinh</TableCell>
                               <TableCell width={200} align="center">
                                 Ngày sinh
                               </TableCell>
@@ -1404,6 +1415,7 @@ export default function CustomersDialog({
                                     </TableCell>
                                   )}
                                   <TableCell align="left">{item?.fullName}</TableCell>
+                                  <TableCell align="left">{item?.relationship}</TableCell>
                                   <TableCell align="center">
                                     {item?.birth ? format(new Date(item?.birth), "yyyy-MM-dd") : ""}
                                   </TableCell>
@@ -1830,7 +1842,7 @@ export default function CustomersDialog({
                     name="note"
                     label={
                       <span>
-                        <span>Note</span>
+                        <span>Ghi chú</span>
                       </span>
                     }
                     value={formData?.note}

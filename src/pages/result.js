@@ -91,7 +91,7 @@ const Page = () => {
         <Container maxWidth="lg">
           <Stack spacing={3}>
             <div>
-              <Typography variant="h5">Thông tin chi tiết điểm sinh viên</Typography>
+              <Typography variant="h5">Thông tin chi tiết điểm học sinh</Typography>
             </div>
             <Card>
               <CardContent>
