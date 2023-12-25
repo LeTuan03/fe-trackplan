@@ -10,8 +10,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useAuth } from "src/hooks/use-auth";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
-import { getAvataById } from "src/services/customerServices";
+import { getAvataById, uploadAvata, getAvataByAccountId } from "src/services/customerServices";
 export const AccountProfile = () => {
   const { user, isAuthenticated } = useAuth();
 
@@ -36,19 +38,24 @@ export const AccountProfile = () => {
       reader.readAsDataURL(selectedFile);
     }
 
-    // try {
-    //   const data = await getAvataById("1");
-    //   const binaryString = data?.data;
-    //   const bytes = new Uint8Array(binaryString.length);
-    //   for (let i = 0; i < binaryString.length; i++) {
-    //     bytes[i] = binaryString.charCodeAt(i);
-    //   }
-    //   const blob = new Blob([bytes], { type: "image/jpeg" });
-    //   const imageUrlBlob = URL.createObjectURL(blob);
-    //   setImageCheck(imageUrlBlob);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("accountId", user?.id);
+      const data = await uploadAvata(formData);
+      if (data?.status === 200) {
+        toast.success("Cập nhật ảnh đại diện thành công !!", {
+          autoClose: 1000,
+        });
+        window.location.reload();
+      }
+      setImageCheck(data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Cập nhật ảnh đại diện thất bại !!", {
+        autoClose: 1000,
+      });
+    }
   };
 
   return (
@@ -62,7 +69,7 @@ export const AccountProfile = () => {
           }}
         >
           <Avatar
-            src={imageData || user?.avatar}
+            src={imageData || `http://localhost:9090/api/files/avatar/${user?.id}` || user?.avatar}
             sx={{
               height: 80,
               mb: 2,
@@ -82,7 +89,9 @@ export const AccountProfile = () => {
       </CardContent>
       <Divider />
       <CardActions style={{ display: "flex", justifyContent: "center" }}>
-        {/* <img src={imageCheck} alt="error" /> */}
+        <a href={getAvataByAccountId(user?.id)} target="_blank">
+          Xem ảnh
+        </a>
 
         <form>
           <Button fullWidth onClick={handleButtonClick}>
@@ -95,6 +104,7 @@ export const AccountProfile = () => {
             style={{ display: "none" }}
             ref={fileInputRef}
             onChange={handleFileChange}
+            accept="image/jpeg, image/png, image/gif"
           />
         </form>
       </CardActions>

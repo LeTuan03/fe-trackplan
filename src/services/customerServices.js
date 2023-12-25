@@ -229,3 +229,7 @@ export const getAvataById = async (id) => {
   let url = API_PATH_FILE + `/${id}`;
   return axios.get(url);
 };
+export const getAvataByAccountId = (id) => {
+  let url = API_PATH_FILE + `/avatar/${id}`;
+  return url;
+};
