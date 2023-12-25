@@ -261,69 +261,69 @@ export default function CustomersDialog({
       }
     }
     if (isMember) {
-      // try {
-      //   if (formData?.id) {
-      //     const data = await updateAccountById(convertDataMemberSubmit(formData));
-      //     if (formData?.lop10[0]?.id) {
-      //       await updateLop10(convertDataClassSubmit(formData?.lop10[0], items?.id));
-      //     } else {
-      //       await addLop10(convertDataClassSubmit(formData?.lop10[0], items?.id));
-      //     }
-      //     if (formData?.lop11[0]?.id) {
-      //       await updateLop11(convertDataClassSubmit(formData?.lop11[0], items?.id));
-      //     } else {
-      //       await addLop11(convertDataClassSubmit(formData?.lop11[0], items?.id));
-      //     }
-      //     if (formData?.lop12[0]?.id) {
-      //       await updateLop12(convertDataClassSubmit(formData?.lop12[0], items?.id));
-      //     } else {
-      //       await addLop12(convertDataClassSubmit(formData?.lop12[0], items?.id));
-      //     }
-      //     const dataFamilies = await updateFamilys(listFamilies);
-      //     if ((data?.status && dataFamilies?.status) === STATUS.SUCCESS) {
-      //       toast.success("Cập nhật học sinh thành công", {
-      //         autoClose: 1000,
-      //       });
-      //     } else if (data?.status === STATUS.NOCONTENT) {
-      //       toast.warn("Tên học sinh không được để trống", {
-      //         autoClose: 1000,
-      //       });
-      //       return;
-      //     }
-      //   } else {
-      //     const data = await addAccount(convertDataMemberSubmit(formData));
-      //     if (data?.status === STATUS.SUCCESS) {
-      //       toast.success("Thêm mới học sinh thành công", {
-      //         autoClose: 1000,
-      //       });
-      //     } else if (data?.status === STATUS.NOCONTENT) {
-      //       toast.warn("Tên học sinh không được để trống", {
-      //         autoClose: 1000,
-      //       });
-      //       return;
-      //     }
-      //   }
-      //   setFormData({});
-      //   await pageUpdate();
-      //   handleClose();
-      // } catch (error) {
-      //   console.log(error);
-      //   if (error?.response?.status === STATUS.BAD_GATEWAY) {
-      //     toast.error(error?.response?.data?.message, {
-      //       autoClose: 1000,
-      //     });
-      //     return;
-      //   }
-      //   if (formData?.id) {
-      //     toast.error("Lỗi cập nhật học sinh", {
-      //       autoClose: 1000,
-      //     });
-      //   } else {
-      //     toast.error("Lỗi thêm mới học sinh", {
-      //       autoClose: 1000,
-      //     });
-      //   }
-      // }
+      try {
+        if (formData?.id) {
+          const data = await updateAccountById(convertDataMemberSubmit(formData));
+          if (formData?.lop10[0]?.id) {
+            await updateLop10(convertDataClassSubmit(formData?.lop10[0], items?.id));
+          } else {
+            await addLop10(convertDataClassSubmit(formData?.lop10[0], items?.id));
+          }
+          if (formData?.lop11[0]?.id) {
+            await updateLop11(convertDataClassSubmit(formData?.lop11[0], items?.id));
+          } else {
+            await addLop11(convertDataClassSubmit(formData?.lop11[0], items?.id));
+          }
+          if (formData?.lop12[0]?.id) {
+            await updateLop12(convertDataClassSubmit(formData?.lop12[0], items?.id));
+          } else {
+            await addLop12(convertDataClassSubmit(formData?.lop12[0], items?.id));
+          }
+          const dataFamilies = await updateFamilys(listFamilies);
+          if ((data?.status && dataFamilies?.status) === STATUS.SUCCESS) {
+            toast.success("Cập nhật học sinh thành công", {
+              autoClose: 1000,
+            });
+          } else if (data?.status === STATUS.NOCONTENT) {
+            toast.warn("Tên học sinh không được để trống", {
+              autoClose: 1000,
+            });
+            return;
+          }
+        } else {
+          const data = await addAccount(convertDataMemberSubmit(formData));
+          if (data?.status === STATUS.SUCCESS) {
+            toast.success("Thêm mới học sinh thành công", {
+              autoClose: 1000,
+            });
+          } else if (data?.status === STATUS.NOCONTENT) {
+            toast.warn("Tên học sinh không được để trống", {
+              autoClose: 1000,
+            });
+            return;
+          }
+        }
+        setFormData({});
+        await pageUpdate();
+        handleClose();
+      } catch (error) {
+        console.log(error);
+        if (error?.response?.status === STATUS.BAD_GATEWAY) {
+          toast.error(error?.response?.data?.message, {
+            autoClose: 1000,
+          });
+          return;
+        }
+        if (formData?.id) {
+          toast.error("Lỗi cập nhật học sinh", {
+            autoClose: 1000,
+          });
+        } else {
+          toast.error("Lỗi thêm mới học sinh", {
+            autoClose: 1000,
+          });
+        }
+      }
     }
     if (isGiaoVien) {
       try {
