@@ -87,12 +87,12 @@ const Page = () => {
       if (data?.status === STATUS.SUCCESS) {
         pageUpdate();
         handleClose();
-        toast.success("Deleted project successfully", {
+        toast.success("Xóa lớp học thành công", {
           autoClose: 1000,
         });
       }
     } catch (error) {
-      toast.error("Delete failed project", {
+      toast.error("Xóa lớp học thất bại", {
         autoClose: 1000,
       });
     }

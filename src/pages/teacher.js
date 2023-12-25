@@ -13,7 +13,7 @@ import { CustomersTable } from "src/sections/customer/customers-table";
 import { CustomersSearch } from "src/sections/customer/customers-search";
 import CustomersDialog from "src/sections/customer/customers-dialog";
 import {
-  deleteProject,
+  deleteAccountById,
   getAccountById,
   getMember,
   getProjectByAccountId,
@@ -85,20 +85,20 @@ const Page = () => {
   };
 
   const handleDelete = async () => {
-    // try {
-    //   const data = await deleteProject(customer)
-    //   if (data?.status === STATUS.SUCCESS) {
-    //     pageUpdate()
-    //     handleClose()
-    //     toast.success("Deleted project successfully", {
-    //       autoClose: 1000
-    //     })
-    //   }
-    // } catch (error) {
-    //   toast.error("Delete failed project", {
-    //     autoClose: 1000
-    //   })
-    // }
+    try {
+      const data = await deleteAccountById(customer);
+      if (data?.status === STATUS.SUCCESS) {
+        pageUpdate();
+        handleClose();
+        toast.success("Xóa giáo viên thành công", {
+          autoClose: 1000,
+        });
+      }
+    } catch (error) {
+      toast.error("Xóa giáo viên thất bại", {
+        autoClose: 1000,
+      });
+    }
   };
   const handleSearch = async (keyWord) => {
     console.log({ role: ROLE_OBJECT?.ADMIN?.indexOrder, query: keyWord });

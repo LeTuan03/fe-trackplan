@@ -86,18 +86,21 @@ const Page = () => {
 
   const handleDelete = async () => {
     try {
-      const data = await deleteProject(customer);
-      if (data?.status === STATUS.SUCCESS) {
-        pageUpdate();
-        handleClose();
-        toast.success("Deleted project successfully", {
-          autoClose: 1000,
-        });
-      }
-    } catch (error) {
-      toast.error("Delete failed project", {
+      toast.warning("Bạn không có quyền", {
         autoClose: 1000,
       });
+      // const data = await deleteProject(customer);
+      // if (data?.status === STATUS.SUCCESS) {
+      //   pageUpdate();
+      //   handleClose();
+      //   toast.success("Deleted project successfully", {
+      //     autoClose: 1000,
+      //   });
+      // }
+    } catch (error) {
+      // toast.error("Delete failed project", {
+      //   autoClose: 1000,
+      // });
     }
   };
   const handleSearch = async (keyWord) => {
@@ -133,7 +136,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Phần mềm quản lý học sinh phổ thông | Project management</title>
+        <title>Phần mềm quản lý học sinh phổ thông | Thông tin lớp học</title>
       </Head>
       <Box
         component="main"

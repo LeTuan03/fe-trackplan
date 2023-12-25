@@ -77,8 +77,10 @@ export const TopNav = (props) => {
           }}
         >
           <Stack alignItems="center" direction="row" spacing={2}>
-            <p>{`${date.getHours()} : ${format(date.getMinutes())} : 
-      ${format(date.getSeconds())}`}</p>
+            <div style={{ marginLeft: 10 }}>
+              <p>{`${date.getHours()} : ${format(date.getMinutes())} : 
+        ${format(date.getSeconds())}`}</p>
+            </div>
             {!lgUp && (
               <IconButton onClick={onNavOpen}>
                 <SvgIcon fontSize="small">
