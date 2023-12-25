@@ -59,18 +59,18 @@ const Page = () => {
   };
   const getMemberUseApplication = async () => {
     try {
-      if (getCurrentUser()?.role === STATUS_OBJECT?.ADMIN?.indexOrder) {
+      if (getCurrentUser()?.role === ROLE_OBJECT?.ADMIN?.indexOrder) {
         const data = await getMember(3);
-        setMember(data?.data?.length || 0);
+        setMember(data?.data?.length + 1 || 0);
         return;
       }
       const data = await getAll();
-      setMember(data?.data?.length || 0);
+      setMember(data?.data?.length + 1 || 0);
     } catch (error) {}
   };
   const getAllClass = async () => {
     try {
-      if (getCurrentUser()?.role === STATUS_OBJECT?.ADMIN?.indexOrder) {
+      if (getCurrentUser()?.role === ROLE_OBJECT?.ADMIN?.indexOrder) {
         const data = await getProjectByAccountId({ id: getCurrentUser()?.id });
         setClasses(data?.data?.length || 0);
         return;
