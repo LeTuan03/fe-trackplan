@@ -182,6 +182,10 @@ export const getByIdLop12 = async (id) => {
 };
 
 //pee
+export const getAllPee = async () => {
+  let url = API_PATH_PEE + "/all";
+  return axios.get(url);
+};
 export const getPeeByAccountId = async (id) => {
   let url = API_PATH_PEE + "/getByAccountId/" + id;
   return axios.get(url);
