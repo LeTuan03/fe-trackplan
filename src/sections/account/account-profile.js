@@ -89,7 +89,7 @@ export const AccountProfile = () => {
       </CardContent>
       <Divider />
       <CardActions style={{ display: "flex", justifyContent: "center" }}>
-        <a href={getAvataByAccountId(user?.id)} target="_blank">
+        <a href={getAvataByAccountId(user?.id)} rel="noreferrer" target="_blank">
           Xem ảnh
         </a>
 
