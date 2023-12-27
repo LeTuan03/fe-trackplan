@@ -186,6 +186,17 @@ export default function CustomersDialog({
   const convertDataClassSubmit = (data, id) => {
     return { ...data, accountId: id };
   };
+  const convertDataPeeSubmit = (data) => {
+    return {
+      ...data,
+      hocPhi10: Number(data?.hocPhi10),
+      hocPhi11: Number(data?.hocPhi11),
+      hocPhi12: Number(data?.hocPhi12),
+      hocPhi10DaDong: Number(data?.hocPhi10DaDong),
+      hocPhi11DaDong: Number(data?.hocPhi11DaDong),
+      hocPhi12DaDong: Number(data?.hocPhi12DaDong),
+    };
+  };
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     if (isPlan) {
@@ -421,7 +432,7 @@ export default function CustomersDialog({
     if (isFinance) {
       try {
         if (formData?.id) {
-          const data = await updatePee(formData);
+          const data = await updatePee(convertDataPeeSubmit(formData));
           if (data?.status === STATUS.SUCCESS) {
             toast.success("Cập nhật học phí thành công", {
               autoClose: 1000,
