@@ -12,6 +12,7 @@ import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { CustomersTable } from "src/sections/customer/customers-table";
 import { CustomersSearch } from "src/sections/customer/customers-search";
 import CustomersDialog from "src/sections/customer/customers-dialog";
+import CustomerPrintDialog from "src/sections/customer/customer-print-dialog";
 import {
   deleteProject,
   getAccountById,
@@ -29,8 +30,9 @@ const Page = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
+  const [isPrint, setIsPrint] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [customer, setCustomer] = useState("");
+  const [customer, setCustomer] = useState({});
   const [listUser, setListUser] = useState([]);
   const [isView, setIsView] = useState(false);
   const handlePageChange = useCallback((event, value) => {
@@ -79,6 +81,7 @@ const Page = () => {
   };
   const handleClose = () => {
     setCustomer(null);
+    setIsPrint(false);
     setOpen(false);
     setOpenDelete(false);
     setIsView(false);
@@ -100,6 +103,19 @@ const Page = () => {
       });
     }
   };
+
+  const handlePrint = async (item) => {
+    try {
+      const data = await getAccountById(item?.id);
+      if (data?.status === STATUS.SUCCESS) {
+        setCustomer(data?.data);
+        setIsPrint(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSearch = async (keyWord) => {
     try {
       if (keyWord !== "") {
@@ -168,7 +184,17 @@ const Page = () => {
               title="Thêm mới/Cập nhật học sinh"
               isViewTitle="Thông tin học sinh"
               isMember={true}
+              isPrint={true}
               open={open}
+              handleClose={handleClose}
+              items={customer}
+              isView={isView}
+              pageUpdate={pageUpdate}
+            />
+            <CustomerPrintDialog
+              title="Thêm mới/Cập nhật học sinh"
+              isViewTitle="Thông tin học sinh"
+              open={isPrint}
               handleClose={handleClose}
               items={customer}
               isView={isView}
@@ -186,6 +212,7 @@ const Page = () => {
               handleClickOpen={handleClickOpen}
               handleClickOpenDelete={handleClickOpenDelete}
               handleEdit={handleEdit}
+              handlePrint={handlePrint}
               count={listUser.length}
               items={paginatedData}
               onPageChange={handlePageChange}

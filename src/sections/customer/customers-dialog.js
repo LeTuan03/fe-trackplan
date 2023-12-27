@@ -24,7 +24,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-
+import CustomerPrintDialog from "./customer-print-dialog";
 import { getCurrentUser, getSelectedStatusValue, getSelectedPercentValue } from "src/appFunctions";
 import {
   LIST_STATUS,
@@ -105,6 +105,7 @@ export default function CustomersDialog({
   isGiaoVien,
   isViewTitle,
   isFinance,
+  isPrint,
 }) {
   const permitsion = getCurrentUser();
   const isEditMember = permitsion?.role === ROLE_OBJECT.SUPPER_ADMIN.indexOrder;
@@ -710,6 +711,34 @@ export default function CustomersDialog({
       });
     }
   }, [isPlan, isAdmin, isGroup, items, items?.status, isMember, isGiaoVien, isFinance]);
+  const hocSinh = {
+    ten: "Nguyễn Văn A",
+    lop: "12A1",
+    truong: "Trường Trung Học Phổ Thông ABC",
+    diem: {
+      lop10: {
+        toan: 9.0,
+        ly: 8.5,
+        hoa: 7.8,
+        van: 8.9,
+        anh: 8.2,
+      },
+      lop11: {
+        toan: 9.5,
+        ly: 8.8,
+        hoa: 7.7,
+        van: 9.1,
+        anh: 8.5,
+      },
+      lop12: {
+        toan: 9.7,
+        ly: 9.0,
+        hoa: 8.2,
+        van: 9.5,
+        anh: 8.8,
+      },
+    },
+  };
   return (
     <Fragment>
       <Dialog
@@ -2131,6 +2160,44 @@ export default function CustomersDialog({
                 </Grid>
               </Grid>
             )}
+            {isPrint && (
+              <table
+                border="1"
+                style={{ width: "80%", margin: "20px auto", borderCollapse: "collapse" }}
+              >
+                <thead>
+                  <tr>
+                    <th rowSpan="2">Môn học/Hoạt động GĐ</th>
+                    <th colSpan="3">Điểm trung bình hoặc xếp loại các môn</th>
+                  </tr>
+                  <tr>
+                    <th>Lớp 10</th>
+                    <th>Lớp 11</th>
+                    <th>Lớp 12</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>Toán</th>
+                    <DiemMonHoc diem={hocSinh.diem.lop10.toan} />
+                    <DiemMonHoc diem={hocSinh.diem.lop11.toan} />
+                    <DiemMonHoc diem={hocSinh.diem.lop12.toan} />
+                  </tr>
+                  <tr>
+                    <th>Văn</th>
+                    <DiemMonHoc diem={hocSinh.diem.lop10.van} />
+                    <DiemMonHoc diem={hocSinh.diem.lop11.van} />
+                    <DiemMonHoc diem={hocSinh.diem.lop12.van} />
+                  </tr>
+                  <tr>
+                    <th>Anh</th>
+                    <DiemMonHoc diem={hocSinh.diem.lop10.anh} />
+                    <DiemMonHoc diem={hocSinh.diem.lop11.anh} />
+                    <DiemMonHoc diem={hocSinh.diem.lop12.anh} />
+                  </tr>
+                </tbody>
+              </table>
+            )}
           </DialogContent>
           <DialogActions>
             <Button
@@ -2154,3 +2221,4 @@ export default function CustomersDialog({
     </Fragment>
   );
 }
+const DiemMonHoc = ({ diem }) => <th>{diem}</th>;

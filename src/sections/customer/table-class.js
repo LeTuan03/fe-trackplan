@@ -33,7 +33,7 @@ export default function TableClass({ lop, handleChange, type }) {
       { name: "Lý", value: lop?.physics, lable: "physics" },
       { name: "Sinh học", value: lop?.biology, lable: "biology" },
       { name: "Địa lý", value: lop?.geography, lable: "geography" },
-      { name: "Mỹ thuật", value: lop?.fineArt, lable: "fineArt" },
+      { name: "Hóa học", value: lop?.fineArt, lable: "fineArt" },
       { name: "Ngữ văn", value: lop?.literature, lable: "literature" },
       { name: "Tiếng anh", value: lop?.english, lable: "english" },
       { name: "Giáo dục công dân", value: lop?.civicEducation, lable: "civicEducation" },

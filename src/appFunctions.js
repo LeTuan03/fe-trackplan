@@ -1,56 +1,66 @@
-import { ROLE_OBJECT, STATUS_OBJECT, statusMap, LIST_PLAN_STATUS, LIST_PERCENT_COMPLETE, ALL_ROLE } from "./appConst";
+import {
+  ROLE_OBJECT,
+  STATUS_OBJECT,
+  statusMap,
+  LIST_PLAN_STATUS,
+  LIST_PERCENT_COMPLETE,
+  ALL_ROLE,
+} from "./appConst";
 
 export const getHighestRole = () => {
-  return JSON.parse(sessionStorage.getItem("currentUser"))
-}
+  return JSON.parse(sessionStorage.getItem("currentUser"));
+};
 export const getCurrentUser = () => {
   const res = JSON.parse(sessionStorage.getItem("currentUser"));
   return {
     id: res?.id,
     username: res?.username,
-    role: res?.role
-  }
-}
+    role: res?.role,
+    isAdmin: res?.role === ROLE_OBJECT.SUPPER_ADMIN.indexOrder,
+    isTeacher: res?.role === ROLE_OBJECT.ADMIN.indexOrder,
+    isStudent: res?.role === ROLE_OBJECT.MEMBER.indexOrder,
+  };
+};
 export const renderStatus = (status) => {
   switch (status) {
     case STATUS_OBJECT.NEW.name:
-      return statusMap.delivered
+      return statusMap.delivered;
       break;
     case STATUS_OBJECT.INPROGRESS.name:
-      return statusMap.pending
+      return statusMap.pending;
       break;
     case STATUS_OBJECT.END.name:
-      return statusMap.refunded
+      return statusMap.refunded;
       break;
     default:
-      return statusMap.refunded
+      return statusMap.refunded;
       break;
   }
-}
+};
 export const renderRole = (status) => {
   switch (status) {
     case ROLE_OBJECT.ADMIN.indexOrder:
-      return statusMap.delivered
+      return statusMap.delivered;
       break;
     case ROLE_OBJECT.SUPPER_ADMIN.indexOrder:
-      return statusMap.refunded
+      return statusMap.refunded;
       break;
     default:
-      return statusMap.refunded
+      return statusMap.refunded;
       break;
   }
-}
+};
 
 export const convertTxt = (txt, length) => {
   if (txt.length < length) {
     return txt;
   }
-  let newTxt = txt.slice(0, length)
-  return <p style={{ wordBreak: "break-all" }}>{newTxt + "..."}</p>
-}
+  let newTxt = txt.slice(0, length);
+  return <p style={{ wordBreak: "break-all" }}>{newTxt + "..."}</p>;
+};
 
 export const statusTable = (indexOrder) => {
-  return ALL_ROLE.find(i => i?.indexOrder === indexOrder)?.name
+  return ALL_ROLE.find((i) => i?.indexOrder === indexOrder)?.name;
 };
 
 export const getSelectedStatusValue = (code) => {

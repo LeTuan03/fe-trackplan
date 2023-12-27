@@ -69,7 +69,7 @@ export const AccountProfile = () => {
           }}
         >
           <Avatar
-            src={imageData || `http://localhost:9090/api/files/avatar/${user?.id}` || user?.avatar}
+            src={imageData || getAvataByAccountId(user?.id) || user?.avatar}
             sx={{
               height: 80,
               mb: 2,

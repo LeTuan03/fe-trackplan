@@ -20,6 +20,7 @@ import { SvgIcon } from "@mui/material";
 import PlusIcon from "@heroicons/react/24/solid/PlusIcon";
 import UsersIcon from "@heroicons/react/24/solid/UsersIcon";
 import PencilIcon from "@heroicons/react/24/solid/PencilIcon";
+import AcademicCapIcon from "@heroicons/react/24/solid/AcademicCapIcon";
 import EyeIcon from "@heroicons/react/24/solid/EyeIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { COLOR, LIST_PLAN_STATUS, ROLE, ROLE_OBJECT, STATUS_OBJECT } from "src/appConst";
@@ -48,8 +49,11 @@ export const CustomersTable = (props) => {
     handleClickOpenDelete,
     isGiaoVien,
     isDelete,
+    handlePrint,
   } = props;
 
+  const permitsion = getCurrentUser();
+  console.log(permitsion);
   return (
     <Card>
       <Scrollbar>
@@ -237,6 +241,16 @@ export const CustomersTable = (props) => {
                             >
                               <EyeIcon />
                             </SvgIcon>
+                            {permitsion?.isAdmin && (
+                              <SvgIcon
+                                fontSize="small"
+                                onClick={() => {
+                                  handlePrint(customer);
+                                }}
+                              >
+                                <AcademicCapIcon />
+                              </SvgIcon>
+                            )}
                           </div>
                         </TableCell>
                         <TableCell>
