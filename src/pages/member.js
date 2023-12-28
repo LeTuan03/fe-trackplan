@@ -192,7 +192,7 @@ const Page = () => {
               pageUpdate={pageUpdate}
             />
             <CustomerPrintDialog
-              title="Thêm mới/Cập nhật học sinh"
+              title="In thông tin"
               isViewTitle="Thông tin học sinh"
               open={isPrint}
               handleClose={handleClose}

@@ -241,7 +241,7 @@ export const CustomersTable = (props) => {
                             >
                               <EyeIcon />
                             </SvgIcon>
-                            {permitsion?.isAdmin && (
+                            {permitsion?.isAdmin && handlePrint  && (
                               <SvgIcon
                                 fontSize="small"
                                 onClick={() => {

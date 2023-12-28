@@ -105,7 +105,6 @@ export default function CustomersDialog({
   isGiaoVien,
   isViewTitle,
   isFinance,
-  isPrint,
 }) {
   const permitsion = getCurrentUser();
   const isEditMember = permitsion?.role === ROLE_OBJECT.SUPPER_ADMIN.indexOrder;
@@ -2159,44 +2158,6 @@ export default function CustomersDialog({
                   />
                 </Grid>
               </Grid>
-            )}
-            {isPrint && (
-              <table
-                border="1"
-                style={{ width: "80%", margin: "20px auto", borderCollapse: "collapse" }}
-              >
-                <thead>
-                  <tr>
-                    <th rowSpan="2">Môn học/Hoạt động GĐ</th>
-                    <th colSpan="3">Điểm trung bình hoặc xếp loại các môn</th>
-                  </tr>
-                  <tr>
-                    <th>Lớp 10</th>
-                    <th>Lớp 11</th>
-                    <th>Lớp 12</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th>Toán</th>
-                    <DiemMonHoc diem={hocSinh.diem.lop10.toan} />
-                    <DiemMonHoc diem={hocSinh.diem.lop11.toan} />
-                    <DiemMonHoc diem={hocSinh.diem.lop12.toan} />
-                  </tr>
-                  <tr>
-                    <th>Văn</th>
-                    <DiemMonHoc diem={hocSinh.diem.lop10.van} />
-                    <DiemMonHoc diem={hocSinh.diem.lop11.van} />
-                    <DiemMonHoc diem={hocSinh.diem.lop12.van} />
-                  </tr>
-                  <tr>
-                    <th>Anh</th>
-                    <DiemMonHoc diem={hocSinh.diem.lop10.anh} />
-                    <DiemMonHoc diem={hocSinh.diem.lop11.anh} />
-                    <DiemMonHoc diem={hocSinh.diem.lop12.anh} />
-                  </tr>
-                </tbody>
-              </table>
             )}
           </DialogContent>
           <DialogActions>

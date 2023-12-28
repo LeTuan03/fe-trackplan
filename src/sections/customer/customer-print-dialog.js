@@ -5,8 +5,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
+import { format } from "date-fns";
 export default function CustomerPrintDialog({ open, handleClose, items }) {
-  const [itemPrint, setItemPrint] = useState(items);
+  const [itemPrint, setItemPrint] = useState(items || {});
   const convertSubject = (subject) => {
     return {
       maths: Number(subject?.maths || 0),
@@ -46,7 +47,6 @@ export default function CustomerPrintDialog({ open, handleClose, items }) {
   useEffect(() => {
     setItemPrint(items);
   }, [items]);
-
   return (
     <Dialog
       open={open}
@@ -72,10 +72,32 @@ export default function CustomerPrintDialog({ open, handleClose, items }) {
           <DialogContent>
             <div>
               <div id="divcontents">
-                <div style={{ display: "flex" }} className="ml-50">
-                  <div style={{ flex: 4 }}>Họ và tên: {itemPrint?.username}</div>
+                <div style={{ display: "flex", marginLeft: 20 }} className="ml-50">
+                  <div style={{ flex: 4 }}>Họ và tên:&nbsp; {itemPrint?.username}</div>
                   <div style={{ flex: 2 }}>Năm học: 20...... - 20 ......</div>
                 </div>
+
+                <div style={{ marginLeft: 20 }} className="ml-50">
+                  <div>
+                    Ngày sinh: &nbsp;
+                    {itemPrint?.birth ? format(new Date(itemPrint?.birth), "dd/MM/yyyy") : ""}
+                  </div>
+                  <div>
+                    Nơi sinh: &nbsp;
+                    {itemPrint?.address}
+                  </div>
+                  <div>
+                    {itemPrint?.families?.map((i, index) => (
+                      <div key={index} style={{ display: "flex" }}>
+                        <div
+                          style={{ flex: 1 }}
+                        >{`Họ tên ${i?.relationship}: ${i?.fullName} `}</div>
+                        <div style={{ flex: 1 }}>{`Số điện thoại: ${i?.phone}`}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <h2 style={{ display: "flex", justifyContent: "center" }}>Kết quả học tập</h2>
                 <table
                   border="1"
                   style={{ width: "80%", margin: "20px auto", borderCollapse: "collapse" }}
@@ -232,6 +254,36 @@ export default function CustomerPrintDialog({ open, handleClose, items }) {
                     </tr>
                   </tbody>
                 </table>
+                {/* ------------------------ */}
+                
+                <table
+                  border="1"
+                  style={{ width: "80%", margin: "20px auto", borderCollapse: "collapse", marginTop: 40 }}
+                >
+                  <thead>
+                    <tr>
+                      <th colSpan="3">Xếp loại học tập</th>
+                    </tr>
+                    <tr>
+                      <th>Lớp 10</th>
+                      <th>Lớp 11</th>
+                      <th>Lớp 12</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <DiemMonHoc
+                        diem={itemPrint?.lop10?.length ? itemPrint?.lop10[0]?.classification : ""}
+                      />
+                      <DiemMonHoc
+                        diem={itemPrint?.lop11?.length ? itemPrint?.lop11[0]?.classification : ""}
+                      />
+                      <DiemMonHoc
+                        diem={itemPrint?.lop12?.length ? itemPrint?.lop12[0]?.classification : ""}
+                      />
+                    </tr>
+                  </tbody>
+                </table>
 
                 <div
                   style={{
@@ -252,11 +304,15 @@ export default function CustomerPrintDialog({ open, handleClose, items }) {
                   }}
                 >
                   <div style={{ flex: 5, display: "flex", justifyContent: "center" }}>
-                    <i><small>(Kí và ghi rõ họ tên)</small></i>
+                    <i>
+                      <small>(Kí và ghi rõ họ tên)</small>
+                    </i>
                   </div>
                   <div style={{ flex: 1, display: "flex", justifyContent: "center" }}></div>
                   <div style={{ flex: 5, display: "flex", justifyContent: "center" }}>
-                    <i><small>(Kí, ghi rõ họ tên và đóng dấu)</small></i>
+                    <i>
+                      <small>(Kí, ghi rõ họ tên và đóng dấu)</small>
+                    </i>
                   </div>
                 </div>
                 <div
