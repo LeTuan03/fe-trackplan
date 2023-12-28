@@ -64,7 +64,7 @@ export const Layout = (props) => {
           }}
         >
           <Box sx={{ p: 3 }}>
-            <Typography
+            {/* <Typography
               align="center"
               color="inherit"
               sx={{
@@ -78,9 +78,10 @@ export const Layout = (props) => {
               <Box component="a" sx={{ color: "#15B79E" }} target="_blank">
                 Phần mềm quản lý học sinh phổ thông
               </Box>
-            </Typography>
+            </Typography> */}
 
-            <img alt="" src="/assets/auth-illustration.svg" />
+            <img style={{width: "100%"}} alt="" src="/assets/products/loginbanner.jpeg" />
+            {/* <img alt="" src="/assets/auth-illustration.svg" /> */}
           </Box>
         </Grid>
       </Grid>
