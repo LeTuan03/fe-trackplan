@@ -12,10 +12,10 @@ export default function CustomerPrintDialog({ open, handleClose, items }) {
     return {
       maths: Number(subject?.maths || 0),
       physics: Number(subject?.physics || 0),
-      // chemistry: Number(subject?.chemistry || 0),
+      chemistry: Number(subject?.chemistry || 0),
       biology: Number(subject?.biology || 0),
       geography: Number(subject?.geography || 0),
-      fineArt: Number(subject?.fineArt || 0),
+      // fineArt: Number(subject?.fineArt || 0),
       literature: Number(subject?.literature || 0),
       history: Number(subject?.history || 0),
       english: Number(subject?.english || 0),
@@ -203,13 +203,13 @@ export default function CustomerPrintDialog({ open, handleClose, items }) {
                         Hóa học
                       </th>
                       <DiemMonHoc
-                        diem={itemPrint?.lop10?.length ? itemPrint?.lop10[0]?.fineArt : ""}
+                        diem={itemPrint?.lop10?.length ? itemPrint?.lop10[0]?.chemistry : ""}
                       />
                       <DiemMonHoc
-                        diem={itemPrint?.lop11?.length ? itemPrint?.lop11[0]?.fineArt : ""}
+                        diem={itemPrint?.lop11?.length ? itemPrint?.lop11[0]?.chemistry : ""}
                       />
                       <DiemMonHoc
-                        diem={itemPrint?.lop12?.length ? itemPrint?.lop12[0]?.fineArt : ""}
+                        diem={itemPrint?.lop12?.length ? itemPrint?.lop12[0]?.chemistry : ""}
                       />
                     </tr>
                     <tr>

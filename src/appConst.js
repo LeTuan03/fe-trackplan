@@ -141,3 +141,57 @@ export const LIST_CLASSES = [
     label: "Lớp 12",
   },
 ];
+export const LIST_CONDUCT = [
+  {
+    code: 1,
+    name: "good",
+    label: "Tốt",
+  },
+  {
+    code: 2,
+    name: "rather",
+    label: "Khá",
+  },
+  {
+    code: 3,
+    name: "average",
+    label: "Trung bình",
+  },
+  {
+    code: 4,
+    name: "weak",
+    label: "Yếu",
+  },
+];
+export const LIST_CLASSIFICATION = [
+  {
+    code: 1,
+    name: "XS",
+    label: "Xuất sắc",
+  },
+  {
+    code: 2,
+    name: "G",
+    label: "Giỏi",
+  },
+  {
+    code: 3,
+    name: "K",
+    label: "Khá",
+  },
+  {
+    code: 4,
+    name: "TB",
+    label: "Trung bình",
+  },
+  {
+    code: 4,
+    name: "Y",
+    label: "Yếu",
+  },
+  {
+    code: 4,
+    name: "K",
+    label: "Kém",
+  },
+];

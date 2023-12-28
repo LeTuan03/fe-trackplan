@@ -623,9 +623,13 @@ export default function CustomersDialog({
         endDate: items?.endDate ? new Date(items?.endDate) : new Date(),
         createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
         createdBy: {
-          username: items?.createdBy || getCurrentUser()?.username,
-          id: items?.accountId || getCurrentUser()?.id,
+          username: getCurrentUser().isTeacher ? getCurrentUser()?.username : items?.createdBy || "",
+          id: getCurrentUser().isTeacher ? getCurrentUser()?.id : items?.accountId || "",
         },
+        // createdBy: {
+        //   username: items?.createdBy || getCurrentUser()?.username,
+        //   id: items?.accountId || getCurrentUser()?.id,
+        // },
         memberStudents: items?.memberStudents,
       });
     }

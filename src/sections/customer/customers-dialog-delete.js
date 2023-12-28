@@ -19,10 +19,10 @@ export default function CustomersDialogDelete({ open, handleClose, handleYes, da
       <DialogContent></DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="error">
-          Cancle
+          Hủy
         </Button>
         <Button autoFocus onClick={handleYes} variant="contained">
-          Yes
+          Xóa
         </Button>
       </DialogActions>
     </Dialog>

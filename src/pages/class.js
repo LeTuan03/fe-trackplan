@@ -98,7 +98,6 @@ const Page = () => {
       });
     }
   };
-  console.log(getCurrentUser());
   const handleSearch = async (keyWord) => {
     try {
       if (keyWord !== "") {

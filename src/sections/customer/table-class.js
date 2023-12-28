@@ -33,7 +33,7 @@ export default function TableClass({ lop, handleChange, type }) {
       { name: "Lý", value: lop?.physics, lable: "physics" },
       { name: "Sinh học", value: lop?.biology, lable: "biology" },
       { name: "Địa lý", value: lop?.geography, lable: "geography" },
-      { name: "Hóa học", value: lop?.fineArt, lable: "fineArt" },
+      { name: "Hóa học", value: lop?.chemistry, lable: "chemistry" },
       { name: "Ngữ văn", value: lop?.literature, lable: "literature" },
       { name: "Tiếng anh", value: lop?.english, lable: "english" },
       { name: "Giáo dục công dân", value: lop?.civicEducation, lable: "civicEducation" },
@@ -61,16 +61,24 @@ export default function TableClass({ lop, handleChange, type }) {
               <TableCell align="center">{index + 1}</TableCell>
               <TableCell align="left">{i?.name}</TableCell>
               <TableCell align="center">
-                <TextValidator
-                  className="w-100"
-                  type={i?.lable === "conduct" || i?.lable === "classification" ? "text" : "number"}
-                  name={i?.lable}
-                  value={i?.value}
-                  onChange={(event) => handleChange(event, type)}
-                  // validators={["required"]}
-                  // errorMessages={["general.required"]}
-                  required
-                />
+                {i?.lable == "conduct" || i?.lable == "classification" ? (
+                  <TextValidator
+                    className="w-100"
+                    name={i?.lable}
+                    value={i?.value}
+                    onChange={(event) => handleChange(event, type)}
+                  />
+                ) : (
+                  <TextValidator
+                    className="w-100"
+                    type="number"
+                    name={i?.lable}
+                    value={i?.value}
+                    onChange={(event) => handleChange(event, type)}
+                    validators={["minNumber:0", "maxNumber:10"]} 
+                    errorMessages={["Điểm không được nhỏ hơn 0", "Điểm không được lớn hơn 10"]}
+                  />
+                )}
               </TableCell>
             </TableRow>
           );

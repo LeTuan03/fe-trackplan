@@ -53,7 +53,6 @@ export const CustomersTable = (props) => {
   } = props;
 
   const permitsion = getCurrentUser();
-  console.log(permitsion);
   return (
     <Card>
       <Scrollbar>
