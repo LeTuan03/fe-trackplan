@@ -60,15 +60,6 @@ export const items = () => {
       ),
     },
     currentUser?.role === "2" && {
-      title: "Quản lý người dùng",
-      path: "/customers",
-      icon: (
-        <SvgIcon fontSize="small">
-          <UsersIcon />
-        </SvgIcon>
-      ),
-    },
-    currentUser?.role === "2" && {
       title: "Quản lý học phí",
       path: "/finance",
       icon: (
@@ -104,6 +95,24 @@ export const items = () => {
         </SvgIcon>
       ),
     },
+    currentUser?.role === "2" && {
+      title: "Danh sách người dùng",
+      path: "/customers",
+      icon: (
+        <SvgIcon fontSize="small">
+          <UsersIcon />
+        </SvgIcon>
+      ),
+    },
+    // currentUser.isAdmin && {
+    //   title: "wait",
+    //   path: "/wait",
+    //   icon: (
+    //     <SvgIcon fontSize="small">
+    //       <SpeakerWaveIcon />
+    //     </SvgIcon>
+    //   ),
+    // },
     {
       title: "Thông tin cá nhân",
       path: "/account",

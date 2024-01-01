@@ -59,18 +59,18 @@ const Page = () => {
   };
   const getMemberUseApplication = async () => {
     try {
-      if (getCurrentUser()?.role === ROLE_OBJECT?.ADMIN?.indexOrder) {
+      if (getCurrentUser().isTeacher) {
         const data = await getMember(3);
-        setMember(data?.data?.length + 1 || 0);
+        setMember(data?.data?.length || 0);
         return;
       }
       const data = await getAll();
-      setMember(data?.data?.length + 1 || 0);
+      setMember(data?.data?.length || 0);
     } catch (error) {}
   };
   const getAllClass = async () => {
     try {
-      if (getCurrentUser()?.role === ROLE_OBJECT?.ADMIN?.indexOrder) {
+      if (getCurrentUser().isTeacher) {
         const data = await getProjectByAccountId({ id: getCurrentUser()?.id });
         setClasses(data?.data?.length || 0);
         return;
@@ -98,23 +98,19 @@ const Page = () => {
       >
         <Container maxWidth="xl">
           <Grid container spacing={3}>
-            {getCurrentUser()?.role === ROLE_OBJECT?.SUPPER_ADMIN?.indexOrder && (
+            {getCurrentUser().isAdmin && (
               <Grid xs={12} sm={6} lg={6}>
                 <OverviewBudget
-                  // difference={12}
-                  // positive
                   sx={{ height: "100%" }}
                   value={`${pee.toLocaleString()} VNĐ`}
                 />
               </Grid>
             )}
-            {(getCurrentUser()?.role === ROLE_OBJECT?.SUPPER_ADMIN?.indexOrder ||
-              getCurrentUser()?.role === ROLE_OBJECT?.ADMIN?.indexOrder) && (
+            {(getCurrentUser().isAdmin ||
+              getCurrentUser().isTeacher) && (
               <>
                 <Grid xs={12} sm={6} lg={6}>
                   <OverviewTotalCustomers
-                    // difference={16}
-                    // positive={false}
                     sx={{ height: "100%" }}
                     value={member}
                   />
@@ -124,7 +120,7 @@ const Page = () => {
                 </Grid>
               </>
             )}
-            {getCurrentUser()?.role === ROLE_OBJECT?.MEMBER?.indexOrder && (
+            {getCurrentUser().isStudent && (
               <Grid xs={12} sm={12} lg={12}>
                 <div style={{ width: "100%" }}>
                   <img src="/assets/products/banner.png" alt="error" style={{ width: "100%" }} />

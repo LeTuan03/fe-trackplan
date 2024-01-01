@@ -206,8 +206,7 @@ const Page = () => {
               data={customer}
             />
             <CustomersTable
-              isMember={true}
-              isDelete={true}
+              isWait={true}
               handleClickOpen={handleClickOpen}
               handleClickOpenDelete={handleClickOpenDelete}
               handleEdit={handleEdit}

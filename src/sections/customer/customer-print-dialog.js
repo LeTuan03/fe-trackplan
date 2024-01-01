@@ -31,7 +31,7 @@ export default function CustomerPrintDialog({ open, handleClose, items }) {
       return 0;
     }
     const total = grades.reduce((acc, grade) => acc + grade, 0);
-    return total / grades.length;
+    return  (total / grades.length).toFixed(2);
   };
 
   const handleFormSubmit = () => {

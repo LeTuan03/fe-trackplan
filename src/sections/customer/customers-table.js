@@ -32,6 +32,8 @@ import {
   statusTable,
 } from "src/appFunctions";
 import { SeverityPill } from "src/components/severity-pill";
+import { getAvataByAccountId } from "src/services/customerServices";
+
 export const CustomersTable = (props) => {
   const {
     count = 0,
@@ -50,6 +52,7 @@ export const CustomersTable = (props) => {
     isGiaoVien,
     isDelete,
     handlePrint,
+    isWait
   } = props;
 
   const permitsion = getCurrentUser();
@@ -69,15 +72,6 @@ export const CustomersTable = (props) => {
                     <TableCell>Tên lớp học</TableCell>
                     <TableCell>Giáo viên dạy</TableCell>
                     <TableCell align="center">Sĩ số lớp</TableCell>
-                    {/* <TableCell align='center' >
-                    Status
-                  </TableCell>
-                  <TableCell align='center' >
-                    Updated At
-                  </TableCell>
-                  <TableCell>
-                    Note
-                  </TableCell> */}
                   </>
                 )}
                 {isMember && (
@@ -124,7 +118,7 @@ export const CustomersTable = (props) => {
                   </>
                 )}
 
-                {isAdmin && (
+                {(isAdmin || isWait) && (
                   <>
                     <TableCell align="center">STT</TableCell>
                     <TableCell align="center" width={100}>
@@ -181,7 +175,7 @@ export const CustomersTable = (props) => {
                         </TableCell>
                         <TableCell>
                           <Stack alignItems="center" direction="row" spacing={2}>
-                            <Avatar src={customer.avatar}>{getInitials(customer.name)}</Avatar>
+                            {/* <Avatar src={customer.avatar}>{getInitials(customer.name)}</Avatar> */}
                             <Typography variant="subtitle2">{customer.name}</Typography>
                           </Stack>
                         </TableCell>
@@ -254,7 +248,7 @@ export const CustomersTable = (props) => {
                         </TableCell>
                         <TableCell>
                           <Stack alignItems="center" direction="row" spacing={2}>
-                            <Avatar src={customer.avatar}>{getInitials(customer.username)}</Avatar>
+                            <Avatar src={getAvataByAccountId(customer?.id)}>{getInitials(customer.username)}</Avatar>
                             <Typography variant="subtitle2">{customer.username}</Typography>
                           </Stack>
                         </TableCell>
@@ -314,7 +308,7 @@ export const CustomersTable = (props) => {
                         </TableCell>
                         <TableCell>
                           <Stack alignItems="center" direction="row" spacing={2}>
-                            <Avatar src={customer.avatar}>{getInitials(customer.username)}</Avatar>
+                            <Avatar src={getAvataByAccountId(customer?.id)}>{getInitials(customer.username)}</Avatar>
                             <Typography variant="subtitle2">{customer.username}</Typography>
                           </Stack>
                         </TableCell>
@@ -388,6 +382,48 @@ export const CustomersTable = (props) => {
                             }}
                           >
                             <SvgIcon fontSize="small">
+                              <EyeIcon />
+                            </SvgIcon>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Stack alignItems="center" direction="row" spacing={2}>
+                            <Avatar src={customer.avatar}>{getInitials(customer.username)}</Avatar>
+                            <Typography variant="subtitle2">{customer.username}</Typography>
+                          </Stack>
+                        </TableCell>
+                        <TableCell>{customer.email}</TableCell>
+                        <TableCell>{customer.phone}</TableCell>
+                        <TableCell>
+                          {customer?.createdAt
+                            ? format(new Date(customer?.createdAt), "dd/MM/yyyy")
+                            : ""}
+                        </TableCell>
+                        <TableCell style={{ maxWidth: 80 }} align="center">
+                          <SeverityPill color={[renderRole(customer?.role)]}>
+                            {statusTable(customer?.role)}
+                          </SeverityPill>
+                        </TableCell>
+                      </>
+                    )}
+                    {isWait && (
+                      <>
+                        <TableCell align="center">{index + 1}</TableCell>
+                        <TableCell>
+                          <div
+                             style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              gap: 10,
+                            }}  
+                          >
+                            <SvgIcon fontSize="small" onClick={() => handleEdit(customer)}>
+                              <PencilIcon style={{ color: COLOR.PRIMARY }} />
+                            </SvgIcon>
+                            <SvgIcon fontSize="small"   onClick={() => {
+                              handleClickOpen(customer);
+                            }}>
                               <EyeIcon />
                             </SvgIcon>
                           </div>
