@@ -21,6 +21,7 @@ import {
   searchAccount,
   deleteAccountById,
   getPeeByAccountId,
+  searchAccByRole
 } from "src/services/customerServices";
 import { getCurrentUser } from "src/appFunctions";
 import { STATUS } from "src/appConst";
@@ -104,7 +105,7 @@ const Page = () => {
   const handleSearch = async (keyWord) => {
     try {
       if (keyWord !== "") {
-        const data = await searchAccount({ query: keyWord });
+        const data = await searchAccByRole({ query: keyWord, role: "3" });
         if (data?.status === STATUS.SUCCESS) {
           setListUser(data?.data);
         }

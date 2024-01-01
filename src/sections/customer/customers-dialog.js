@@ -177,9 +177,6 @@ export default function CustomersDialog({
       memberStudents: convertListTask(),
     };
   };
-  const convertDataGroupSubmit = (data) => {
-    return { ...data, percentComplete: data?.percent?.label, status: data?.status?.code };
-  };
   const convertDataMemberSubmit = (data) => {
     return { ...data, role: isGiaoVien ? "1" : "3" };
   };
@@ -216,7 +213,6 @@ export default function CustomersDialog({
         if (formData?.id) {
           if (listTask.length > 0) {
             const dataTask = await updateAdds(convertListTask());
-            console.log(dataTask);
             if (dataTask?.status === STATUS.ERROR) {
               toast.error("Cập nhật lớp học lỗi", {
                 autoClose: 1000,
@@ -470,12 +466,12 @@ export default function CustomersDialog({
     setFormData((prevData) => ({ ...prevData, createdBy: data }));
   };
 
-  const handleChangeTask = (event, taskName, index) => {
+  const handleChangeTask = (event, code, index) => {
     if (isView) {
       return;
     }
     const updatedListTask = [...listTask];
-    updatedListTask[index].taskName = event.target.value;
+    updatedListTask[index].code = event.target.value;
     setListTask(updatedListTask);
   };
 
@@ -485,12 +481,6 @@ export default function CustomersDialog({
     }
     const updatedListTask = [...listTask];
     updatedListTask[index].note = event.target.value;
-    setListTask(updatedListTask);
-  };
-
-  const handleChangePercentComplete = (event, percentComplete, index) => {
-    const updatedListTask = [...listTask];
-    updatedListTask[index].percentComplete = event.target.value;
     setListTask(updatedListTask);
   };
 
@@ -633,9 +623,7 @@ export default function CustomersDialog({
       setFormData({
         id: items?.id,
         projectName: items?.projectName,
-        taskName: items?.taskName,
-        percentComplete: items?.percentComplete,
-        percent: getSelectedPercentValue(items?.percentComplete),
+        code: items?.code,
         projectId: items?.projectId,
         userId: items?.userId,
         userName: items?.userName,
@@ -895,9 +883,9 @@ export default function CustomersDialog({
                                 <TableCell align="left">
                                   <TextValidator
                                     className="w-100"
-                                    onChange={(event) => handleChangeTask(event, "taskName", index)}
-                                    name="taskName"
-                                    value={item.taskName}
+                                    onChange={(event) => handleChangeTask(event, "code", index)}
+                                    name="code"
+                                    value={item.code}
                                   />
                                 </TableCell>
                                 <TableCell align="left">
@@ -1091,10 +1079,10 @@ export default function CustomersDialog({
                                           disabled={isView}
                                           className="w-100"
                                           onChange={(event) =>
-                                            handleChangeTask(event, "taskName", index)
+                                            handleChangeTask(event, "code", index)
                                           }
-                                          name="taskName"
-                                          value={item.taskName}
+                                          name="code"
+                                          value={item.code}
                                         />
                                       </TableCell>
                                       <TableCell align="center">
@@ -1420,7 +1408,7 @@ export default function CustomersDialog({
                     value={formData?.address}
                   />
                 </Grid>
-                {items?.id && isPlan && (
+                {/* {items?.id && isPlan && (
                   <>
                     {!isView && (
                       <Grid item md={12} sm={12} xs={12}>
@@ -1470,9 +1458,9 @@ export default function CustomersDialog({
                                   <TextValidator
                                     disabled={isView}
                                     className="w-100"
-                                    onChange={(event) => handleChangeTask(event, "taskName", index)}
-                                    name="taskName"
-                                    value={item.taskName}
+                                    onChange={(event) => handleChangeTask(event, "code", index)}
+                                    name="code"
+                                    value={item.code}
                                   />
                                 </TableCell>
                                 <TableCell align="center">
@@ -1504,7 +1492,7 @@ export default function CustomersDialog({
                       </Table>
                     </Grid>
                   </>
-                )}
+                )} */}
               </Grid>
             )}
             {/* group  */}

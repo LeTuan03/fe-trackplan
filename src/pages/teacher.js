@@ -19,7 +19,7 @@ import {
   getProjectByAccountId,
   getProjectById,
   searchProject,
-  searchTeacher,
+  searchAccByRole,
 } from "src/services/customerServices";
 import { getCurrentUser } from "src/appFunctions";
 import { STATUS, ROLE_OBJECT } from "src/appConst";
@@ -101,10 +101,9 @@ const Page = () => {
     }
   };
   const handleSearch = async (keyWord) => {
-    console.log({ role: ROLE_OBJECT?.ADMIN?.indexOrder, query: keyWord });
     try {
       if (keyWord !== "") {
-        const data = await searchTeacher({ role: ROLE_OBJECT?.ADMIN?.indexOrder, query: keyWord });
+        const data = await searchAccByRole({ role: ROLE_OBJECT?.ADMIN?.indexOrder, query: keyWord });
         if (data?.status === STATUS.SUCCESS) {
           setListUser(data?.data);
         }

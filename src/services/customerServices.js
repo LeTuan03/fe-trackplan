@@ -40,11 +40,11 @@ export const deleteAccountById = async (searchObject) => {
   let url = API_PATH + "/deleteAccountById/" + searchObject?.id;
   return axios.delete(url, searchObject);
 };
-export const searchTeacher = async (searchObject) => {
+export const searchAccByRole = async (searchObject) => {
   const config = {
     params: searchObject,
   };
-  let url = API_PATH + "/searchAccTeacher";
+  let url = API_PATH + "/searchAccByRole";
   return axios.get(url, config);
 };
 

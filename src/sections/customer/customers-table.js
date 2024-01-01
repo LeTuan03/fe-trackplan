@@ -128,7 +128,7 @@ export const CustomersTable = (props) => {
                     <TableCell>Email</TableCell>
                     <TableCell>Số điện thoại</TableCell>
                     <TableCell>Ngày tạo</TableCell>
-                    <TableCell>Vai trò</TableCell>
+                    <TableCell align="center">Vai trò</TableCell>
                   </>
                 )}
               </TableRow>
@@ -388,7 +388,7 @@ export const CustomersTable = (props) => {
                         </TableCell>
                         <TableCell>
                           <Stack alignItems="center" direction="row" spacing={2}>
-                            <Avatar src={customer.avatar}>{getInitials(customer.username)}</Avatar>
+                            <Avatar src={getAvataByAccountId(customer?.id)}>{getInitials(customer.username)}</Avatar>
                             <Typography variant="subtitle2">{customer.username}</Typography>
                           </Stack>
                         </TableCell>
@@ -399,7 +399,7 @@ export const CustomersTable = (props) => {
                             ? format(new Date(customer?.createdAt), "dd/MM/yyyy")
                             : ""}
                         </TableCell>
-                        <TableCell style={{ maxWidth: 80 }} align="center">
+                        <TableCell style={{ maxWidth: 100 }} align="center">
                           <SeverityPill color={[renderRole(customer?.role)]}>
                             {statusTable(customer?.role)}
                           </SeverityPill>
@@ -430,7 +430,7 @@ export const CustomersTable = (props) => {
                         </TableCell>
                         <TableCell>
                           <Stack alignItems="center" direction="row" spacing={2}>
-                            <Avatar src={customer.avatar}>{getInitials(customer.username)}</Avatar>
+                            <Avatar src={getAvataByAccountId(customer?.id)}>{getInitials(customer.username)}</Avatar>
                             <Typography variant="subtitle2">{customer.username}</Typography>
                           </Stack>
                         </TableCell>

@@ -23,7 +23,7 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    currentUser?.role === "1" && {
+    currentUser.isTeacher && {
       title: "Quản lý lớp học",
       path: "/plans",
       icon: (
@@ -32,7 +32,7 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    (currentUser?.role === "2" || currentUser?.role === "1") && {
+    (currentUser.isAdmin || currentUser.isTeacher) && {
       title: "Quản lý học sinh",
       path: "/member",
       icon: (
@@ -41,7 +41,7 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    currentUser?.role === "2" && {
+    currentUser.isAdmin && {
       title: "Quản lý giáo viên",
       path: "/teacher",
       icon: (
@@ -50,7 +50,7 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    currentUser?.role === "2" && {
+    currentUser.isAdmin && {
       title: "Quản lý lớp học",
       path: "/class",
       icon: (
@@ -59,7 +59,7 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    currentUser?.role === "2" && {
+    currentUser.isAdmin && {
       title: "Quản lý học phí",
       path: "/finance",
       icon: (
@@ -68,7 +68,7 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    currentUser?.role === "3" && {
+    currentUser.isStudent&& {
       title: "Lớp học",
       path: "/groups",
       icon: (
@@ -77,7 +77,7 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    currentUser?.role === "3" && {
+    currentUser.isStudent&& {
       title: "Kết quả học tập",
       path: "/result",
       icon: (
@@ -86,7 +86,7 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    currentUser?.role === "3" && {
+    currentUser.isStudent&& {
       title: "Thông tin tài chính",
       path: "/pee",
       icon: (
@@ -95,7 +95,7 @@ export const items = () => {
         </SvgIcon>
       ),
     },
-    currentUser?.role === "2" && {
+    currentUser.isAdmin && {
       title: "Danh sách người dùng",
       path: "/customers",
       icon: (

@@ -16,6 +16,7 @@ export const ROLE = [
 ];
 export const ALL_ROLE = [
   { code: 1, indexOrder: "1", name: "Giáo viên" },
+  { code: 2, indexOrder: "2", name: "Người quản lý" },
   { code: 3, indexOrder: "3", name: "Học sinh" },
 ];
 export const ROLE_OBJECT = {

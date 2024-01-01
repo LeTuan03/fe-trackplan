@@ -61,7 +61,7 @@ const Page = () => {
     try {
       if (getCurrentUser().isTeacher) {
         const data = await getMember(3);
-        setMember(data?.data?.length || 0);
+        setMember(data?.data?.length + 1 || 0);
         return;
       }
       const data = await getAll();

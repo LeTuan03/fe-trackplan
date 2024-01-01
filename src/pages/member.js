@@ -21,6 +21,7 @@ import {
   getProjectById,
   searchAccount,
   deleteAccountById,
+  searchAccByRole
 } from "src/services/customerServices";
 import { getCurrentUser } from "src/appFunctions";
 import { STATUS } from "src/appConst";
@@ -35,6 +36,9 @@ const Page = () => {
   const [customer, setCustomer] = useState({});
   const [listUser, setListUser] = useState([]);
   const [isView, setIsView] = useState(false);
+  
+  const permitsion = getCurrentUser();
+
   const handlePageChange = useCallback((event, value) => {
     setPage(value);
   }, []);
@@ -119,7 +123,7 @@ const Page = () => {
   const handleSearch = async (keyWord) => {
     try {
       if (keyWord !== "") {
-        const data = await searchAccount({ query: keyWord });
+        const data = await searchAccByRole({ query: keyWord, role: "3" });
         if (data?.status === STATUS.SUCCESS) {
           setListUser(data?.data);
         }
@@ -162,7 +166,7 @@ const Page = () => {
                 <Typography variant="h4">Danh sách học sinh</Typography>
               </Stack>
               <div>
-                <Button
+                {permitsion.isAdmin && <Button
                   startIcon={
                     <SvgIcon fontSize="small">
                       <PlusIcon />
@@ -172,7 +176,7 @@ const Page = () => {
                   onClick={() => setOpen(true)}
                 >
                   Thêm mới
-                </Button>
+                </Button>}
               </div>
             </Stack>
             <CustomersSearch
