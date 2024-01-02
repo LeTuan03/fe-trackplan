@@ -150,7 +150,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Danh sách học sinh | Phần mềm quản lý học sinh phổ thông</title>
+        <title>Quản lý học sinh | Phần mềm quản lý học sinh phổ thông</title>
       </Head>
       <Box
         component="main"

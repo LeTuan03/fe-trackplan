@@ -9,7 +9,7 @@ const API_PATH_LOP12 = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/lop12
 const API_PATH_PEE = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/pees";
 const API_PATH_FAMILY = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/family";
 const API_PATH_FILE = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/files";
-const API_PATH_TASK = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/task";
+const API_PATH_TASK = ConstantList.API_ENPOINT + ConstantList.PRE_FIX + "/student-in-class";
 
 // account
 export const getAll = async () => {
@@ -91,26 +91,26 @@ export const searchClassesByAccountId = async (searchObject) => {
   return axios.get(url, config);
 };
 
-//task
+//hoc sinh trong lop
 
 export const deleteTask = async (id) => {
-  let url = API_PATH_V1 + "/task/delete/" + id;
+  let url = API_PATH_TASK + "/delete/" + id;
   return axios.delete(url);
 };
 export const updateAdds = async (searchObject) => {
-  let url = API_PATH_V1 + "/task/adds";
+  let url = API_PATH_TASK + "/adds";
   return axios.post(url, searchObject);
 };
 export const updateTask = async (searchObject) => {
-  let url = API_PATH_V1 + "/task/edit/" + searchObject.id;
+  let url = API_PATH_TASK + "/edit/" + searchObject.id;
   return axios.put(url, searchObject);
 };
 export const getById = async (id) => {
-  let url = API_PATH_V1 + "/task/getById/" + id;
+  let url = API_PATH_TASK + "/getById/" + id;
   return axios.get(url);
 };
 export const getByMemberId = async () => {
-  let url = API_PATH_V1 + "/task/getByUserId/" + getCurrentUser()?.id;
+  let url = API_PATH_TASK + "/getByUserId/" + getCurrentUser()?.id;
   return axios.get(url);
 };
 
@@ -220,14 +220,6 @@ export const deleteFamilyById = async (searchObject) => {
 export const uploadAvata = async (searchObject) => {
   let url = API_PATH_FILE + "/upload";
   return axios.post(url, searchObject);
-};
-export const getAvata = async (id) => {
-  let url = API_PATH_FILE + `/${id}/image`;
-  return axios.get(url);
-};
-export const getAvataById = async (id) => {
-  let url = API_PATH_FILE + `/${id}`;
-  return axios.get(url);
 };
 export const getAvataByAccountId = (id) => {
   let url = API_PATH_FILE + `/avatar/${id}`;

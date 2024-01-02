@@ -136,7 +136,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Phần mềm quản lý học sinh phổ thông | Thông tin lớp học</title>
+        <title>Thông tin lớp học | Phần mềm quản lý học sinh phổ thông</title>
       </Head>
       <Box
         component="main"

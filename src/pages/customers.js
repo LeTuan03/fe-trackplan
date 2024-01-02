@@ -9,7 +9,6 @@ import { useSelection } from "src/hooks/use-selection";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { CustomersTable } from "src/sections/customer/customers-table";
 import { CustomersSearch } from "src/sections/customer/customers-search";
-import { applyPagination } from "src/utils/apply-pagination";
 import CustomersDialog from "src/sections/customer/customers-dialog";
 import { getAll, getProjectByAccountId, searchAccount } from "src/services/customerServices";
 import { STATUS } from "src/appConst";
@@ -32,7 +31,6 @@ const Page = () => {
     setRowsPerPage(event.target.value);
   }, []);
 
-  
   const getPaginatedData = () => {
     const startIndex = page * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
@@ -80,7 +78,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Phần mềm quản lý học sinh phổ thông | User management</title>
+        <title>Danh sách người dùng | Phần mềm quản lý học sinh phổ thông</title>
       </Head>
       <Box
         component="main"

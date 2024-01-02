@@ -58,7 +58,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Kết quả học tập | Phần mềm quản lý học sinh phổ thông</title>
+        <title>Tài chính | Phần mềm quản lý học sinh phổ thông</title>
       </Head>
       <Box
         component="main"

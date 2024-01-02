@@ -13,7 +13,7 @@ import { useAuth } from "src/hooks/use-auth";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
-import { getAvataById, uploadAvata, getAvataByAccountId } from "src/services/customerServices";
+import { uploadAvata, getAvataByAccountId } from "src/services/customerServices";
 export const AccountProfile = () => {
   const { user, isAuthenticated } = useAuth();
 
