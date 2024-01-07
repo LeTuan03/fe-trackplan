@@ -79,12 +79,6 @@ export const AccountProfile = () => {
           <Typography gutterBottom variant="h5">
             {user?.username}
           </Typography>
-          <Typography color="text.secondary" variant="body2">
-            {user?.city} {user?.country}
-          </Typography>
-          <Typography color="text.secondary" variant="body2">
-            {user?.timezone}
-          </Typography>
         </Box>
       </CardContent>
       <Divider />

@@ -16,7 +16,6 @@ import {
   deleteProject,
   getAllProject,
   getProjectById,
-  searchProject,
   searchClasses,
 } from "src/services/customerServices";
 import { getCurrentUser } from "src/appFunctions";

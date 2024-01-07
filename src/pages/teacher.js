@@ -18,7 +18,6 @@ import {
   getMember,
   getProjectByAccountId,
   getProjectById,
-  searchProject,
   searchAccByRole,
 } from "src/services/customerServices";
 import { getCurrentUser } from "src/appFunctions";

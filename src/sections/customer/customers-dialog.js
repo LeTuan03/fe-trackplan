@@ -250,7 +250,7 @@ export default function CustomersDialog({
       } catch (error) {
         console.log(error);
         if (error?.response?.status === STATUS.BAD_GATEWAY) {
-          toast.error(error?.response?.data?.message, {
+          toast.info(error?.response?.data?.message, {
             autoClose: 1000,
           });
           return;
@@ -316,7 +316,7 @@ export default function CustomersDialog({
       } catch (error) {
         console.log(error);
         if (error?.response?.status === STATUS.BAD_GATEWAY) {
-          toast.error(error?.response?.data?.message, {
+          toast.info(error?.response?.data?.message, {
             autoClose: 1000,
           });
           return;
@@ -366,7 +366,7 @@ export default function CustomersDialog({
       } catch (error) {
         console.log(error);
         if (error?.response?.status === STATUS.BAD_GATEWAY) {
-          toast.error(error?.response?.data?.message, {
+          toast.info(error?.response?.data?.message, {
             autoClose: 1000,
           });
           return;
@@ -649,6 +649,7 @@ export default function CustomersDialog({
         createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
         address: items?.address,
         nation: items?.nation,
+        religion: items?.religion,
         birth: items?.birth && new Date(items?.birth),
         lop10: items?.lop10,
         lop11: items?.lop11,
@@ -667,6 +668,7 @@ export default function CustomersDialog({
         createdAt: items?.createdAt ? new Date(items?.createdAt) : new Date(),
         address: items?.address,
         nation: items?.nation,
+        religion: items?.religion,
         birth: items?.birth && new Date(items?.birth),
       });
     }
@@ -1010,7 +1012,20 @@ export default function CustomersDialog({
                           value={formData?.nation}
                         />
                       </Grid>
-                      <Grid item md={12} sm={12} xs={12}>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <TextValidator
+                          className="w-100"
+                          name="religion"
+                          onChange={handleChange}
+                          label={
+                            <span>
+                              <span>Tôn giáo</span>
+                            </span>
+                          }
+                          value={formData?.religion}
+                        />
+                      </Grid>
+                      <Grid item md={8} sm={12} xs={12}>
                         <TextValidator
                           className="w-100"
                           name="address"
@@ -1394,7 +1409,20 @@ export default function CustomersDialog({
                     value={formData?.nation}
                   />
                 </Grid>
-                <Grid item md={12} sm={12} xs={12}>
+                <Grid item md={4} sm={12} xs={12}>
+                  <TextValidator
+                    className="w-100"
+                    name="religion"
+                    onChange={handleChange}
+                    label={
+                      <span>
+                        <span>Tôn giáo</span>
+                      </span>
+                    }
+                    value={formData?.religion}
+                  />
+                </Grid>
+                <Grid item md={8} sm={12} xs={12}>
                   <TextValidator
                     disabled={isView}
                     className="w-100"
