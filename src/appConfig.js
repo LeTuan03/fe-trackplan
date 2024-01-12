@@ -21,7 +21,7 @@ const COlOR = {
 module.exports = Object.freeze({
   ROOT_PATH: APPLICATION_PATH,
   URL_PREFIX: "/org",
-  API_ENPOINT: "http://192.168.2.232:9090", //dev
+  API_ENPOINT: "http://localhost:9090", //dev
   PRE_FIX: "/api",
   ROLES: ROLES,
   COLOR: COlOR,
